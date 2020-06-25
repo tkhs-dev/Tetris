@@ -25,8 +25,11 @@ namespace TetrisCore.Source
             _data = data;
             _color = color;
         }
-
-        public static class Kind
+        public enum Kind
+        {
+            I,O,T,J,L,S,Z
+        }
+        public static class Kinds
         {
             public static BlockObject I =
                 new BlockObject(
