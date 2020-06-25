@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using TetrisCore.Source.Extension;
 
 namespace TetrisCore.Source
 {
@@ -18,21 +19,32 @@ namespace TetrisCore.Source
             get { return _color; }
         }
 
-        /// <param name="data">ObjectData 0:empty 1:block 2:block_point 3:empty_point</param>
+        /// <param name="data">ObjectData 0:empty 1:block</param>
         /// <param name="color">Object Color</param>
         public BlockObject(int[,] data, Color color)
         {
             _data = data;
             _color = color;
         }
-
-        public static class Kind
+        public void RotateClockwise()
+        {
+            _data = _data.RotateClockwise();
+        }
+        public void Anticlockwise()
+        {
+            _data = _data.RotateAnticlockwise();
+        }
+        public enum Kind
+        {
+            I,T,S,Z,L,J,O
+        }
+        public static class Kinds
         {
             public static BlockObject I =
                 new BlockObject(
                     new int[,]{
                         {0,0,0,0},
-                        {1,2,1,1},
+                        {1,1,1,1},
                         {0,0,0,0},
                         {0,0,0,0}
                     },Color.Aqua);
@@ -78,7 +90,5 @@ namespace TetrisCore.Source
                         {1,1},
                         {1,1}
                     }, Color.Orange);
-
-
     }
 }
