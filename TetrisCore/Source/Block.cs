@@ -19,5 +19,11 @@ namespace TetrisCore.Source
             set { this._point = value; }
         }
 
+        public Block(Color color,Point point)
+        {
+            _color = color;
+            _point = point;
+        }
+
     }
 }
