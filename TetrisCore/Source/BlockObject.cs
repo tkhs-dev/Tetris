@@ -29,59 +29,5 @@ namespace TetrisCore.Source
         {
             I,O,T,J,L,S,Z
         }
-        public static class Kinds
-        {
-            public static BlockObject I =
-                new BlockObject(
-                    new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
-                    },Color.Aqua);
-            public static BlockObject T =
-                new BlockObject(
-                    new int[,]{
-                        {0,1,0},
-                        {1,1,1},
-                        {0,0,0}
-                    }, Color.Purple);
-            public static BlockObject S =
-                new BlockObject(
-                    new int[,]{
-                        {0,1,1},
-                        {1,1,0},
-                        {0,0,0}
-                    }, Color.Green);
-            public static BlockObject Z =
-                new BlockObject(
-                    new int[,]{
-                        {1,1,0},
-                        {0,1,1},
-                        {0,0,0}
-                    }, Color.Red);
-            public static BlockObject L =
-                new BlockObject(
-                    new int[,]{
-                        {0,0,1},
-                        {1,1,1},
-                        {0,0,0}
-                    }, Color.Orange);
-        }
-        public static BlockObject J =
-                new BlockObject(
-                    new int[,]{
-                        {1,0,0},
-                        {1,1,1},
-                        {0,0,0}
-                    }, Color.Blue);
-        public static BlockObject O =
-                new BlockObject(
-                    new int[,]{
-                        {1,1},
-                        {1,1}
-                    }, Color.Orange);
-
-
     }
 }
