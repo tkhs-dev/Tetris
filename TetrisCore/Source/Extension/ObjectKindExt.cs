@@ -8,6 +8,21 @@ namespace TetrisCore.Source.Extension
 {
     public static class KindExt
     {
+        //テンプレート
+        //            switch (self)
+        //    {
+        //        case Kind.I: return ;
+        //        case Kind.O: return ;
+        //        case Kind.T: return ;
+        //        case Kind.J: return ;
+        //        case Kind.L: return ;
+        //        case Kind.S: return ;
+        //        case Kind.Z: return ;
+
+        //    }
+        //    throw new InvalidOperationException("Unknown Kind");
+        //
+
         /// <summary>
         /// ブロックの色を取得
         /// </summary>
@@ -24,6 +39,55 @@ namespace TetrisCore.Source.Extension
                 case Kind.L: return Color.Orange;
                 case Kind.S: return Color.Green;
                 case Kind.Z: return Color.Red;
+            }
+            throw new InvalidOperationException("Unknown Kind");
+        }
+        public static int[,] Data(this Kind self)
+        {
+            switch (self)
+            {
+                case Kind.I: return 
+                    new int[,]{
+                        {0,0,0,0},
+                        {1,2,1,1},
+                        {0,0,0,0},
+                        {0,0,0,0}
+                    };
+                case Kind.O: return
+                    new int[,]{
+                        {1,1},
+                        {1,1}
+                    };
+                case Kind.T: return
+                    new int[,]{
+                        {0,1,0},
+                        {1,1,1},
+                        {0,0,0}
+                    };
+                case Kind.J: return
+                    new int[,]{
+                        {1,0,0},
+                        {1,1,1},
+                        {0,0,0}
+                    };
+                case Kind.L: return
+                    new int[,]{
+                        {0,0,1},
+                        {1,1,1},
+                        {0,0,0}
+                    };
+                case Kind.S: return
+                    new int[,]{
+                        {0,1,1},
+                        {1,1,0},
+                        {0,0,0}
+                    };
+                case Kind.Z: return
+                    new int[,]{
+                        {1,1,0},
+                        {0,1,1},
+                        {0,0,0}
+                    };
 
             }
             throw new InvalidOperationException("Unknown Kind");
