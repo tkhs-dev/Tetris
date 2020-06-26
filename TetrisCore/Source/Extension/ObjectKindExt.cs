@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using static TetrisCore.Source.BlockObject;
 
@@ -91,6 +92,16 @@ namespace TetrisCore.Source.Extension
 
             }
             throw new InvalidOperationException("Unknown Kind");
+        }
+        public static IReadOnlyList<Block> GetBlocks(this Kind self,Point offset)
+        {
+            int[,] data = self.Data();
+            return Enumerable.Range(0, data.GetLength(0))
+                    .SelectMany(r => Enumerable.Range(0, data.GetLength(1)).Select(c => new Point(r, c)))
+                    .Where(x => data[x.X, x.Y] != 0)
+                    .Select(x => new Point(x.X + offset.X, x.Y + offset.Y))
+                    .Select(x => new Block(self.BlockColor(), x))
+                    .ToArray();
         }
     }
 }
