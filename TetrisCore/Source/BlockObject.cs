@@ -17,14 +17,6 @@ namespace TetrisCore.Source
         {
             get { return _color; }
         }
-
-        /// <param name="data">ObjectData 0:empty 1:block 2:block_point 3:empty_point</param>
-        /// <param name="color">Object Color</param>
-        public BlockObject(int[,] data, Color color)
-        {
-            _data = data;
-            _color = color;
-        }
         public enum Kind
         {
             I,O,T,J,L,S,Z
