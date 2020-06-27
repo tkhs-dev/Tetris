@@ -11,7 +11,7 @@ namespace TetrisCore.Source.Extension
     {
         public static Directions Rotate(this Directions self,int num)
         {
-            return (Directions)Enum.ToObject(typeof(Directions),(((int)self)+num) % 4);            
+            return (Directions)Enum.ToObject(typeof(Directions),num>=0 ? (((int)self)+num) % 4 : ((((int)self) + num) % 4)+4);            
         }
     }
 }
