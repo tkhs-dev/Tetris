@@ -6,7 +6,12 @@ namespace TetrisCore.Source
 {
     public class Field
     {
-        //フィールド
+        private int _row;
+        public int Row { get => _row; }
+
+        private int _column;
+        public int Column { get => _column; }
+
         private Cell[,] _cells;
         public Cell[,] Cells
         {
@@ -19,9 +24,12 @@ namespace TetrisCore.Source
             get { return _object; }
         }
 
-        public Field(int row,int colmn)
+        public Field(int row,int column)
         {
-            _cells = new Cell[row,colmn];
+            this._column = column;
+            this._row = row;
+
+            _cells = new Cell[row,column];
         }
     }
 }
