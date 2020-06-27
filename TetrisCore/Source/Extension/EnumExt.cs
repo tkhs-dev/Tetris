@@ -23,7 +23,7 @@ namespace TetrisCore.Source.Extension
                     Color.Aqua,
                     new int[,]{
                         {0,0,0,0},
-                        {1,2,1,1},
+                        {1,1,1,1},
                         {0,0,0,0},
                         {0,0,0,0}
                     });
@@ -31,55 +31,48 @@ namespace TetrisCore.Source.Extension
             new BlockObject(
                     Color.Yellow,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {1,1},
+                        {1,1}
                     });
         private static readonly BlockObject Object_T =
             new BlockObject(
                     Color.Purple,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {0,1,0},
+                        {1,1,1},
+                        {0,0,0}
                     });
         private static readonly BlockObject Object_J =
             new BlockObject(
                     Color.Blue,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {1,0,0},
+                        {1,1,1},
+                        {0,0,0}
                     });
         private static readonly BlockObject Object_L =
             new BlockObject(
                     Color.Orange,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {0,0,1},
+                        {1,1,1},
+                        {0,0,0}
                     });
         private static readonly BlockObject Object_S =
             new BlockObject(
                     Color.Green,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {0,1,1},
+                        {1,1,0},
+                        {0,0,0}
                     });
         private static readonly BlockObject Object_Z =
             new BlockObject(
                     Color.Red,
                     new int[,]{
-                        {0,0,0,0},
-                        {1,2,1,1},
-                        {0,0,0,0},
-                        {0,0,0,0}
+                        {1,1,0},
+                        {0,1,1},
+                        {0,0,0}
                     });
 
         public static BlockObject GetObject(this Kind self)
