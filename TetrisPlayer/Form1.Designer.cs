@@ -28,31 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dxControl1 = new DXControl();
+            this.tetrisDX1 = new TetrisDX();
             this.SuspendLayout();
             // 
-            // dxControl1
+            // tetrisDX1
             // 
-            this.dxControl1.Location = new System.Drawing.Point(12, 12);
-            this.dxControl1.Name = "dxControl1";
-            this.dxControl1.Size = new System.Drawing.Size(776, 426);
-            this.dxControl1.TabIndex = 0;
+            this.tetrisDX1.Location = new System.Drawing.Point(12, 12);
+            this.tetrisDX1.Name = "tetrisDX1";
+            this.tetrisDX1.Size = new System.Drawing.Size(776, 426);
+            this.tetrisDX1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.dxControl1);
+            this.Controls.Add(this.tetrisDX1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
-        private DXControl dxControl1;
+        private TetrisDX tetrisDX1;
     }
 }
 
