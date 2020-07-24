@@ -19,9 +19,6 @@ namespace TetrisPlayer
         {
             InitializeComponent();
             this.Shown += initialized;
-
-            // 最大化を無効にする
-            //this.MaximizeBox = false;
         }
         private void initialized(object sender,EventArgs a)
         {
@@ -32,6 +29,7 @@ namespace TetrisPlayer
                     Game.SetRenderer((IRenderer)c);
                 }
             }
+            Game.Start();
         }
     }
 }

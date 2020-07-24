@@ -21,6 +21,8 @@ namespace TetrisPlayer
 {
     public partial class TetrisDX : UserControl,IDisposable,IRenderer
     {
+        private bool Initialized;
+
         private int Row;
         private int Column;
 
@@ -196,20 +198,32 @@ namespace TetrisPlayer
             _RenderTarget2D?.Clear(SharpDX.Color.LightGray);
 
             // 図形描画位置
-            if (_RenderTarget2D != null)
+            if (_RenderTarget2D != null && Initialized)
             {
+                //TetrisPlayer.GetLogger().Debug(field==null);
                 int size = this.Height/Column-1;
                 for(int i = 0; i < Row; i++)
                 {
                     for(int i2 = 0; i2 < Column; i2++)
                     {
-                        _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size*i, size*i2, size *i+size, size *i2+size), _ColorBrush);
+                        if(field !=null && field.GetCell(new System.Drawing.Point(i,i2)).HasBlock())
+                        {
+                            _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
+                        }
+                        else
+                        {
+                            _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
+                        }
                     }
                 }
             }
 
             _RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
+        }
+        private void RenderBlocks()
+        {
+
         }
 
         /// 
@@ -230,6 +244,8 @@ namespace TetrisPlayer
             //初期化処理
             Row = game.ROW;
             Column = game.COLUMN;
+
+            Initialized = true;
         }
     }
 }

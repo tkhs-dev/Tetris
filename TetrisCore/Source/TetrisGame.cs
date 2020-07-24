@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using TetrisCore.Source.Api;
 
@@ -21,7 +22,7 @@ namespace TetrisCore.Source
         public TetrisGame(ILog logger,int row = 10,int column = 20)
         {
             this.logger = logger;
-            logger.Info("TetrisInstance Creating");
+            logger.Info($"TetrisInstance Creating : row{row},column{column}");
             ROW = row;
             COLUMN = column;
             field = new Field(row, column);
@@ -36,8 +37,13 @@ namespace TetrisCore.Source
         {
             this.controller = controller;
         }
-        private void Draw(Object sender,Field field)
+        public void Start()
         {
+            field.Test();
+        }
+        private void Draw(Object sender,Point point)
+        {
+            logger.Debug($"Block was changed:{point}");
             renderer.Render(field);
         }
     }

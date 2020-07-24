@@ -1,5 +1,9 @@
 ﻿using log4net;
+using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
+using TetrisCore.Source.Extension;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
@@ -23,15 +27,19 @@ namespace TetrisCore.Source
         private Point _objectPoint;
         public Point ObjectPoint => _objectPoint;
 
-        public delegate void OnBlockChangedEvent(object sender,Field field);
+        public delegate void OnBlockChangedEvent(object sender, Point point);
         public event OnBlockChangedEvent OnBlockChanged;
 
-        public Field(int row,int column)
+        public Field(int row, int column)
         {
             this.Column1 = column;
             this._row = row;
 
-            _cells = new Cell[row,column];
+            _cells = new Cell[row, column];
+            for (int d1 = 0; d1 < row; d1++)
+            {
+                for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
+            }
         }
         public Cell GetCell(Point point)
         {
@@ -43,7 +51,7 @@ namespace TetrisCore.Source
             switch (direction)
             {
                 case Directions.NORTH:
-                    point.Offset(0,1);
+                    point.Offset(0, 1);
                     break;
                 case Directions.EAST:
                     point.Offset(1, 0);
@@ -77,11 +85,10 @@ namespace TetrisCore.Source
             foreach (Block block in _object.GetBlocks(point))
             {
                 GetCell(block.Point).SetBlock(block);
+                OnBlockChanged?.Invoke(this, block.Point);
             }
             _object = null;
             _objectPoint = Point.Empty;
-
-            OnBlockChanged(this,this);
 
             return true;
         }
@@ -89,11 +96,16 @@ namespace TetrisCore.Source
         public bool CanMoveTo(Point point)
         {
             if (!(point.X < _row && point.Y < _column)) return false;
-            foreach(Block block in _object.GetBlocks(point))
+            foreach (Block block in _object.GetBlocks(point))
             {
                 if (GetCell(block.Point).HasBlock()) return false;
             }
             return true;
+        }
+        public void Test()
+        {
+            _object = BlockObject.Kind.I.GetObject();
+            _objectPoint = new Point(5, 5);
         }
     }
 }
