@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using log4net;
 using System.Drawing;
-using System.Text;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
@@ -24,6 +22,9 @@ namespace TetrisCore.Source
 
         private Point _objectPoint;
         public Point ObjectPoint => _objectPoint;
+
+        public delegate void OnBlockChangedEvent(object sender,Field field);
+        public event OnBlockChangedEvent OnBlockChanged;
 
         public Field(int row,int column)
         {
@@ -79,6 +80,8 @@ namespace TetrisCore.Source
             }
             _object = null;
             _objectPoint = Point.Empty;
+
+            OnBlockChanged(this,this);
 
             return true;
         }
