@@ -15,12 +15,12 @@ namespace TetrisPlayer
         [STAThread]
         static void Main()
         {
+            GetLogger().Info("Start up TetrisPlayer...");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form maini = new Form1();
             Application.Run(maini);
-
-            GetLogger().Info("Start up TetrisPlayer...");
+            GetLogger().Info("Initialization finished.");
         }
 
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
