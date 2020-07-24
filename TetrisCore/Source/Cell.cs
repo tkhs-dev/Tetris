@@ -10,10 +10,6 @@ namespace TetrisCore.Source
         public Block Block => _block;
         
         public Cell() { }
-        public Cell(Block block)
-        {
-            _block = block;
-        }
         public void SetBlock(Block block)
         {
             _block = block;
