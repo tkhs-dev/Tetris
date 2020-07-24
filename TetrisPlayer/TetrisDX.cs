@@ -13,15 +13,23 @@ using SharpDX.Direct2D1;
 using System.Threading;
 using SharpDX.Direct3D;
 using SharpDX;
+using TetrisCore.Source.Api;
+using TetrisCore.Source;
+using log4net;
 
 namespace TetrisPlayer
 {
-    public partial class TetrisDX : UserControl,IDisposable
+    public partial class TetrisDX : UserControl,IDisposable,IRenderer
     {
+        private int Row;
+        private int Column;
+
+        private Field field;
         public TetrisDX()
         {
             // デザイナ設定反映
             InitializeComponent();
+            this.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
 
             // スタイルの指定
             SetStyle(ControlStyles.AllPaintingInWmPaint |// ちらつき抑える
@@ -182,7 +190,7 @@ namespace TetrisPlayer
         /// 
         public void MainLoop()
         {
-            TetrisPlayer.GetLogger().Info("render");
+            //TetrisPlayer.GetLogger().Info("render");
             _RenderTarget2D?.BeginDraw();
             // 画面を特定の色(例．灰色)で初期化
             _RenderTarget2D?.Clear(SharpDX.Color.LightGray);
@@ -190,18 +198,14 @@ namespace TetrisPlayer
             // 図形描画位置
             if (_RenderTarget2D != null)
             {
-                // 線描画：線のみ
-                _RenderTarget2D.DrawLine(new Vector2(50.0f, 100.0f), new Vector2(150.0f, 200.0f), _ColorBrush);
-
-                // 四角形描画：線のみ
-                _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(250.0f, 100.0f, 350.0f, 180.0f), _ColorBrush);
-                // 四角形描画：塗りつぶし
-                _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(250.0f, 300.0f, 350.0f, 380.0f), _ColorBrush);
-
-                // 円描画：線のみ
-                _RenderTarget2D.DrawEllipse(new Ellipse(new Vector2(450.0f, 150.0f), 50.0f, 50.0f), _ColorBrush);
-                // 円描画：塗りつぶし
-                _RenderTarget2D.FillEllipse(new Ellipse(new Vector2(450.0f, 350.0f), 50.0f, 50.0f), _ColorBrush);
+                int size = this.Height/Column-1;
+                for(int i = 0; i < Row; i++)
+                {
+                    for(int i2 = 0; i2 < Column; i2++)
+                    {
+                        _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size*i, size*i2, size *i+size, size *i2+size), _ColorBrush);
+                    }
+                }
             }
 
             _RenderTarget2D?.EndDraw();
@@ -214,6 +218,18 @@ namespace TetrisPlayer
         public new void Dispose()
         {
             base.Dispose();
+        }
+
+        public void Render(Field field)
+        {
+            this.field = field;
+        }
+
+        public void initialize(TetrisGame game)
+        {
+            //初期化処理
+            Row = game.ROW;
+            Column = game.COLUMN;
         }
     }
 }
