@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Util\ColorConverter.cs" />
     <Compile Include="TetrisDX.cs">
       <SubType>UserControl</SubType>
     </Compile>
