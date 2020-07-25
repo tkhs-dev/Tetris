@@ -106,6 +106,12 @@ namespace TetrisCore.Source
         {
             _object = BlockObject.Kind.I.GetObject();
             _objectPoint = new Point(5, 5);
+            PutAt(_objectPoint);
+            _object = BlockObject.Kind.L.GetObject();
+            _objectPoint = new Point(3, 8);
+            PutAt(_objectPoint);
+            _object = BlockObject.Kind.O.GetObject();
+            _objectPoint = new Point(5,10);
         }
     }
 }

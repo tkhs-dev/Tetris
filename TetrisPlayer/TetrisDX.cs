@@ -16,6 +16,7 @@ using SharpDX;
 using TetrisCore.Source.Api;
 using TetrisCore.Source;
 using log4net;
+using SharpDX.Mathematics.Interop;
 
 namespace TetrisPlayer
 {
@@ -25,6 +26,8 @@ namespace TetrisPlayer
 
         private int Row;
         private int Column;
+
+        private int size;
 
         private Field field;
         public TetrisDX()
@@ -200,30 +203,51 @@ namespace TetrisPlayer
             // 図形描画位置
             if (_RenderTarget2D != null && Initialized)
             {
-                //TetrisPlayer.GetLogger().Debug(field==null);
-                int size = this.Height/Column-1;
-                for(int i = 0; i < Row; i++)
-                {
-                    for(int i2 = 0; i2 < Column; i2++)
-                    {
-                        if(field !=null && field.GetCell(new System.Drawing.Point(i,i2)).HasBlock())
-                        {
-                            _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
-                        }
-                        else
-                        {
-                            _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
-                        }
-                    }
-                }
+                size = this.Height / Column - 1;
+                RenderFlame();
+                RenderBlocks();
+                RenderObject();
             }
 
             _RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
         }
+        private void RenderFlame()
+        {
+            for (int i = 0; i < Row; i++)
+            {
+                for (int i2 = 0; i2 < Column; i2++)
+                {
+                    _ColorBrush.Color = SharpDX.Color.Gray;
+                    _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
+                }
+            }
+        }
         private void RenderBlocks()
         {
-
+            for (int i = 0; i < Row; i++)
+            {
+                for (int i2 = 0; i2 < Column; i2++)
+                {
+                    Cell cell = field.GetCell(new System.Drawing.Point(i, i2));
+                    if (field != null && cell.HasBlock())
+                    {
+                        RenderBlock(cell.Block,new System.Drawing.Point(i,i2));
+                    }
+                }
+            }
+        }
+        private void RenderBlock(Block block, System.Drawing.Point point)
+        {
+            _ColorBrush.Color = Source.Util.ColorConverter.GetDXColor(block.Color);
+            _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * point.X + 1, size * point.Y + 1, size * point.X + size - 1, size * point.Y + size - 1), _ColorBrush);
+        }
+        private void RenderObject()
+        {
+            foreach(Block b in field.Object.GetBlocks(field.ObjectPoint))
+            {
+                RenderBlock(b,b.Point);
+            }
         }
 
         /// 
