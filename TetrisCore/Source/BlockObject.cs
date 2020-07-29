@@ -48,6 +48,42 @@ namespace TetrisCore.Source
             TransformedData = new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x,x => data.RotateClockwise((int)x)));
         }
+        public int GetWidth()
+        {
+            return GetWidth(_direction);
+        }
+        public int GetWidth(Directions direction)
+        {
+            int result = 0;
+            for(int d1 = 0;d1< TransformedData[direction].GetLength(0); d1++)
+            {
+                int count = 0;
+                for(int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
+                {
+                    count += TransformedData[direction][d1,d2];
+                }
+                if (count!=0) result++;
+            }
+            return result;
+        }
+        public int GetHeight()
+        {
+            return GetHeight(_direction);
+        }
+        public int GetHeight(Directions direction)
+        {
+            int result = 0;
+            for (int d1 = 0; d1 < TransformedData[direction].GetLength(0); d1++)
+            {
+                int count = 0;
+                for (int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
+                {
+                    count += TransformedData[direction][d2,d1];
+                }
+                if (count != 0) result++;
+            }
+            return result;
+        }
 
         public IReadOnlyList<Block> GetBlocks(Point offset)
         {
