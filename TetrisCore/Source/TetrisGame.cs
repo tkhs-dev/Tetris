@@ -2,8 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
+using System.Timers;
 using TetrisCore.Source.Api;
+using TetrisCore.Source.Extension;
+using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
 {
@@ -13,20 +17,57 @@ namespace TetrisCore.Source
 
         private Field field;
 
+        public static List<BlockObject> DefaultObjectPool;
+        //使用されるオブジェクトの一覧
+        public List<BlockObject> ObjectPool;
+
+        //キュー
+        private Queue<BlockObject> _objectQueue;
+        public Queue<BlockObject> ObjectQueue => _objectQueue;
+
+        private Timer timer;
+        public bool TimerEnabled { get; set; }
+
         public readonly int ROW;
         public readonly int COLUMN;
 
         private IRenderer renderer;
         private IController controller;
 
+        static TetrisGame()
+        {
+            DefaultObjectPool = new List<BlockObject>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x=>x.GetObject()).ToList());
+        }
         public TetrisGame(ILog logger,int row = 10,int column = 20)
         {
             this.logger = logger;
             logger.Info($"TetrisInstance Creating : row{row},column{column}");
+
+
+            ObjectPool = TetrisGame.DefaultObjectPool;
+            _objectQueue = new Queue<BlockObject>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
+
+            timer = new Timer();
+            timer.Interval = 500;
+            timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
+
             ROW = row;
             COLUMN = column;
+
             field = new Field(row, column);
-            field.OnBlockChanged += Draw;
+
+
+            field.OnBlockChanged += (object sender,Point point)=>
+            {
+                logger.Debug($"Block was changed:{point}");
+                Draw();
+            };
+            field.OnBlockPut += (object sender, BlockObject obj) => 
+            {
+                logger.Debug("Block was put");
+                field.SetObject(_objectQueue.Dequeue());
+                _objectQueue.Enqueue(ObjectPool.GetRandom());
+            };
         }
         public void SetRenderer(IRenderer renderer)
         {
@@ -40,10 +81,22 @@ namespace TetrisCore.Source
         public void Start()
         {
             field.Test();
+            field.SetObject(ObjectPool.GetRandom());
+            if (TimerEnabled) timer.Start();
+            Draw();
         }
-        private void Draw(Object sender,Point point)
+
+        //操作
+        public bool Move(BlockObject.Directions direction)
         {
-            logger.Debug($"Block was changed:{point}");
+            return field.Move(direction);
+        }
+        public bool Rotate()
+        {
+            return field.Rotate(1);
+        }
+        private void Draw()
+        {
             renderer.Render(field);
         }
     }
