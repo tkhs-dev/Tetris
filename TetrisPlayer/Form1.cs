@@ -27,6 +27,7 @@ namespace TetrisPlayer
                 if(c is IRenderer){
                     TetrisPlayer.GetLogger().Info("Find a Renderer:"+c.GetType().Name);
                     Game.SetRenderer((IRenderer)c);
+                    Game.SetController((IController)c);
                 }
             }
             Game.Start();
