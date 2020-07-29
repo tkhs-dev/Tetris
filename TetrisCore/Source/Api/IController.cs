@@ -6,6 +6,6 @@ namespace TetrisCore.Source.Api
 {
     public interface IController : ITetrisGame
     {
-
+        void OnTimerTick();
     }
 }
