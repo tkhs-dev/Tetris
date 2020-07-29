@@ -29,6 +29,8 @@ namespace TetrisCore.Source
 
         public delegate void OnBlockChangedEvent(object sender, Point point);
         public event OnBlockChangedEvent OnBlockChanged;
+        public delegate void OnBlockPutEvent(object sender, BlockObject obj);
+        public event OnBlockPutEvent OnBlockPut;
 
         public Field(int row, int column)
         {
@@ -41,27 +43,35 @@ namespace TetrisCore.Source
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
         }
+        public void SetObject(BlockObject o)
+        {
+            _object = o;
+        }
         public Cell GetCell(Point point)
         {
+            if (point.X < 0 || point.Y < 0) return null;
+            if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
             return _cells[point.X, point.Y];
         }
-        public bool Move(Directions direction)
+        internal bool Move(Directions direction)
         {
             Point point = _objectPoint;
             switch (direction)
             {
                 case Directions.NORTH:
-                    point.Offset(0, 1);
+                    point.Offset(0, -1);
                     break;
                 case Directions.EAST:
                     point.Offset(1, 0);
                     break;
                 case Directions.SOUTH:
-                    point.Offset(0, -1);
+                    point.Offset(0, 1);
                     //ブロックがあった時
-                    if (GetCell(point).HasBlock())
+                    if (!CanMoveTo(point))
                     {
+                        point.Offset(0,-1);
                         PutAt(point);
+                        OnBlockPut?.Invoke(this, Object);
                     }
                     break;
                 case Directions.WEST:
@@ -70,7 +80,7 @@ namespace TetrisCore.Source
             }
             return MoveTo(point);
         }
-        public bool MoveTo(Point point)
+        internal bool MoveTo(Point point)
         {
             if (CanMoveTo(point))
             {
@@ -79,39 +89,48 @@ namespace TetrisCore.Source
             }
             return false;
         }
-        public bool PutAt(Point point)
+        internal bool Rotate(int rotation)
         {
-            if (!CanMoveTo(point)) return false;
+            if (CanRotate(rotation))
+            {
+                _object.Rotate(rotation);
+                return true;
+            }
+            return false;
+        }
+        private bool PutAt(Point point)
+        {
+            //if (!CanMoveTo(point)) return false;
             foreach (Block block in _object.GetBlocks(point))
             {
-                GetCell(block.Point).SetBlock(block);
+                GetCell(block.Point)?.SetBlock(block);
                 OnBlockChanged?.Invoke(this, block.Point);
             }
             _object = null;
-            _objectPoint = Point.Empty;
+            _objectPoint = new Point(2,0);
 
             return true;
         }
-
+        public bool CanRotate(int rotation)
+        {
+            return _objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column;
+        }
         public bool CanMoveTo(Point point)
         {
-            if (!(point.X < _row && point.Y < _column)) return false;
-            foreach (Block block in _object.GetBlocks(point))
+            return CanMoveTo(_object,point);
+        }
+        public bool CanMoveTo(BlockObject obj,Point point)
+        {
+            if (obj == null) return false;
+            foreach (Block block in obj.GetBlocks(point))
             {
-                if (GetCell(block.Point).HasBlock()) return false;
+                Cell cell = GetCell(block.Point);
+                if (cell == null || cell.HasBlock()) return false;
             }
             return true;
         }
         public void Test()
         {
-            _object = BlockObject.Kind.I.GetObject();
-            _objectPoint = new Point(5, 5);
-            PutAt(_objectPoint);
-            _object = BlockObject.Kind.L.GetObject();
-            _objectPoint = new Point(3, 8);
-            PutAt(_objectPoint);
-            _object = BlockObject.Kind.O.GetObject();
-            _objectPoint = new Point(5,10);
         }
     }
 }
