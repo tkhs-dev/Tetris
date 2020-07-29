@@ -17,10 +17,11 @@ using TetrisCore.Source.Api;
 using TetrisCore.Source;
 using log4net;
 using SharpDX.Mathematics.Interop;
+using SharpDX.DirectInput;
 
 namespace TetrisPlayer
 {
-    public partial class TetrisDX : UserControl,IDisposable,IRenderer
+    public partial class TetrisDX : UserControl,IDisposable,IRenderer,IController
     {
         private bool Initialized;
 
@@ -29,6 +30,9 @@ namespace TetrisPlayer
 
         private int size;
 
+        private int _counter=0;
+
+        private TetrisGame game;
         private Field field;
         public TetrisDX()
         {
@@ -55,6 +59,8 @@ namespace TetrisPlayer
         /// 
         SwapChain _SwapChain;
         Texture2D _BackBuffer;
+
+        private Keyboard _keyboard;
 
         #region Direct2D関連
         /// 
@@ -93,6 +99,7 @@ namespace TetrisPlayer
             // フォームの生成
             Show();
             // フォームが作成されている間は、ループし続ける
+            
             while (Created)
             {
                 MainLoop();
@@ -160,6 +167,18 @@ namespace TetrisPlayer
 
             // 2D用の初期化を行う
             InitializeDirect2D();
+
+            //キーボードを初期化
+            DirectInput dinput = new DirectInput();
+            if (dinput != null)
+            {
+                _keyboard = new Keyboard(dinput);
+                if (_keyboard != null)
+                {
+                    // バッファサイズを指定
+                    _keyboard.Properties.BufferSize = 128;
+                }
+            }
         }
 
         #region DirectXデバイス基本初期設定
@@ -195,22 +214,54 @@ namespace TetrisPlayer
         /// 
         public void MainLoop()
         {
+            //入力処理
+            InputCheck();
+
             //TetrisPlayer.GetLogger().Info("render");
             _RenderTarget2D?.BeginDraw();
             // 画面を特定の色(例．灰色)で初期化
             _RenderTarget2D?.Clear(SharpDX.Color.LightGray);
 
             // 図形描画位置
-            if (_RenderTarget2D != null && Initialized)
+            if (_RenderTarget2D != null && Initialized && field!=null)
             {
                 size = this.Height / Column - 1;
                 RenderFlame();
                 RenderBlocks();
-                RenderObject();
+                if(field.Object!=null)RenderObject();
             }
 
             _RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
+        }
+        private void InputCheck()
+        {
+            if (!this.Focused || _keyboard == null) return;
+            _keyboard.Acquire();
+            _keyboard.Poll();
+
+            // デバイスからデータを取得する
+            var state = _keyboard.GetBufferedData();
+
+            if (state == null) { return; }
+            // 押されたキーデータを抽出
+            var isPressedKeys = state.Where(n => n.IsPressed);
+            // 押されたキーデータが合った場合
+            foreach (var key in isPressedKeys)
+            {
+                switch (key.Key)
+                {
+                    case Key.Left:
+                        game.Move(BlockObject.Directions.WEST);
+                        break;
+                    case Key.Right:
+                        game.Move(BlockObject.Directions.EAST);
+                        break;
+                    case Key.Up:
+                        game.Rotate();
+                        break;
+                }
+            }
         }
         private void RenderFlame()
         {
@@ -230,7 +281,7 @@ namespace TetrisPlayer
                 for (int i2 = 0; i2 < Column; i2++)
                 {
                     Cell cell = field.GetCell(new System.Drawing.Point(i, i2));
-                    if (field != null && cell.HasBlock())
+                    if (cell.HasBlock())
                     {
                         RenderBlock(cell.Block,new System.Drawing.Point(i,i2));
                     }
@@ -265,11 +316,21 @@ namespace TetrisPlayer
 
         public void initialize(TetrisGame game)
         {
+            this.game = game;
+
             //初期化処理
             Row = game.ROW;
             Column = game.COLUMN;
 
+            //タイマーON
+            game.TimerEnabled = true;
+
             Initialized = true;
+        }
+
+        public void OnTimerTick()
+        {
+            game.Move(BlockObject.Directions.SOUTH);
         }
     }
 }
