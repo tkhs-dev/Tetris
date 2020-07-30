@@ -18,8 +18,8 @@ namespace TetrisPlayer
             GetLogger().Info("Start up TetrisPlayer...");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form maini = new Form1();
-            Application.Run(maini);
+            Form main = new Form1();
+            Application.Run(main);
             GetLogger().Info("Initialization finished.");
         }
 
