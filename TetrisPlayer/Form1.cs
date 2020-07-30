@@ -14,10 +14,11 @@ namespace TetrisPlayer
 {
     public partial class Form1 : Form
     {
-        TetrisGame Game = new TetrisGame(TetrisPlayer.GetLogger());
+        TetrisGame Game;
         public Form1()
         {
             InitializeComponent();
+            Game = new TetrisGame(TetrisPlayer.GetLogger());
             this.Shown += initialized;
         }
         private void initialized(object sender,EventArgs a)
