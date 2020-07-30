@@ -1,5 +1,6 @@
 ﻿using log4net;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -69,9 +70,10 @@ namespace TetrisCore.Source
                     //ブロックがあった時
                     if (!CanMoveTo(point))
                     {
-                        point.Offset(0,-1);
-                        PutAt(point);
+                        PutAt(_objectPoint);
                         OnBlockPut?.Invoke(this, Object);
+                        foreach (int i in FindFilledLines()) RemoveLine(i);
+                        return true;
                     }
                     break;
                 case Directions.WEST:
@@ -128,6 +130,28 @@ namespace TetrisCore.Source
                 if (cell == null || cell.HasBlock()) return false;
             }
             return true;
+        }
+        public List<int> FindFilledLines()
+        {
+            return _cells.Cols().Select((cells,index)=> new { Cells = cells,Index = index}).Where(x => x.Cells.All(c => c.HasBlock())).Select(x=>x.Index).ToList();
+        }
+        public void RemoveLine(int line)
+        {
+            foreach (Cell c in _cells.Cols(line)) c.RemoveBlock();
+            for(int i = line - 1; i >= 0; i--)
+            {
+                var from = _cells.Cols(i);
+                var to = _cells.Cols(i + 1);
+                for(int i2 = 0; i2 < Row; i2++)
+                {
+                    if (from[i2].HasBlock())
+                    {
+                        to[i2].SetBlock(from[i2].Block);
+                        from[i2].RemoveBlock();
+                        OnBlockChanged?.Invoke(this, new Point(i, i2));
+                    }
+                }
+            }
         }
         public void Test()
         {

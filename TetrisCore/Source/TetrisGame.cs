@@ -11,7 +11,7 @@ using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
 {
-    public class TetrisGame
+    public class TetrisGame : IDisposable
     {
         internal ILog logger;
 
@@ -48,7 +48,7 @@ namespace TetrisCore.Source
             _objectQueue = new Queue<BlockObject>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
 
             timer = new Timer();
-            timer.Interval = 500;
+            timer.Interval = 300;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
             ROW = row;
@@ -64,8 +64,10 @@ namespace TetrisCore.Source
             };
             field.OnBlockPut += (object sender, BlockObject obj) => 
             {
-                logger.Debug("Block was put");
+                logger.Debug("Block was placed");
                 field.SetObject(_objectQueue.Dequeue());
+                timer.Stop();
+                timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
             };
         }
@@ -98,6 +100,12 @@ namespace TetrisCore.Source
         private void Draw()
         {
             renderer.Render(field);
+        }
+
+        public void Dispose()
+        {
+            logger.Debug("Dispose");
+            ((IDisposable)timer).Dispose();
         }
     }
 }

@@ -18,6 +18,7 @@ using TetrisCore.Source;
 using log4net;
 using SharpDX.Mathematics.Interop;
 using SharpDX.DirectInput;
+using System.Runtime.InteropServices;
 
 namespace TetrisPlayer
 {
@@ -30,8 +31,6 @@ namespace TetrisPlayer
 
         private int size;
 
-        private int _counter=0;
-
         private TetrisGame game;
         private Field field;
         public TetrisDX()
@@ -42,7 +41,9 @@ namespace TetrisPlayer
 
             // スタイルの指定
             SetStyle(ControlStyles.AllPaintingInWmPaint |// ちらつき抑える
-                ControlStyles.Opaque, true);　           // 背景は描画しない
+                ControlStyles.Opaque, true);            // 背景は描画しない
+
+            System.Windows.Media.CompositionTarget.Rendering += RenderingEvent;
         }
         //--------------------------------------------------------------//
         //                         DirectX設定                          //
@@ -88,29 +89,18 @@ namespace TetrisPlayer
         /// 
         protected IntPtr DisplayHandle { get { return Handle; } }
 
-
+        void RenderingEvent(object sender, EventArgs e)
+        {
+            MainLoop();
+        }
         /// 
         /// 毎フレーム処理
         /// 
         public void Exec()
         {
             Initialize();
-
             // フォームの生成
             Show();
-            // フォームが作成されている間は、ループし続ける
-            
-            while (Created)
-            {
-                MainLoop();
-
-                // イベントがある場合は処理する
-                Application.DoEvents();
-
-                // CPUがフル稼働しないようにFPSの制限をかける
-                // ※簡易的に、おおよそ秒間60フレーム程度に制限
-                Thread.Sleep(16);
-            }
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -217,7 +207,6 @@ namespace TetrisPlayer
             //入力処理
             InputCheck();
 
-            //TetrisPlayer.GetLogger().Info("render");
             _RenderTarget2D?.BeginDraw();
             // 画面を特定の色(例．灰色)で初期化
             _RenderTarget2D?.Clear(SharpDX.Color.LightGray);
@@ -226,17 +215,20 @@ namespace TetrisPlayer
             if (_RenderTarget2D != null && Initialized && field!=null)
             {
                 size = this.Height / Column - 1;
-                RenderFlame();
-                RenderBlocks();
-                if(field.Object!=null)RenderObject();
+                RenderFlame(Row,Column,10,10);
+                RenderBlocks(10,10);
+                if(field.Object!=null) RenderObject(field.Object, field.ObjectPoint, 10,10);
+                RenderNextObject(size*Row+50,10);
             }
 
             _RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
         }
+        delegate bool FocusedCheck();
         private void InputCheck()
         {
             if (!this.Focused || _keyboard == null) return;
+
             _keyboard.Acquire();
             _keyboard.Poll();
 
@@ -263,18 +255,18 @@ namespace TetrisPlayer
                 }
             }
         }
-        private void RenderFlame()
+        private void RenderFlame(int row,int column,int x,int y)
         {
-            for (int i = 0; i < Row; i++)
+            for (int i = 0; i < row; i++)
             {
-                for (int i2 = 0; i2 < Column; i2++)
+                for (int i2 = 0; i2 < column; i2++)
                 {
                     _ColorBrush.Color = SharpDX.Color.Gray;
-                    _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * i, size * i2, size * i + size, size * i2 + size), _ColorBrush);
+                    _RenderTarget2D.DrawRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(x+size * i, y+size * i2, x+size * i + size, y+size * i2 + size), _ColorBrush);
                 }
             }
         }
-        private void RenderBlocks()
+        private void RenderBlocks(int x,int y)
         {
             for (int i = 0; i < Row; i++)
             {
@@ -283,22 +275,29 @@ namespace TetrisPlayer
                     Cell cell = field.GetCell(new System.Drawing.Point(i, i2));
                     if (cell.HasBlock())
                     {
-                        RenderBlock(cell.Block,new System.Drawing.Point(i,i2));
+                        RenderBlock(cell.Block,new System.Drawing.Point(i,i2),x,y);
                     }
                 }
             }
         }
-        private void RenderBlock(Block block, System.Drawing.Point point)
+        private void RenderBlock(Block block, System.Drawing.Point point,int x, int y)
         {
             _ColorBrush.Color = Source.Util.ColorConverter.GetDXColor(block.Color);
-            _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(size * point.X + 1, size * point.Y + 1, size * point.X + size - 1, size * point.Y + size - 1), _ColorBrush);
+            _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(x+size * point.X + 1, y+size * point.Y + 1, x+size * point.X + size - 1, y+size * point.Y + size - 1), _ColorBrush);
         }
-        private void RenderObject()
+        private void RenderObject(BlockObject obj, System.Drawing.Point point, int x, int y)
         {
-            foreach(Block b in field.Object.GetBlocks(field.ObjectPoint))
+            foreach(Block b in obj.GetBlocks(point))
             {
-                RenderBlock(b,b.Point);
+                RenderBlock(b,b.Point,x,y);
             }
+        }
+        private void RenderNextObject(int x, int y)
+        {
+            RenderFlame(4,4,x,y);
+            RenderObject(game.ObjectQueue.ToArray()[0], System.Drawing.Point.Empty, x, y);
+            RenderFlame(4, 4, x, y*2+size*4);
+            RenderObject(game.ObjectQueue.ToArray()[1], System.Drawing.Point.Empty, x, y*2+size*4);
         }
 
         /// 
@@ -306,6 +305,7 @@ namespace TetrisPlayer
         /// 
         public new void Dispose()
         {
+            game.Dispose();
             base.Dispose();
         }
 
