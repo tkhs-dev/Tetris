@@ -32,6 +32,8 @@ namespace TetrisCore.Source
         public event OnBlockChangedEvent OnBlockChanged;
         public delegate void OnBlockPutEvent(object sender, BlockObject obj);
         public event OnBlockPutEvent OnBlockPut;
+        public delegate void OnLineRemoveEvent(object sender, int line);
+        public event OnLineRemoveEvent OnLineRemove;
 
         public Field(int row, int column)
         {
@@ -152,6 +154,7 @@ namespace TetrisCore.Source
                     }
                 }
             }
+            OnLineRemove?.Invoke(this,line);
         }
         public void Test()
         {
