@@ -30,8 +30,8 @@ namespace TetrisCore.Source
 
         public delegate void OnBlockChangedEvent(object sender, Point point);
         public event OnBlockChangedEvent OnBlockChanged;
-        public delegate void OnBlockPutEvent(object sender, BlockObject obj);
-        public event OnBlockPutEvent OnBlockPut;
+        public delegate void OnBlockPlacedEvent(object sender, BlockObject obj);
+        public event OnBlockPlacedEvent OnBlockPlaced;
         public delegate void OnLineRemoveEvent(object sender, int line);
         public event OnLineRemoveEvent OnLineRemove;
 
@@ -72,8 +72,8 @@ namespace TetrisCore.Source
                     //ブロックがあった時
                     if (!CanMoveTo(point))
                     {
-                        PutAt(_objectPoint);
-                        OnBlockPut?.Invoke(this, Object);
+                        PlaceAt(_objectPoint);
+                        OnBlockPlaced?.Invoke(this, Object);
                         foreach (int i in FindFilledLines()) RemoveLine(i);
                         return true;
                     }
@@ -102,7 +102,7 @@ namespace TetrisCore.Source
             }
             return false;
         }
-        private bool PutAt(Point point)
+        private bool PlaceAt(Point point)
         {
             //if (!CanMoveTo(point)) return false;
             foreach (Block block in _object.GetBlocks(point))

@@ -62,7 +62,7 @@ namespace TetrisCore.Source
                 logger.Debug($"Block was changed:{point}");
                 Draw();
             };
-            field.OnBlockPut += (object sender, BlockObject obj) => 
+            field.OnBlockPlaced += (object sender, BlockObject obj) => 
             {
                 logger.Debug("Block was placed");
                 field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
