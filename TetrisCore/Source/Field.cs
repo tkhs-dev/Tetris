@@ -156,8 +156,5 @@ namespace TetrisCore.Source
             }
             OnLineRemove?.Invoke(this,line);
         }
-        public void Test()
-        {
-        }
     }
 }
