@@ -45,6 +45,9 @@ namespace TetrisCore.Source
             {
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
+            OnBlockPlaced += (object sender,BlockObject obj)=>{
+                foreach (int i in FindFilledLines()) RemoveLine(i);
+            };
         }
         public void SetObject(BlockObject o)
         {
@@ -55,6 +58,13 @@ namespace TetrisCore.Source
             if (point.X < 0 || point.Y < 0) return null;
             if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
             return _cells[point.X, point.Y];
+        }
+        public Point GetImmediatePlacementPoint()
+        {
+            Point point = _objectPoint;
+            while (CanMoveTo(point)) point.Offset(0, 1);
+            point.Offset(0, -1);
+            return point;
         }
         internal bool Move(Directions direction)
         {
@@ -74,7 +84,6 @@ namespace TetrisCore.Source
                     {
                         PlaceAt(_objectPoint);
                         OnBlockPlaced?.Invoke(this, Object);
-                        foreach (int i in FindFilledLines()) RemoveLine(i);
                         return true;
                     }
                     break;
@@ -92,6 +101,11 @@ namespace TetrisCore.Source
                 return true;
             }
             return false;
+        }
+        internal void PlaceImmediately()
+        {
+            PlaceAt(GetImmediatePlacementPoint());
+            OnBlockPlaced?.Invoke(this,_object);
         }
         internal bool Rotate(int rotation)
         {

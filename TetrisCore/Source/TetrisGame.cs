@@ -82,7 +82,6 @@ namespace TetrisCore.Source
         }
         public void Start()
         {
-            field.Test();
             field.SetObject(ObjectPool.GetRandom());
             if (TimerEnabled) timer.Start();
             Draw();
@@ -92,6 +91,10 @@ namespace TetrisCore.Source
         public bool Move(BlockObject.Directions direction)
         {
             return field.Move(direction);
+        }
+        public void Place()
+        {
+            field.PlaceImmediately();
         }
         public bool Rotate()
         {

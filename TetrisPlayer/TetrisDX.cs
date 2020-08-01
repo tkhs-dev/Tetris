@@ -252,6 +252,10 @@ namespace TetrisPlayer
                     case Key.Up:
                         game.Rotate();
                         break;
+                    case Key.Return:
+                    case Key.NumberPadEnter:
+                        game.Place();
+                        break;
                 }
             }
         }
