@@ -112,6 +112,7 @@ namespace TetrisCore.Source
             _direction = _direction.Rotate(rotate);
         }
 
+        //実装
         public object Clone()
         {
             return new BlockObject(_color,_data,TransformedData);
