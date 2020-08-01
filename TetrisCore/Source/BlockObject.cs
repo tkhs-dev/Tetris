@@ -9,7 +9,7 @@ using TetrisCore.Source.Extension;
 
 namespace TetrisCore.Source
 {
-    public class BlockObject
+    public class BlockObject : ICloneable
     {
         /// <summary>
         /// デフォルトのブロック配置データ
@@ -40,13 +40,15 @@ namespace TetrisCore.Source
         /// </summary>
         private ReadOnlyDictionary<Directions, int[,]> TransformedData;
 
-        public BlockObject(Color color,int[,] data)
+        public BlockObject(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
+                .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
+        { }
+        private BlockObject(Color color,int[,] data, ReadOnlyDictionary<Directions, int[,]> transformed)
         {
             this._color = color;
             this._data = data;
 
-            TransformedData = new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
-                .ToDictionary(x => x,x => data.RotateClockwise((int)x)));
+            TransformedData = transformed;
         }
         public int GetWidth()
         {
@@ -108,6 +110,11 @@ namespace TetrisCore.Source
         public void Rotate(int rotate)
         {
             _direction = _direction.Rotate(rotate);
+        }
+
+        public object Clone()
+        {
+            return new BlockObject(_color,_data,TransformedData);
         }
 
         //列挙子

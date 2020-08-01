@@ -65,7 +65,7 @@ namespace TetrisCore.Source
             field.OnBlockPut += (object sender, BlockObject obj) => 
             {
                 logger.Debug("Block was placed");
-                field.SetObject(_objectQueue.Dequeue());
+                field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
                 timer.Stop();
                 timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
