@@ -35,6 +35,9 @@ namespace TetrisCore.Source
         public delegate void OnLineRemoveEvent(object sender, int line);
         public event OnLineRemoveEvent OnLineRemove;
 
+        private List<int> _lastRemovedLines;
+        public List<int> LastRemovedLines => _lastRemovedLines;
+
         public Field(int row, int column)
         {
             this.Column1 = column;
@@ -46,7 +49,9 @@ namespace TetrisCore.Source
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
             OnBlockPlaced += (object sender,BlockObject obj)=>{
-                foreach (int i in FindFilledLines()) RemoveLine(i);
+                List<int> lines = FindFilledLines();
+                _lastRemovedLines = lines;
+                foreach (int i in lines) RemoveLine(i);
             };
         }
         public void SetObject(BlockObject o)
@@ -58,6 +63,10 @@ namespace TetrisCore.Source
             if (point.X < 0 || point.Y < 0) return null;
             if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
             return _cells[point.X, point.Y];
+        }
+        public int[,] ToArrays()
+        {
+            return _cells.Cols().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
         }
         public Point GetImmediatePlacementPoint()
         {

@@ -7,6 +7,54 @@ namespace TetrisCore.Source.Extension
 {
     public static class ArrayExt
     {
+        public static T[,] ToDimensionalArray<T>(this T[][] arr)
+        {
+            int row = arr.Length;
+            int col = 0;
+
+            //最大を取得
+            for (int i = 0; i < row; i++)
+            {
+                col = Math.Max(col, arr[i].Length);
+            }
+
+            return ToDimensionalArray(arr, col);
+        }
+        public static T[,] ToDimensionalArray<T>(T[][] arr, int col)
+        {
+            int row = arr.Length;
+
+            T[,] dim = new T[row, col];
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < arr[i].Length && j < col; j++)
+                {
+                    dim[i, j] = arr[i][j];
+                }
+            }
+
+            return dim;
+        }
+        public static T[][] ToJaggedArray<T>(this T[,] arr)
+        {
+            int row = arr.GetLength(0);
+            int col = arr.GetLength(1);
+
+            T[][] jag = new T[row][];
+
+            for (int i = 0; i < row; i++)
+            {
+                jag[i] = new T[col];
+                for (int j = 0; j < col; j++)
+                {
+                    jag[i][j] = arr[i, j];
+                }
+            }
+
+            return jag;
+        }
+
         // 時計回りに 90 度回転
         public static T[,] RotateClockwise<T>(this T[,] self)
         {
@@ -280,4 +328,5 @@ namespace TetrisCore.Source.Extension
     /// 2次元方向
     /// </summary>
     public enum SquareDirection { Row = 0, Column = 1 }
+
 }
