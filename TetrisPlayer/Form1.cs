@@ -20,6 +20,7 @@ namespace TetrisPlayer
             InitializeComponent();
             Game = new TetrisGame(TetrisPlayer.GetLogger());
             this.Shown += initialized;
+            TetrisPlayer.GetLogger().Info("Initialization finished.");
         }
         private void initialized(object sender,EventArgs a)
         {

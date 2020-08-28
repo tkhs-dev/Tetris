@@ -20,7 +20,6 @@ namespace TetrisPlayer
             Application.SetCompatibleTextRenderingDefault(false);
             Form main = new Form1();
             Application.Run(main);
-            GetLogger().Info("Initialization finished.");
         }
 
         private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

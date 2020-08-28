@@ -65,6 +65,7 @@ namespace TetrisCore.Source
             field.OnBlockPlaced += (object sender, BlockObject obj) => 
             {
                 logger.Debug("Block was placed");
+                controller.OnFieldUpdate(field,obj,_objectQueue);
                 field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
                 timer.Stop();
                 timer.Start();
@@ -75,10 +76,13 @@ namespace TetrisCore.Source
         {
             this.renderer = renderer;
             renderer.initialize(this);
+            renderer.InitRender();
         }
         public void SetController(IController controller)
         {
             this.controller = controller;
+            controller.initialize(this);
+            controller.InitController();
         }
         public void Start()
         {

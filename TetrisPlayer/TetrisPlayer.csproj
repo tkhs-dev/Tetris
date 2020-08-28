@@ -87,6 +87,9 @@
     <Compile Include="TetrisDX.Designer.cs">
       <DependentUpon>TetrisDX.cs</DependentUpon>
     </Compile>
+    <Compile Include="TetrisDXBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
