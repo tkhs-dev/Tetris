@@ -118,7 +118,7 @@ namespace TetrisCore.Source
         }
         private bool PlaceAt(Point point)
         {
-            //if (!CanMoveTo(point)) return false;
+            if (_object == null) return false;
             foreach (Block block in _object.GetBlocks(point))
             {
                 GetCell(block.Point)?.SetBlock(block);
