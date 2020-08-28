@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TetrisCore\TetrisCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Source\ml\neuralnetwork\" />
+    <Folder Include="Source\ml\geneticalgorithm\" />
+  </ItemGroup>
+
+</Project>
