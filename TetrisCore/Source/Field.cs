@@ -15,15 +15,13 @@ namespace TetrisCore.Source
         public int Row => _row;
 
         private int _column;
-        public int Column => Column1;
+        public int Column => _column;
 
         private Cell[,] _cells;
         public Cell[,] Cells => _cells;
 
         private BlockObject _object;
         public BlockObject Object => _object;
-
-        public int Column1 { get => _column; set => _column = value; }
 
         private Point _objectPoint;
         public Point ObjectPoint => _objectPoint;
@@ -40,7 +38,7 @@ namespace TetrisCore.Source
 
         public Field(int row, int column)
         {
-            this.Column1 = column;
+            this._column = column;
             this._row = row;
 
             _cells = new Cell[row, column];
@@ -57,6 +55,7 @@ namespace TetrisCore.Source
         public void SetObject(BlockObject o)
         {
             _object = o;
+            _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
         }
         public Cell GetCell(Point point)
         {
