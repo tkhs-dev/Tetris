@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisCore", "TetrisCore\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetrisPlayer", "TetrisPlayer\TetrisPlayer.csproj", "{ABCDAA08-FB96-438A-877D-ED47E7F22576}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisGame", "TetrisGame\TetrisGame.csproj", "{145D920F-B734-4FEA-9B80-92E731CAE048}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetrisAI", "TetrisAI\TetrisAI.csproj", "{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisAI", "TetrisAI\TetrisAI.csproj", "{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{ABCDAA08-FB96-438A-877D-ED47E7F22576}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABCDAA08-FB96-438A-877D-ED47E7F22576}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABCDAA08-FB96-438A-877D-ED47E7F22576}.Release|Any CPU.Build.0 = Release|Any CPU
-		{145D920F-B734-4FEA-9B80-92E731CAE048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{145D920F-B734-4FEA-9B80-92E731CAE048}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{145D920F-B734-4FEA-9B80-92E731CAE048}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{145D920F-B734-4FEA-9B80-92E731CAE048}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Release|Any CPU.ActiveCfg = Release|Any CPU
