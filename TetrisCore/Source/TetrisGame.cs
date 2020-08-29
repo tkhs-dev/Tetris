@@ -86,7 +86,7 @@ namespace TetrisCore.Source
         }
         public void Start()
         {
-            field.SetObject(ObjectPool.GetRandom());
+            field.SetObject((BlockObject)ObjectPool.GetRandom().Clone());
             if (TimerEnabled) timer.Start();
             Draw();
         }
