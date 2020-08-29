@@ -41,6 +41,8 @@ namespace TetrisCore.Source
             this._column = column;
             this._row = row;
 
+            _lastRemovedLines = new List<int>();
+
             _cells = new Cell[row, column];
             for (int d1 = 0; d1 < row; d1++)
             {
@@ -65,7 +67,38 @@ namespace TetrisCore.Source
         }
         public int[,] ToArrays()
         {
-            return _cells.Cols().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
+            return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
+        }
+        public List<Point> GetHoles()
+        {
+            int[,] data = ToArrays();
+            Point[] sp = data.Cols(0).Select((x, index) => new { X = x, Index = index }).Where((x) => x.X == 0).Select(x => new Point(x.Index,0)).ToArray();
+            foreach (Point p in sp)
+            {
+                List<Point> points = GetAdjacentEmptyCell(data, p);
+                while (points.Count != 0)
+                {
+                    List<Point> pp = new List<Point>(); ;
+                    foreach (Point point in points)
+                    {
+                        if (data[point.X, point.Y] != 0) continue;
+                        pp.AddRange(GetAdjacentEmptyCell(data, point));
+                        data[point.X, point.Y] = 2;
+                    }
+                    points = pp;
+                }
+                points = GetAdjacentEmptyCell(data, p);
+            }
+            List<Point> result = new List<Point>();
+           foreach(var d in data.Cols().Select((x,index)=>new {X= x.ToArray(),Index=index }))
+            {
+                int y = d.Index;
+                foreach(var i in d.X.Select((x,index)=>new { X=x,Index=index}))
+                {
+                    if (i.X == 0) result.Add(new Point(i.Index,y));
+                }
+            }
+            return result;
         }
         public Point GetImmediatePlacementPoint()
         {
@@ -177,6 +210,20 @@ namespace TetrisCore.Source
                 }
             }
             OnLineRemove?.Invoke(this,line);
+        }
+        private static List<Point> GetAdjacentEmptyCell(int[,] data, Point p)
+        {
+            List<Point> result = new List<Point>();
+            //上
+            if (p.Y - 1 >= 0 && data[p.X, p.Y - 1] == 0) result.Add(new Point(p.X, p.Y - 1));
+            //右
+            if (data.GetLength(0) > p.X + 1 && data[p.X + 1, p.Y] == 0) result.Add(new Point(p.X + 1, p.Y));
+            //下
+            if (data.GetLength(1) > p.Y + 1 && data[p.X, p.Y + 1] == 0) result.Add(new Point(p.X, p.Y + 1));
+            //左
+            if (p.X - 1 >= 0 && data[p.X - 1, p.Y] == 0) result.Add(new Point(p.X - 1, p.Y));
+
+            return result;
         }
     }
 }
