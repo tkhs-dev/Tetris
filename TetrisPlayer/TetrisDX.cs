@@ -22,13 +22,15 @@ using System.Runtime.InteropServices;
 
 namespace TetrisPlayer
 {
-    public partial class TetrisDX : TetrisDXBase,IDisposable,IRenderer,IController
+    public partial class TetrisDX : TetrisDXBase,IDisposable,IController
     {
         public TetrisDX()
         {
             // デザイナ設定反映
             InitializeComponent();
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
+
+            //初期化
         }
         public void InitRender() { }
         public void InitController()
@@ -62,6 +64,13 @@ namespace TetrisPlayer
 
             RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
+        }
+        private void RenderHoles(int x,int y)
+        {
+
+        }
+        public override void Render()
+        {
         }
         private void InputCheck()
         {

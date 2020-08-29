@@ -3,17 +3,20 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DirectInput;
 using SharpDX.DXGI;
+using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TetrisAI.Source.util;
 using TetrisCore.Source;
+using TetrisCore.Source.Api;
 
 namespace TetrisPlayer
 {
-    public abstract class TetrisDXBase:UserControl
+    public abstract class TetrisDXBase:UserControl,IRenderer
     {
         protected bool Initialized;
 
@@ -220,6 +223,13 @@ namespace TetrisPlayer
                 }
             }
         }
+        protected void RenderDiagonalWires(SharpDX.Color color ,System.Drawing.Point point,int x,int y)
+        {
+            _ColorBrush.Color = color;
+            _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, (y + size * point.Y + 1)+size*0.5f), new RawVector2((x + size * (point.X + 1) + 1)-size*0.5f, y + size * (point.Y + 1) + 1), _ColorBrush);
+            _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, y + size * point.Y + 1),new RawVector2(x + size * (point.X+1) + 1, y + size * (point.Y+1) + 1),_ColorBrush);
+            _RenderTarget2D.DrawLine(new RawVector2((x + size * point.X + 1) + size * 0.5f, y + size * point.Y + 1), new RawVector2(x + size * (point.X + 1) + 1, (y + size * (point.Y + 1) + 1) - size * 0.5f),_ColorBrush);
+        }
         protected void RenderBlock(Block block, System.Drawing.Point point, int x, int y)
         {
             _ColorBrush.Color = Source.Util.ColorConverter.GetDXColor(block.Color);
@@ -259,7 +269,10 @@ namespace TetrisPlayer
         public void Render(Field field)
         {
             this.field = field;
+            Render();
         }
+        public abstract void Render();
+
         /// 
         /// 解放処理
         /// 
@@ -267,6 +280,10 @@ namespace TetrisPlayer
         {
             game.Dispose();
             base.Dispose();
+        }
+
+        public void InitRender()
+        {
         }
     }
 }
