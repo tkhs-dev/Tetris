@@ -124,7 +124,6 @@ namespace TetrisCore.Source
                     if (!CanMoveTo(point))
                     {
                         PlaceAt(_objectPoint);
-                        OnBlockPlaced?.Invoke(this, Object);
                         return true;
                     }
                     break;
@@ -146,7 +145,6 @@ namespace TetrisCore.Source
         internal void PlaceImmediately()
         {
             PlaceAt(GetImmediatePlacementPoint());
-            OnBlockPlaced?.Invoke(this,_object);
         }
         internal bool Rotate(int rotation)
         {
@@ -165,8 +163,9 @@ namespace TetrisCore.Source
                 GetCell(block.Point)?.SetBlock(block);
                 OnBlockChanged?.Invoke(this, block.Point);
             }
+            BlockObject lastObject = _object;
             _object = null;
-            _objectPoint = new Point(2,0);
+            OnBlockPlaced?.Invoke(this, lastObject);
 
             return true;
         }

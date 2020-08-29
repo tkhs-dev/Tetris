@@ -60,11 +60,11 @@ namespace TetrisCore.Source
             field.OnBlockChanged += (object sender,Point point)=>
             {
                 logger.Debug($"Block was changed:{point}");
-                Draw();
             };
             field.OnBlockPlaced += (object sender, BlockObject obj) => 
             {
                 logger.Debug("Block was placed");
+                Draw();
                 controller.OnFieldUpdate(field,obj,_objectQueue);
                 field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
                 timer.Stop();
