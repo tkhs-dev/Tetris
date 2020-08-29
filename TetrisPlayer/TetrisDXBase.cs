@@ -234,10 +234,14 @@ namespace TetrisPlayer
         }
         protected void RenderNextObject(int x, int y)
         {
-            RenderFlame(4, 4, x, y);
-            RenderObject(game.ObjectQueue.ToArray()[0], System.Drawing.Point.Empty, x, y);
-            RenderFlame(4, 4, x, y * 2 + size * 4);
-            RenderObject(game.ObjectQueue.ToArray()[1], System.Drawing.Point.Empty, x, y * 2 + size * 4);
+            const int flame_size = 4;
+            for(int i = 0;i< game.ObjectQueue.Count; i++)
+            {
+                if (game.ObjectQueue.Count>=i){
+                    RenderFlame(flame_size, flame_size, x, y * (i + 1) + size * flame_size * i);
+                    RenderObject(game.ObjectQueue.ToArray()[i], System.Drawing.Point.Empty, x, y * (i + 1) + size * flame_size * i);
+                }
+            }
         }
 
         public void initialize(TetrisGame game)
