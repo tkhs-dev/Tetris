@@ -100,9 +100,9 @@ namespace TetrisCore.Source
         {
             field.PlaceImmediately();
         }
-        public bool Rotate()
+        public bool Rotate(bool clockwise)
         {
-            return field.Rotate(1);
+            return field.Rotate(clockwise?1:-1);
         }
         private void Draw()
         {

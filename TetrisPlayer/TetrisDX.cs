@@ -97,7 +97,10 @@ namespace TetrisPlayer
                         game.Move(BlockObject.Directions.EAST);
                         break;
                     case Key.Up:
-                        game.Rotate();
+                        game.Rotate(true);
+                        break;
+                    case Key.Down:
+                        game.Rotate(false);
                         break;
                     case Key.Return:
                     case Key.NumberPadEnter:
