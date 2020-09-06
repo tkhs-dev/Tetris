@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Source\ml\neuralnetwork\" />
-    <Folder Include="Source\ml\geneticalgorithm\" />
+    <Folder Include="Source\Ml\neuralnetwork\" />
+    <Folder Include="Source\Ml\geneticalgorithm\" />
   </ItemGroup>
 
 </Project>
