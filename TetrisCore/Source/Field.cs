@@ -171,7 +171,9 @@ namespace TetrisCore.Source
         }
         public bool CanRotate(int rotation)
         {
-            return _objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column;
+            BlockObject dist = (BlockObject)_object.Clone();
+            dist.Rotate(rotation);
+            return (_objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column) && CanMoveTo(dist,_objectPoint);
         }
         public bool CanMoveTo(Point point)
         {
