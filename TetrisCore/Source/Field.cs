@@ -54,58 +54,11 @@ namespace TetrisCore.Source
                 foreach (int i in lines) RemoveLine(i);
             };
         }
+        //フィールド操作系関数
         public void SetObject(BlockObject o)
         {
             _object = o;
             _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
-        }
-        public Cell GetCell(Point point)
-        {
-            if (point.X < 0 || point.Y < 0) return null;
-            if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
-            return _cells[point.X, point.Y];
-        }
-        public int[,] ToArrays()
-        {
-            return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
-        }
-        public List<Point> GetHoles()
-        {
-            int[,] data = ToArrays();
-            Point[] sp = data.Cols(0).Select((x, index) => new { X = x, Index = index }).Where((x) => x.X == 0).Select(x => new Point(x.Index,0)).ToArray();
-            foreach (Point p in sp)
-            {
-                List<Point> points = GetAdjacentEmptyCell(data, p);
-                while (points.Count != 0)
-                {
-                    List<Point> pp = new List<Point>(); ;
-                    foreach (Point point in points)
-                    {
-                        if (data[point.X, point.Y] != 0) continue;
-                        pp.AddRange(GetAdjacentEmptyCell(data, point));
-                        data[point.X, point.Y] = 2;
-                    }
-                    points = pp;
-                }
-                points = GetAdjacentEmptyCell(data, p);
-            }
-            List<Point> result = new List<Point>();
-           foreach(var d in data.Cols().Select((x,index)=>new {X= x.ToArray(),Index=index }))
-            {
-                int y = d.Index;
-                foreach(var i in d.X.Select((x,index)=>new { X=x,Index=index}))
-                {
-                    if (i.X == 0) result.Add(new Point(i.Index,y));
-                }
-            }
-            return result;
-        }
-        public Point GetImmediatePlacementPoint()
-        {
-            Point point = _objectPoint;
-            while (CanMoveTo(point)) point.Offset(0, 1);
-            point.Offset(0, -1);
-            return point;
         }
         internal bool Move(Directions direction)
         {
@@ -169,38 +122,14 @@ namespace TetrisCore.Source
 
             return true;
         }
-        public bool CanRotate(int rotation)
-        {
-            BlockObject dist = (BlockObject)_object.Clone();
-            dist.Rotate(rotation);
-            return (_objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column) && CanMoveTo(dist,_objectPoint);
-        }
-        public bool CanMoveTo(Point point)
-        {
-            return CanMoveTo(_object,point);
-        }
-        public bool CanMoveTo(BlockObject obj,Point point)
-        {
-            if (obj == null) return false;
-            foreach (Block block in obj.GetBlocks(point))
-            {
-                Cell cell = GetCell(block.Point);
-                if (cell == null || cell.HasBlock()) return false;
-            }
-            return true;
-        }
-        public List<int> FindFilledLines()
-        {
-            return _cells.Cols().Select((cells,index)=> new { Cells = cells,Index = index}).Where(x => x.Cells.All(c => c.HasBlock())).Select(x=>x.Index).ToList();
-        }
         public void RemoveLine(int line)
         {
             foreach (Cell c in _cells.Cols(line)) c.RemoveBlock();
-            for(int i = line - 1; i >= 0; i--)
+            for (int i = line - 1; i >= 0; i--)
             {
                 var from = _cells.Cols(i);
                 var to = _cells.Cols(i + 1);
-                for(int i2 = 0; i2 < Row; i2++)
+                for (int i2 = 0; i2 < Row; i2++)
                 {
                     if (from[i2].HasBlock())
                     {
@@ -210,7 +139,79 @@ namespace TetrisCore.Source
                     }
                 }
             }
-            OnLineRemove?.Invoke(this,line);
+            OnLineRemove?.Invoke(this, line);
+        }
+
+        //Can
+        public bool CanRotate(int rotation)
+        {
+            BlockObject dist = (BlockObject)_object.Clone();
+            dist.Rotate(rotation);
+            return (_objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column) && CanMoveTo(dist, _objectPoint);
+        }
+        public bool CanMoveTo(Point point)
+        {
+            return CanMoveTo(_object, point);
+        }
+        public bool CanMoveTo(BlockObject obj, Point point)
+        {
+            if (obj == null) return false;
+            foreach (Block block in obj.GetBlocks(point))
+            {
+                Cell cell = GetCell(block.Point);
+                if (cell == null || cell.HasBlock()) return false;
+            }
+            return true;
+        }
+
+        //取得
+        public Cell GetCell(Point point)
+        {
+            if (point.X < 0 || point.Y < 0) return null;
+            if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
+            return _cells[point.X, point.Y];
+        }
+        public Point GetImmediatePlacementPoint()
+        {
+            Point point = _objectPoint;
+            while (CanMoveTo(point)) point.Offset(0, 1);
+            point.Offset(0, -1);
+            return point;
+        }
+        public List<int> FindFilledLines()
+        {
+            return _cells.Cols().Select((cells, index) => new { Cells = cells, Index = index }).Where(x => x.Cells.All(c => c.HasBlock())).Select(x => x.Index).ToList();
+        }
+        public List<Point> GetHoles()
+        {
+            int[,] data = ToArrays();
+            Point[] sp = data.Cols(0).Select((x, index) => new { X = x, Index = index }).Where((x) => x.X == 0).Select(x => new Point(x.Index, 0)).ToArray();
+            foreach (Point p in sp)
+            {
+                List<Point> points = GetAdjacentEmptyCell(data, p);
+                while (points.Count != 0)
+                {
+                    List<Point> pp = new List<Point>(); ;
+                    foreach (Point point in points)
+                    {
+                        if (data[point.X, point.Y] != 0) continue;
+                        pp.AddRange(GetAdjacentEmptyCell(data, point));
+                        data[point.X, point.Y] = 2;
+                    }
+                    points = pp;
+                }
+                points = GetAdjacentEmptyCell(data, p);
+            }
+            List<Point> result = new List<Point>();
+            foreach (var d in data.Cols().Select((x, index) => new { X = x.ToArray(), Index = index }))
+            {
+                int y = d.Index;
+                foreach (var i in d.X.Select((x, index) => new { X = x, Index = index }))
+                {
+                    if (i.X == 0) result.Add(new Point(i.Index, y));
+                }
+            }
+            return result;
         }
         private static List<Point> GetAdjacentEmptyCell(int[,] data, Point p)
         {
@@ -226,5 +227,19 @@ namespace TetrisCore.Source
 
             return result;
         }
+
+        //変換
+        public int[,] ToArrays()
+        {
+            return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
+        }
+        
+
+
+
+
+       
+       
+        
     }
 }
