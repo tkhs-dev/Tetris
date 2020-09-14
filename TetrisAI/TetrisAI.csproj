@@ -5,12 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TetrisCore\TetrisCore.csproj" />
+    <PackageReference Include="log4net" Version="2.0.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Source\Ml\neuralnetwork\" />
-    <Folder Include="Source\Ml\geneticalgorithm\" />
+    <ProjectReference Include="..\TetrisCore\TetrisCore.csproj" />
   </ItemGroup>
 
 </Project>
