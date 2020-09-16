@@ -17,7 +17,7 @@ namespace TetrisAI.Source.util
         public readonly int NumHole;
 
         /// <summary>
-        /// 削した行の数
+        /// 消した行の数
         /// </summary>
         public readonly int NumRemovedLine;
 
