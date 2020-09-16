@@ -32,26 +32,35 @@ namespace TetrisCore.Source
         public event OnBlockPlacedEvent OnBlockPlaced;
         public delegate void OnLineRemoveEvent(object sender, int line);
         public event OnLineRemoveEvent OnLineRemove;
+        public delegate void OnRoundEndEvent(object sender);
+        public event OnRoundEndEvent OnRoundEnd;
+        public delegate void OnRoundStartEvent(object sender);
+        public event OnRoundStartEvent OnRoundStart;
 
-        private List<int> _lastRemovedLines;
-        public List<int> LastRemovedLines => _lastRemovedLines;
+        private FieldState _state;
+        public FieldState State => _state;
 
         public Field(int row, int column)
         {
             this._column = column;
             this._row = row;
 
-            _lastRemovedLines = new List<int>();
-
             _cells = new Cell[row, column];
             for (int d1 = 0; d1 < row; d1++)
             {
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
+
+            _state = new FieldState() { RemovedLine = 0, Holes = new List<Point>() };
+
             OnBlockPlaced += (object sender,BlockObject obj)=>{
                 List<int> lines = FindFilledLines();
-                _lastRemovedLines = lines;
                 foreach (int i in lines) RemoveLine(i);
+                _state.RemovedLine = lines.Count;
+            };
+            OnRoundEnd += (object sender) =>
+            {
+                _state.Holes = GetHoles();
             };
         }
         //フィールド操作系関数
@@ -59,6 +68,7 @@ namespace TetrisCore.Source
         {
             _object = o;
             _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
+            OnRoundStart?.Invoke(this);
         }
         internal bool Move(Directions direction)
         {
@@ -213,6 +223,47 @@ namespace TetrisCore.Source
             }
             return result;
         }
+        public List<List<Point>> GetWells()
+        {
+            int[,] data = ToArrays();
+            List<int[]> cols = data.Rows().Select(x => x.ToArray()).ToList();
+            List<List<Point>> result = new List<List<Point>>();
+            for(int index=0;index<cols.Count;index++)
+            {
+                int[] col = cols.ToArray()[index];
+                List<Point> well = new List<Point>();
+                int y = GetSurfacePoint(col);
+                for(int i = y; i >= 0; i--)
+                {
+                    int d = col[i];
+                    if (d == 0)
+                    {
+                        int db = i;
+                        int left = index - 1;
+                        int right = index + 1;
+                        if ((left < 0 && data[right, i] != 0)|| (right >= cols.Count && data[left, i] != 0) || (!(left < 0) && !(right >= cols.Count) && data[left, i] != 0 && data[right, i] != 0))
+                        {
+                            well.Add(new Point(index, i));
+                        }
+                    }
+                }
+                result.Add(well);
+            }
+            return result;
+        }
+        /// <summary>
+        /// 表面のemptyブロックのY座標を返す
+        /// </summary>
+        /// <param name="col_index"></param>
+        /// <returns></returns>
+        private static int GetSurfacePoint(int[] col_data)
+        {
+            for(int i = 0; i < col_data.Length; i++)
+            {
+                if (col_data[i] == 1) return i;
+            }
+            return col_data.Length-1;
+        }
         private static List<Point> GetAdjacentEmptyCell(int[,] data, Point p)
         {
             List<Point> result = new List<Point>();
@@ -233,13 +284,17 @@ namespace TetrisCore.Source
         {
             return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
         }
-        
 
-
-
-
-       
-       
-        
+        public class FieldState
+        {
+            /// <summary>
+            /// 直近のラウンドで消去された列の数
+            /// </summary>
+            public int RemovedLine { get; set; }
+            /// <summary>
+            /// フィールド上の穴の数
+            /// </summary>
+            public List<Point> Holes { get; set; }
+        }
     }
 }
