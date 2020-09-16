@@ -253,8 +253,8 @@ namespace TetrisCore.Source
         /// <summary>
         /// 表面のemptyブロックのY座標を返す
         /// </summary>
-        /// <param name="col_index"></param>
-        /// <returns></returns>
+        /// <param name="col_data">列のデータ</param>
+        /// <returns>y座標</returns>
         private static int GetSurfacePoint(int[] col_data)
         {
             for(int i = 0; i < col_data.Length; i++)
