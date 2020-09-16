@@ -238,7 +238,6 @@ namespace TetrisCore.Source
                     int d = col[i];
                     if (d == 0)
                     {
-                        int db = i;
                         int left = index - 1;
                         int right = index + 1;
                         if ((left < 0 && data[right, i] != 0)|| (right >= cols.Count && data[left, i] != 0) || (!(left < 0) && !(right >= cols.Count) && data[left, i] != 0 && data[right, i] != 0))
