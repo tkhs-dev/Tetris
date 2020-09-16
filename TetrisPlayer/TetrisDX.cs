@@ -60,6 +60,8 @@ namespace TetrisPlayer
                 RenderBlocks(10, 10);
                 if (field.Object != null) RenderObject(field.Object, field.ObjectPoint, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
+                RenderHoles(10,10);
+                RenderWells(10,10);
             }
 
             RenderTarget2D?.EndDraw();
@@ -67,7 +69,16 @@ namespace TetrisPlayer
         }
         private void RenderHoles(int x,int y)
         {
-
+            foreach(System.Drawing.Point p in field.GetHoles()){
+                RenderDiagonalWires(SharpDX.Color.Red,p,x,y);
+            }
+        }
+        private void RenderWells(int x,int y)
+        {
+            foreach (List<System.Drawing.Point> pl in field.GetWells())
+            {
+                foreach (System.Drawing.Point p in pl) RenderDiagonalWires(SharpDX.Color.Green,p,x,y);
+            }
         }
         public override void Render()
         {
