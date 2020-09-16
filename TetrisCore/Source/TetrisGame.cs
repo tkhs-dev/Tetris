@@ -34,6 +34,10 @@ namespace TetrisCore.Source
         private IRenderer renderer;
         private IController controller;
 
+        //State
+        public GameState _state;
+        public GameState State => _state;
+
         static TetrisGame()
         {
             DefaultObjectPool = new List<BlockObject>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x=>x.GetObject()).ToList());
@@ -56,6 +60,7 @@ namespace TetrisCore.Source
 
             field = new Field(row, column);
 
+            _state = new GameState() { Round=0,Score=0,RemovedLines=0,FieldState=field.State};
 
             field.OnBlockChanged += (object sender,Point point)=>
             {
@@ -71,6 +76,12 @@ namespace TetrisCore.Source
                 timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
             };
+            field.OnRoundEnd += (object sender) =>
+             {
+                 _state.Round++;
+                 _state.RemovedLines += field.State.RemovedLine;
+                 _state.FieldState = field.State;
+             };
         }
         public void SetRenderer(IRenderer renderer)
         {
@@ -113,6 +124,14 @@ namespace TetrisCore.Source
         {
             logger.Debug("Dispose");
             ((IDisposable)timer).Dispose();
+        }
+
+        public class GameState
+        {
+            public int Score { get; set; }
+            public int Round { get; set; }
+            public int RemovedLines { get; set; }
+            public Field.FieldState FieldState { get; set; }
         }
     }
 }
