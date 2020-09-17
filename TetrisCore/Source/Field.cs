@@ -28,17 +28,16 @@ namespace TetrisCore.Source
 
         public delegate void OnBlockChangedEvent(object sender, Point point);
         public event OnBlockChangedEvent OnBlockChanged;
-        public delegate void OnBlockPlacedEvent(object sender, BlockObject obj);
+        public delegate void OnBlockPlacedEvent(object sender, BlockObject obj, Point point);
         public event OnBlockPlacedEvent OnBlockPlaced;
         public delegate void OnLineRemoveEvent(object sender, int line);
         public event OnLineRemoveEvent OnLineRemove;
+        public delegate void OnLinesRemovedEvent(object sender, int[] lines,int erodedObjectCells);
+        public event OnLinesRemovedEvent OnLinesRemoved;
         public delegate void OnRoundEndEvent(object sender);
         public event OnRoundEndEvent OnRoundEnd;
         public delegate void OnRoundStartEvent(object sender);
         public event OnRoundStartEvent OnRoundStart;
-
-        private FieldState _state;
-        public FieldState State => _state;
 
         public Field(int row, int column)
         {
@@ -51,16 +50,14 @@ namespace TetrisCore.Source
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
 
-            _state = new FieldState() { RemovedLine = 0, Holes = new List<Point>() };
-
-            OnBlockPlaced += (object sender,BlockObject obj)=>{
+            OnBlockPlaced += (object sender,BlockObject obj,Point point)=>{
                 List<int> lines = FindFilledLines();
-                foreach (int i in lines) RemoveLine(i);
-                _state.RemovedLine = lines.Count;
-            };
-            OnRoundEnd += (object sender) =>
-            {
-                _state.Holes = GetHoles();
+                int eroded=0;
+                foreach (int i in lines) {
+                    RemoveLine(i);
+                    eroded += obj.GetBlocks(point).Where(x => x.Point.Y == i).Count();
+                }
+                OnLinesRemoved?.Invoke(this,lines.ToArray(),eroded);
             };
         }
         //フィールド操作系関数
@@ -126,9 +123,7 @@ namespace TetrisCore.Source
                 GetCell(block.Point)?.SetBlock(block);
                 OnBlockChanged?.Invoke(this, block.Point);
             }
-            BlockObject lastObject = _object;
-            _object = null;
-            OnBlockPlaced?.Invoke(this, lastObject);
+            OnBlockPlaced?.Invoke(this, _object,point);
 
             return true;
         }
@@ -283,18 +278,6 @@ namespace TetrisCore.Source
         public int[,] ToArrays()
         {
             return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
-        }
-
-        public class FieldState
-        {
-            /// <summary>
-            /// 直近のラウンドで消去された列の数
-            /// </summary>
-            public int RemovedLine { get; set; }
-            /// <summary>
-            /// フィールド上の穴の数
-            /// </summary>
-            public List<Point> Holes { get; set; }
         }
     }
 }

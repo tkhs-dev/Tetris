@@ -32,8 +32,8 @@ namespace TetrisPlayer
 
             //初期化
         }
-        public void InitRender() { }
-        public void InitController()
+        public void InitRender(Field field) { }
+        public void InitController(Field field)
         {
             //タイマーON
             game.TimerEnabled = true;

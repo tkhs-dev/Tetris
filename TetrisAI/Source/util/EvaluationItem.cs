@@ -6,6 +6,16 @@ namespace TetrisAI.Source.util
 {
     public class EvaluationItem
     {
+        public EvaluationItem(int objectHeight,int numHole,int holeDepth,int erodedPieceCells,int numRowWithHole,int numRowTransition,int numColTransition)
+        {
+            ObjectHeight = objectHeight;
+            NumHole = numHole;
+            HoleDepth = holeDepth;
+            ErodedPieceCells = erodedPieceCells;
+            NumRowWithHole = numRowWithHole;
+            NumRowTransition = numRowTransition;
+            NumColTransition = numColTransition;
+        }
         /// <summary>
         /// 設置したオブジェクトの高さ
         /// </summary>
@@ -17,9 +27,14 @@ namespace TetrisAI.Source.util
         public readonly int NumHole;
 
         /// <summary>
-        /// 消した行の数
+        /// 穴の上のブロック数の和
         /// </summary>
-        public readonly int NumRemovedLine;
+        public readonly int HoleDepth;
+
+        /// <summary>
+        /// 消した行の数xオブジェクトの中の消えたブロックの数
+        /// </summary>
+        public readonly int ErodedPieceCells;
 
         /// <summary>
         /// 穴のある行の数
@@ -30,6 +45,11 @@ namespace TetrisAI.Source.util
         /// 横方向のブロックの変化の合計
         /// </summary>
         public readonly int NumRowTransition;
+
+        /// <summary>
+        /// 縦方向のブロックの変化の合計
+        /// </summary>
+        public readonly int NumColTransition;
 
     }
 }

@@ -282,7 +282,7 @@ namespace TetrisPlayer
             base.Dispose();
         }
 
-        public void InitRender()
+        public void InitRender(Field field)
         {
         }
     }

@@ -60,13 +60,13 @@ namespace TetrisCore.Source
 
             field = new Field(row, column);
 
-            _state = new GameState() { Round=0,Score=0,RemovedLines=0,FieldState=field.State};
+            _state = new GameState() { Round=0,Score=0,RemovedLines=0};
 
             field.OnBlockChanged += (object sender,Point point)=>
             {
                 logger.Debug($"Block was changed:{point}");
             };
-            field.OnBlockPlaced += (object sender, BlockObject obj) => 
+            field.OnBlockPlaced += (object sender, BlockObject obj,Point point) => 
             {
                 logger.Debug("Block was placed");
                 Draw();
@@ -76,24 +76,26 @@ namespace TetrisCore.Source
                 timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
             };
+            field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
+            {
+                _state.RemovedLines += lines.Length;
+            };
             field.OnRoundEnd += (object sender) =>
              {
                  _state.Round++;
-                 _state.RemovedLines += field.State.RemovedLine;
-                 _state.FieldState = field.State;
              };
         }
         public void SetRenderer(IRenderer renderer)
         {
             this.renderer = renderer;
             renderer.initialize(this);
-            renderer.InitRender();
+            renderer.InitRender(field);
         }
         public void SetController(IController controller)
         {
             this.controller = controller;
             controller.initialize(this);
-            controller.InitController();
+            controller.InitController(field);
         }
         public void Start()
         {
@@ -131,7 +133,6 @@ namespace TetrisCore.Source
             public int Score { get; set; }
             public int Round { get; set; }
             public int RemovedLines { get; set; }
-            public Field.FieldState FieldState { get; set; }
         }
     }
 }
