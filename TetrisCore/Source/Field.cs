@@ -233,7 +233,6 @@ namespace TetrisCore.Source
                     int d = col[i];
                     if (d == 0)
                     {
-                        int db = i;
                         int left = index - 1;
                         int right = index + 1;
                         if ((left < 0 && data[right, i] != 0)|| (right >= cols.Count && data[left, i] != 0) || (!(left < 0) && !(right >= cols.Count) && data[left, i] != 0 && data[right, i] != 0))
@@ -249,8 +248,8 @@ namespace TetrisCore.Source
         /// <summary>
         /// 表面のemptyブロックのY座標を返す
         /// </summary>
-        /// <param name="col_index"></param>
-        /// <returns></returns>
+        /// <param name="col_data">列のデータ</param>
+        /// <returns>y座標</returns>
         private static int GetSurfacePoint(int[] col_data)
         {
             for(int i = 0; i < col_data.Length; i++)
