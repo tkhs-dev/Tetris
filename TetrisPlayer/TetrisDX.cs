@@ -38,9 +38,6 @@ namespace TetrisPlayer
             //タイマーON
             game.TimerEnabled = true;
         }
-        public void OnFieldUpdate(Field field,BlockObject lastObject,Queue<BlockObject> queue)
-        {
-        }
         public void OnTimerTick()
         {
             game.Move(BlockObject.Directions.SOUTH);

@@ -64,13 +64,12 @@ namespace TetrisCore.Source
 
             field.OnBlockChanged += (object sender,Point point)=>
             {
-                logger.Debug($"Block was changed:{point}");
+                //logger.Debug($"Block was changed:{point}");
             };
             field.OnBlockPlaced += (object sender, BlockObject obj,Point point) => 
             {
-                logger.Debug("Block was placed");
+                //logger.Debug("Block was placed");
                 Draw();
-                controller.OnFieldUpdate(field,obj,_objectQueue);
                 field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
                 timer.Stop();
                 timer.Start();
@@ -80,8 +79,9 @@ namespace TetrisCore.Source
             {
                 _state.RemovedLines += lines.Length;
             };
-            field.OnRoundEnd += (object sender) =>
+            field.OnRoundEnd += (object sender,RoundResult result) =>
              {
+                 logger.Info($"Round {_state.Round} End");
                  _state.Round++;
              };
         }

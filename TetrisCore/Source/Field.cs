@@ -9,7 +9,7 @@ using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
 {
-    public class Field
+    public class Field : ICloneable
     {
         private int _row;
         public int Row => _row;
@@ -34,10 +34,12 @@ namespace TetrisCore.Source
         public event OnLineRemoveEvent OnLineRemove;
         public delegate void OnLinesRemovedEvent(object sender, int[] lines,int erodedObjectCells);
         public event OnLinesRemovedEvent OnLinesRemoved;
-        public delegate void OnRoundEndEvent(object sender);
+        public delegate void OnRoundEndEvent(object sender,RoundResult result);
         public event OnRoundEndEvent OnRoundEnd;
         public delegate void OnRoundStartEvent(object sender);
         public event OnRoundStartEvent OnRoundStart;
+
+        private Field fieldStart;
 
         public Field(int row, int column)
         {
@@ -58,7 +60,12 @@ namespace TetrisCore.Source
                     eroded += obj.GetBlocks(point).Where(x => x.Point.Y == i).Count();
                 }
                 OnLinesRemoved?.Invoke(this,lines.ToArray(),eroded);
+                OnRoundEnd?.Invoke(this,new RoundResult(fieldStart,this,obj,lines.ToArray(),eroded));
             };
+            OnRoundStart += (object sender) =>
+              {
+                  fieldStart = (Field)Clone();
+              };
         }
         //フィールド操作系関数
         public void SetObject(BlockObject o)
@@ -277,6 +284,11 @@ namespace TetrisCore.Source
         public int[,] ToArrays()
         {
             return _cells.Rows().Select(x => x.Select(y => y.HasBlock() ? 1 : 0).ToArray()).ToArray().ToDimensionalArray();
+        }
+
+        public object Clone()
+        {
+            return new Field(_row, _column) { _cells = (Cell[,])this._cells.Clone(),_object=(BlockObject)this.Object.Clone(),_objectPoint = this._objectPoint};
         }
     }
 }
