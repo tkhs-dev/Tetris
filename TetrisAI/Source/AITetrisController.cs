@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using TetrisAI.Source.util;
@@ -32,7 +33,11 @@ namespace TetrisAI.Source
 
         public void OnRoundEnd(RoundResult result)
         {
-            EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(),result.FieldAtEnd.GetHoles().Count,result.FieldAtEnd.GetWells().Select(x=>x.ToArray()).ToArray().Length,erodedObjectCells,0,0,0);
+            Field field = result.FieldAtEnd;
+            List<Point> holes = field.GetHoles();
+            Console.WriteLine(Game.ROW);
+            Enumerable.Range(0, Game.ROW - 1);
+            EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(),holes.Count,result.FieldAtEnd.GetWells().Select(x=>x.ToArray()).ToArray().Length,erodedObjectCells,0,0,0);
         }
 
         public void OnTimerTick()
