@@ -71,7 +71,9 @@ namespace TetrisCore.Source
         public void SetObject(BlockObject o)
         {
             _object = o;
-            _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
+            //_objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
+            _object = BlockObject.Kind.I.GetObject();
+            _objectPoint = new Point(-1,0);
             OnRoundStart?.Invoke(this);
         }
         internal bool Move(Directions direction)

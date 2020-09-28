@@ -25,13 +25,15 @@ namespace TetrisAI.Source
         public void InitController(Field field)
         {
             this.field = field;
-            field.OnRoundEnd += (object sender, RoundResult result) =>
-            {
-
-            };
+            field.OnRoundEnd += OnRoundEnd;
+            field.OnRoundStart += OnRoundStart;
+        }
+        public void OnRoundStart(object sender)
+        {
+            Field field = (Field)sender;
         }
 
-        public void OnRoundEnd(RoundResult result)
+        public void OnRoundEnd(object sender,RoundResult result)
         {
             Field field = result.FieldAtEnd;
             List<Point> holes = field.GetHoles();
