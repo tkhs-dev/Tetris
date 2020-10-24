@@ -37,9 +37,6 @@ namespace TetrisPlayer
 
             System.Windows.Media.CompositionTarget.Rendering += RenderingEvent;
         }
-        public void ITetrisGame(ILog logger)
-        {
-        }
 
         //--------------------------------------------------------------//
         //                         DirectX設定                          //

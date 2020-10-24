@@ -119,7 +119,7 @@ namespace TetrisCore.Source
         }
         private void Draw()
         {
-            renderer.Render(field);
+            renderer?.Render(field);
         }
 
         public void Dispose()

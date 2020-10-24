@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,9 @@ namespace TetrisAI.Source
 
         int erodedObjectCells;
 
-        public void ITetrisGame(ILog logger)
+        public AITetrisController()
         {
-            this.logger = logger;
+            logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         }
         public void initialize(TetrisGame game)
         {
