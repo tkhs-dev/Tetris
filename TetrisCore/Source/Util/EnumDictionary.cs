@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TetrisCore.Source.Util
 {
@@ -53,7 +52,7 @@ namespace TetrisCore.Source.Util
             get { return array[i]; }
         }
 
-        class MyEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        private class MyEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private ENumDictionary<TKey, TValue> dictionary;
             private int getIndex;
@@ -87,7 +86,10 @@ namespace TetrisCore.Source.Util
                 return true;
             }
 
-            public void Reset() { getIndex = 0; }
+            public void Reset()
+            {
+                getIndex = 0;
+            }
         }
 
         public void Add(TKey key, TValue v0)

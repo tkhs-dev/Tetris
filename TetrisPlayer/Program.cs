@@ -1,19 +1,16 @@
 ﻿using log4net;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TetrisPlayer
 {
-    static class TetrisPlayer
+    internal static class TetrisPlayer
     {
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             GetLogger().Info("Start up TetrisPlayer...");
             Application.EnableVisualStyles();

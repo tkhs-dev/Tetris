@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TetrisAI.Source.util
+﻿namespace TetrisAI.Source.util
 {
     public class EvaluationItem
     {
-        public EvaluationItem(int objectHeight,int numHole,int holeDepth,int erodedPieceCells,int numRowWithHole,int numRowTransition,int numColTransition)
+        public EvaluationItem(int objectHeight, int numHole, int holeDepth, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
         {
             ObjectHeight = objectHeight;
             NumHole = numHole;
@@ -16,6 +12,7 @@ namespace TetrisAI.Source.util
             NumRowTransition = numRowTransition;
             NumColTransition = numColTransition;
         }
+
         /// <summary>
         /// 設置したオブジェクトの高さ
         /// </summary>
@@ -50,6 +47,5 @@ namespace TetrisAI.Source.util
         /// 縦方向のブロックの変化の合計
         /// </summary>
         public readonly int NumColTransition;
-
     }
 }

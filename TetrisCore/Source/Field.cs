@@ -1,10 +1,7 @@
-﻿using log4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockObject;
@@ -29,16 +26,27 @@ namespace TetrisCore.Source
         public Point ObjectPoint => _objectPoint;
 
         public delegate void OnBlockChangedEvent(object sender, Point point);
+
         public event OnBlockChangedEvent OnBlockChanged;
+
         public delegate void OnBlockPlacedEvent(object sender, BlockObject obj, Point point);
+
         public event OnBlockPlacedEvent OnBlockPlaced;
+
         public delegate void OnLineRemoveEvent(object sender, int line);
+
         public event OnLineRemoveEvent OnLineRemove;
-        public delegate void OnLinesRemovedEvent(object sender, int[] lines,int erodedObjectCells);
+
+        public delegate void OnLinesRemovedEvent(object sender, int[] lines, int erodedObjectCells);
+
         public event OnLinesRemovedEvent OnLinesRemoved;
-        public delegate void OnRoundEndEvent(object sender,RoundResult result);
+
+        public delegate void OnRoundEndEvent(object sender, RoundResult result);
+
         public event OnRoundEndEvent OnRoundEnd;
+
         public delegate void OnRoundStartEvent(object sender);
+
         public event OnRoundStartEvent OnRoundStart;
 
         private Field fieldStart;
@@ -54,28 +62,32 @@ namespace TetrisCore.Source
                 for (int d2 = 0; d2 < column; d2++) _cells[d1, d2] = new Cell();
             }
 
-            OnBlockPlaced += (object sender,BlockObject obj,Point point)=>{
+            OnBlockPlaced += (object sender, BlockObject obj, Point point) =>
+            {
                 List<int> lines = FindFilledLines();
-                int eroded=0;
-                foreach (int i in lines) {
+                int eroded = 0;
+                foreach (int i in lines)
+                {
                     RemoveLine(i);
                     eroded += obj.GetBlocks(point).Where(x => x.Point.Y == i).Count();
                 }
-                OnLinesRemoved?.Invoke(this,lines.ToArray(),eroded);
-                OnRoundEnd?.Invoke(this,new RoundResult(fieldStart,this,obj,lines.ToArray(),eroded));
+                OnLinesRemoved?.Invoke(this, lines.ToArray(), eroded);
+                OnRoundEnd?.Invoke(this, new RoundResult(fieldStart, this, obj, lines.ToArray(), eroded));
             };
             OnRoundStart += (object sender) =>
               {
                   fieldStart = (Field)Clone();
               };
         }
+
         //フィールド操作系関数
         public void SetObject(BlockObject o)
         {
             _object = o;
-            _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth()/2), 0);
+            _objectPoint = new Point(((int)(_row / 2)) - (int)(_object.GetWidth() / 2), 0);
             OnRoundStart?.Invoke(this);
         }
+
         internal bool Move(Directions direction)
         {
             Point point = _objectPoint;
@@ -84,9 +96,11 @@ namespace TetrisCore.Source
                 case Directions.NORTH:
                     point.Offset(0, -1);
                     break;
+
                 case Directions.EAST:
                     point.Offset(1, 0);
                     break;
+
                 case Directions.SOUTH:
                     point.Offset(0, 1);
                     //ブロックがあった時
@@ -96,12 +110,14 @@ namespace TetrisCore.Source
                         return true;
                     }
                     break;
+
                 case Directions.WEST:
                     point.Offset(-1, 0);
                     break;
             }
             return MoveTo(point);
         }
+
         internal bool MoveTo(Point point)
         {
             if (CanMoveTo(point))
@@ -111,10 +127,12 @@ namespace TetrisCore.Source
             }
             return false;
         }
+
         internal void PlaceImmediately()
         {
             PlaceAt(GetImmediatePlacementPoint());
         }
+
         internal bool Rotate(int rotation)
         {
             if (CanRotate(rotation))
@@ -124,6 +142,7 @@ namespace TetrisCore.Source
             }
             return false;
         }
+
         private bool PlaceAt(Point point)
         {
             if (_object == null) return false;
@@ -132,10 +151,11 @@ namespace TetrisCore.Source
                 GetCell(block.Point)?.SetBlock(block);
                 OnBlockChanged?.Invoke(this, block.Point);
             }
-            OnBlockPlaced?.Invoke(this, _object,point);
+            OnBlockPlaced?.Invoke(this, _object, point);
 
             return true;
         }
+
         public void RemoveLine(int line)
         {
             foreach (Cell c in _cells.Cols(line)) c.RemoveBlock();
@@ -163,10 +183,12 @@ namespace TetrisCore.Source
             dist.Rotate(rotation);
             return (_objectPoint.X >= 0 && _objectPoint.Y >= 0 && _objectPoint.X + _object.GetWidth(_object.Direction.Rotate(rotation)) <= _row && _objectPoint.Y + _object.GetHeight(_object.Direction.Rotate(rotation)) <= _column) && CanMoveTo(dist, _objectPoint);
         }
+
         public bool CanMoveTo(Point point)
         {
             return CanMoveTo(_object, point);
         }
+
         public bool CanMoveTo(BlockObject obj, Point point)
         {
             if (obj == null) return false;
@@ -185,6 +207,7 @@ namespace TetrisCore.Source
             if (point.X >= _cells.GetLength(0) || point.Y >= _cells.GetLength(1)) return null;
             return _cells[point.X, point.Y];
         }
+
         public Point GetImmediatePlacementPoint()
         {
             Point point = _objectPoint;
@@ -192,10 +215,12 @@ namespace TetrisCore.Source
             point.Offset(0, -1);
             return point;
         }
+
         public List<int> FindFilledLines()
         {
             return _cells.Cols().Select((cells, index) => new { Cells = cells, Index = index }).Where(x => x.Cells.All(c => c.HasBlock())).Select(x => x.Index).ToList();
         }
+
         public List<Point> GetHoles()
         {
             int[,] data = ToArrays();
@@ -227,24 +252,25 @@ namespace TetrisCore.Source
             }
             return result;
         }
+
         public List<List<Point>> GetWells()
         {
             int[,] data = ToArrays();
             List<int[]> cols = data.Rows().Select(x => x.ToArray()).ToList();
             List<List<Point>> result = new List<List<Point>>();
-            for(int index=0;index<cols.Count;index++)
+            for (int index = 0; index < cols.Count; index++)
             {
                 int[] col = cols.ToArray()[index];
                 List<Point> well = new List<Point>();
                 int y = GetSurfacePoint(col);
-                for(int i = y; i >= 0; i--)
+                for (int i = y; i >= 0; i--)
                 {
                     int d = col[i];
                     if (d == 0)
                     {
                         int left = index - 1;
                         int right = index + 1;
-                        if ((left < 0 && data[right, i] != 0)|| (right >= cols.Count && data[left, i] != 0) || (!(left < 0) && !(right >= cols.Count) && data[left, i] != 0 && data[right, i] != 0))
+                        if ((left < 0 && data[right, i] != 0) || (right >= cols.Count && data[left, i] != 0) || (!(left < 0) && !(right >= cols.Count) && data[left, i] != 0 && data[right, i] != 0))
                         {
                             well.Add(new Point(index, i));
                         }
@@ -254,16 +280,18 @@ namespace TetrisCore.Source
             }
             return result;
         }
-        public ENumDictionary<Directions,List<Point>> GetPlaceablePositions(BlockObject block)
+
+        public ENumDictionary<Directions, List<Point>> GetPlaceablePositions(BlockObject block)
         {
-            ENumDictionary<Directions,List<Point>> result = new ENumDictionary<Directions,List<Point>>();
-            foreach(Directions direction in Enum.GetValues(typeof(Directions)))
+            ENumDictionary<Directions, List<Point>> result = new ENumDictionary<Directions, List<Point>>();
+            foreach (Directions direction in Enum.GetValues(typeof(Directions)))
             {
-                result.Add(direction,GetPlaceablePosition(block,direction));
+                result.Add(direction, GetPlaceablePosition(block, direction));
             }
             return result;
         }
-        private List<Point> GetPlaceablePosition(BlockObject block,Directions direction)
+
+        private List<Point> GetPlaceablePosition(BlockObject block, Directions direction)
         {
             List<Point> result = new List<Point>();
             int width = block.GetWidth(direction);
@@ -271,28 +299,29 @@ namespace TetrisCore.Source
             int x_gap = block.GetXGap(direction);
             int y_gap = block.GetYGap(direction);
 
-            for(int i = -x_gap; i <= Row-width-x_gap; i++)
+            for (int i = -x_gap; i <= Row - width - x_gap; i++)
             {
                 //オブジェクトの下のブロックの高さの合計
                 int sum_height = 0;
-                for(int i2 = 0; i2 < width; i2++)
+                for (int i2 = 0; i2 < width; i2++)
                 {
-                    int[] col = ToArrays().Rows(i+x_gap + i2).ToArray();
-                    int h = Column - (GetSurfacePoint(col)+1);
+                    int[] col = ToArrays().Rows(i + x_gap + i2).ToArray();
+                    int h = Column - (GetSurfacePoint(col) + 1);
                     sum_height += h;
                 }
-                int start_y = Column>sum_height+height?Column-sum_height-height-1:0;
-                for (int y=start_y; start_y < Column; start_y++)
+                int start_y = Column > sum_height + height ? Column - sum_height - height - 1 : 0;
+                for (int y = start_y; start_y < Column; start_y++)
                 {
                     Point start_point = new Point(i, start_y);
                     BlockObject clone = (BlockObject)block.Clone();
                     clone.SetDirection(direction);
-                    if (!CanMoveTo(clone, start_point)) break ;
+                    if (!CanMoveTo(clone, start_point)) break;
                 }
-                result.Add(new Point(i,start_y-1));
+                result.Add(new Point(i, start_y - 1));
             }
             return result;
         }
+
         /// <summary>
         /// 表面のemptyブロックのY座標を返す
         /// </summary>
@@ -300,12 +329,13 @@ namespace TetrisCore.Source
         /// <returns>y座標</returns>
         private static int GetSurfacePoint(int[] col_data)
         {
-            for(int i = 0; i < col_data.Length; i++)
+            for (int i = 0; i < col_data.Length; i++)
             {
                 if (col_data[i] == 1) return i;
             }
-            return col_data.Length-1;
+            return col_data.Length - 1;
         }
+
         private static List<Point> GetAdjacentEmptyCell(int[,] data, Point p)
         {
             List<Point> result = new List<Point>();
@@ -329,7 +359,7 @@ namespace TetrisCore.Source
 
         public object Clone()
         {
-            return new Field(_row, _column) { _cells = (Cell[,])this._cells.Clone(),_object=(BlockObject)this.Object.Clone(),_objectPoint = this._objectPoint};
+            return new Field(_row, _column) { _cells = (Cell[,])this._cells.Clone(), _object = (BlockObject)this.Object.Clone(), _objectPoint = this._objectPoint };
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TetrisCore.Source.Extension
 {
@@ -20,6 +19,7 @@ namespace TetrisCore.Source.Extension
 
             return ToDimensionalArray(arr, col);
         }
+
         public static T[,] ToDimensionalArray<T>(T[][] arr, int col)
         {
             int row = arr.Length;
@@ -36,6 +36,7 @@ namespace TetrisCore.Source.Extension
 
             return dim;
         }
+
         public static T[][] ToJaggedArray<T>(this T[,] arr)
         {
             int row = arr.GetLength(0);
@@ -112,6 +113,7 @@ namespace TetrisCore.Source.Extension
 
             return self;
         }
+
         /// <summary>
         /// 2次元配列向け列クラス
         /// </summary>
@@ -122,6 +124,7 @@ namespace TetrisCore.Source.Extension
             /// 2次元配列
             /// </summary>
             private T[,] _array;
+
             /// <summary>
             /// 列インデックス
             /// </summary>
@@ -184,6 +187,7 @@ namespace TetrisCore.Source.Extension
             /// 2次元配列
             /// </summary>
             private T[,] _array;
+
             /// <summary>
             /// 行インデックス
             /// </summary>
@@ -324,9 +328,9 @@ namespace TetrisCore.Source.Extension
                 return colDirection();
         }
     }
+
     /// <summary>
     /// 2次元方向
     /// </summary>
     public enum SquareDirection { Row = 0, Column = 1 }
-
 }

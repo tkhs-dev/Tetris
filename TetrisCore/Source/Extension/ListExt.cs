@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TetrisCore.Source.Extension
 {
@@ -31,13 +30,14 @@ namespace TetrisCore.Source.Extension
         {
             return self[0];
         }
+
         ///<summary>
         ///リストからランダムに一つ取り出す
         /// </summary>
-        public static T GetRandom<T>( this IList<T> list )
-	    {
+        public static T GetRandom<T>(this IList<T> list)
+        {
             Random random = new Random();
-		    return list[random.Next(0, list.Count)];
-	    }
-}
+            return list[random.Next(0, list.Count)];
+        }
+    }
 }

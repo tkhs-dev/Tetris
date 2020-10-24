@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 
 using TetrisCore.Source.Extension;
 
@@ -17,6 +16,7 @@ namespace TetrisCore.Source
         private int[,] _data;
 
         private Color _color;
+
         /// <summary>
         /// 色
         /// </summary>
@@ -25,8 +25,8 @@ namespace TetrisCore.Source
             get { return _color; }
         }
 
-
         private Directions _direction;
+
         /// <summary>
         /// 向き
         /// </summary>
@@ -43,35 +43,40 @@ namespace TetrisCore.Source
         public BlockObject(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
         { }
-        private BlockObject(Color color,int[,] data, ReadOnlyDictionary<Directions, int[,]> transformed)
+
+        private BlockObject(Color color, int[,] data, ReadOnlyDictionary<Directions, int[,]> transformed)
         {
             this._color = color;
             this._data = data;
 
             TransformedData = transformed;
         }
+
         public int GetWidth()
         {
             return GetWidth(_direction);
         }
+
         public int GetWidth(Directions direction)
         {
             int result = 0;
-            for(int d1 = 0;d1< TransformedData[direction].GetLength(0); d1++)
+            for (int d1 = 0; d1 < TransformedData[direction].GetLength(0); d1++)
             {
                 int count = 0;
-                for(int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
+                for (int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
                 {
-                    count += TransformedData[direction][d1,d2];
+                    count += TransformedData[direction][d1, d2];
                 }
-                if (count!=0) result++;
+                if (count != 0) result++;
             }
             return result;
         }
+
         public int GetHeight()
         {
             return GetHeight(_direction);
         }
+
         public int GetHeight(Directions direction)
         {
             int result = 0;
@@ -80,16 +85,18 @@ namespace TetrisCore.Source
                 int count = 0;
                 for (int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
                 {
-                    count += TransformedData[direction][d2,d1];
+                    count += TransformedData[direction][d2, d1];
                 }
                 if (count != 0) result++;
             }
             return result;
         }
+
         public int GetXGap()
         {
             return GetXGap(_direction);
         }
+
         public int GetXGap(Directions direction)
         {
             int result = 0;
@@ -105,10 +112,12 @@ namespace TetrisCore.Source
             }
             return result;
         }
+
         public int GetYGap()
         {
             return GetYGap(_direction);
         }
+
         public int GetYGap(Directions direction)
         {
             int result = 0;
@@ -129,7 +138,8 @@ namespace TetrisCore.Source
         {
             return GetBlocks(offset, _direction);
         }
-        public IReadOnlyList<Block> GetBlocks(Point offset,Directions direction)
+
+        public IReadOnlyList<Block> GetBlocks(Point offset, Directions direction)
         {
             return Enumerable.Range(0, TransformedData[direction].GetLength(0))
                     .SelectMany(r => Enumerable.Range(0, _data.GetLength(1)).Select(c => new Point(r, c)))
@@ -138,6 +148,7 @@ namespace TetrisCore.Source
                     .Select(x => new Block(_color, x))
                     .ToArray();
         }
+
         public void SetDirection(Directions direction)
         {
             this._direction = direction;
@@ -157,14 +168,15 @@ namespace TetrisCore.Source
         //実装
         public object Clone()
         {
-            return new BlockObject(_color,_data,TransformedData);
+            return new BlockObject(_color, _data, TransformedData);
         }
 
         //列挙子
         public enum Kind
         {
-            I,O,T,J,L,S,Z
+            I, O, T, J, L, S, Z
         }
+
         public enum Directions
         {
             NORTH,

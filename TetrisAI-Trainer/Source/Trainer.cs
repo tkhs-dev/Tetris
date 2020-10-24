@@ -1,7 +1,4 @@
 ﻿using log4net;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TetrisAI.Source;
 using TetrisCore.Source;
 
@@ -13,6 +10,7 @@ namespace TetrisAI_Trainer.Source
 
         private TetrisGame game;
         private AITetrisController controller;
+
         public Trainer()
         {
             logger = TetrisAITrainer.Logger;
@@ -21,6 +19,7 @@ namespace TetrisAI_Trainer.Source
 
             game.SetController(controller);
         }
+
         public void Start()
         {
             game.Start();

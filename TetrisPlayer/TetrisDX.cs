@@ -1,30 +1,18 @@
-﻿using System;
+﻿using SharpDX.DirectInput;
+using SharpDX.DXGI;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SharpDX.DXGI;
-using SharpDX.Direct3D11;
-using SharpDX.Direct2D1;
-using System.Threading;
-using SharpDX.Direct3D;
-using SharpDX;
-using TetrisCore.Source.Api;
 using TetrisCore.Source;
-using log4net;
-using SharpDX.Mathematics.Interop;
-using SharpDX.DirectInput;
-using System.Runtime.InteropServices;
+using TetrisCore.Source.Api;
 using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisPlayer
 {
-    public partial class TetrisDX : TetrisDXBase,IDisposable,IController
+    public partial class TetrisDX : TetrisDXBase, IDisposable, IController
     {
         public TetrisDX()
         {
@@ -34,16 +22,22 @@ namespace TetrisPlayer
 
             //初期化
         }
-        public void InitRender(Field field) { }
+
+        public void InitRender(Field field)
+        {
+        }
+
         public void InitController(Field field)
         {
             //タイマーON
             game.TimerEnabled = true;
         }
+
         public void OnTimerTick()
         {
             game.Move(BlockObject.Directions.SOUTH);
         }
+
         public override void MainLoop()
         {
             InputCheck();
@@ -59,43 +53,50 @@ namespace TetrisPlayer
                 RenderBlocks(10, 10);
                 if (field.Object != null) RenderObject(field.Object, field.ObjectPoint, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
-                RenderObjectAxis(10,10);
-                RenderPlaceablePosition(10,10);
-                RenderHoles(10,10);
-                RenderWells(10,10);
+                RenderObjectAxis(10, 10);
+                RenderPlaceablePosition(10, 10);
+                RenderHoles(10, 10);
+                RenderWells(10, 10);
             }
 
             RenderTarget2D?.EndDraw();
             _SwapChain?.Present(0, PresentFlags.None);
         }
-        private void RenderHoles(int x,int y)
+
+        private void RenderHoles(int x, int y)
         {
-            foreach(System.Drawing.Point p in field.GetHoles()){
-                RenderDiagonalWires(SharpDX.Color.Red,p,x,y);
+            foreach (System.Drawing.Point p in field.GetHoles())
+            {
+                RenderDiagonalWires(SharpDX.Color.Red, p, x, y);
             }
         }
-        private void RenderWells(int x,int y)
+
+        private void RenderWells(int x, int y)
         {
             foreach (List<System.Drawing.Point> pl in field.GetWells())
             {
-                foreach (System.Drawing.Point p in pl) RenderDiagonalWires(SharpDX.Color.Green,p,x,y);
+                foreach (System.Drawing.Point p in pl) RenderDiagonalWires(SharpDX.Color.Green, p, x, y);
             }
         }
-        private void RenderObjectAxis(int x,int y)
+
+        private void RenderObjectAxis(int x, int y)
         {
             RenderDiagonalWires(SharpDX.Color.Cyan, field.ObjectPoint, x, y);
         }
-        private void RenderPlaceablePosition(int x,int y)
+
+        private void RenderPlaceablePosition(int x, int y)
         {
             ENumDictionary<Directions, List<System.Drawing.Point>> point = field.GetPlaceablePositions(field.Object);
             foreach (var p in point[field.Object.Direction])
             {
-                RenderDiagonalWires(SharpDX.Color.Orange,p,x,y);
+                RenderDiagonalWires(SharpDX.Color.Orange, p, x, y);
             }
         }
+
         public override void Render()
         {
         }
+
         private void InputCheck()
         {
             if (!this.Focused || _keyboard == null) return;
@@ -117,15 +118,19 @@ namespace TetrisPlayer
                     case Key.Left:
                         game.Move(BlockObject.Directions.WEST);
                         break;
+
                     case Key.Right:
                         game.Move(BlockObject.Directions.EAST);
                         break;
+
                     case Key.Up:
                         game.Rotate(true);
                         break;
+
                     case Key.Down:
                         game.Rotate(false);
                         break;
+
                     case Key.Return:
                     case Key.NumberPadEnter:
                         game.Place();
