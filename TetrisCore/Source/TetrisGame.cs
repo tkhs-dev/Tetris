@@ -26,18 +26,16 @@ namespace TetrisCore.Source
 
         public Queue<BlockObject> ObjectQueue => _objectQueue;
 
-        private Timer timer;
         public bool TimerEnabled { get; set; }
-
-        public readonly int ROW;
-        public readonly int COLUMN;
+        private Timer timer;
 
         private IRenderer renderer;
         private IController controller;
 
+        //Setting
+        public readonly GameSetting Setting;
         //State
-        public GameState _state;
-
+        private GameState _state;
         public GameState State => _state;
 
         static TetrisGame()
@@ -57,8 +55,7 @@ namespace TetrisCore.Source
             timer.Interval = 300;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
-            ROW = row;
-            COLUMN = column;
+            Setting = new GameSetting(row,column);
 
             field = new Field(row, column);
 
@@ -141,6 +138,16 @@ namespace TetrisCore.Source
             public int Score { get; set; }
             public int Round { get; set; }
             public int RemovedLines { get; set; }
+        }
+        public class GameSetting
+        {
+            public readonly int ROW;
+            public readonly int COLUMN;
+            public GameSetting(int row,int column)
+            {
+                ROW = row;
+                COLUMN = column;
+            }
         }
     }
 }
