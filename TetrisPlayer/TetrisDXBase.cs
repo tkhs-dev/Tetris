@@ -1,4 +1,5 @@
-﻿using SharpDX.Direct2D1;
+﻿using log4net;
+using SharpDX.Direct2D1;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DirectInput;
@@ -35,6 +36,9 @@ namespace TetrisPlayer
                 ControlStyles.Opaque, true);            // 背景は描画しない
 
             System.Windows.Media.CompositionTarget.Rendering += RenderingEvent;
+        }
+        public void ITetrisGame(ILog logger)
+        {
         }
 
         //--------------------------------------------------------------//

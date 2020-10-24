@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,11 +13,16 @@ namespace TetrisAI.Source
 {
     public class AITetrisController : IController
     {
+        private ILog logger;
         TetrisGame Game;
         Field field;
 
         int erodedObjectCells;
 
+        public void ITetrisGame(ILog logger)
+        {
+            this.logger = logger;
+        }
         public void initialize(TetrisGame game)
         {
             Game = game;
@@ -31,6 +37,7 @@ namespace TetrisAI.Source
         public void OnRoundStart(object sender)
         {
             Field field = (Field)sender;
+            this.logger.Debug("Round Start");
         }
 
         public void OnRoundEnd(object sender,RoundResult result)
@@ -44,6 +51,11 @@ namespace TetrisAI.Source
 
         public void OnTimerTick()
         {
+        }
+
+        public void OnFieldUpdate(Field field, BlockObject lastObject, Queue<BlockObject> queue)
+        {
+            
         }
     }
 }

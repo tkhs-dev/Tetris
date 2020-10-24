@@ -117,5 +117,9 @@ namespace TetrisPlayer
                 }
             }
         }
+
+        public void OnFieldUpdate(Field field, BlockObject lastObject, Queue<BlockObject> queue)
+        {
+        }
     }
 }

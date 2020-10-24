@@ -7,6 +7,7 @@ namespace TetrisCore.Source.Api
 {
     public interface ITetrisGame
     {
+        void ITetrisGame(ILog logger);
         void initialize(TetrisGame game);
     }
 }
