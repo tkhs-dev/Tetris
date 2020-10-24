@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using TetrisCore.Source.Extension;
+using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisCore.Source
@@ -249,6 +251,45 @@ namespace TetrisCore.Source
                     }
                 }
                 result.Add(well);
+            }
+            return result;
+        }
+        public ENumDictionary<Directions,List<Point>> GetPlaceablePositions(BlockObject block)
+        {
+            ENumDictionary<Directions,List<Point>> result = new ENumDictionary<Directions,List<Point>>();
+            foreach(Directions direction in Enum.GetValues(typeof(Directions)))
+            {
+                result.Add(direction,GetPlaceablePosition(block,direction));
+            }
+            return result;
+        }
+        private List<Point> GetPlaceablePosition(BlockObject block,Directions direction)
+        {
+            List<Point> result = new List<Point>();
+            int width = block.GetWidth(direction);
+            int height = block.GetHeight(direction);
+            int x_gap = block.GetXGap(direction);
+            int y_gap = block.GetYGap(direction);
+
+            for(int i = -x_gap; i <= Row-width-x_gap; i++)
+            {
+                //オブジェクトの下のブロックの高さの合計
+                int sum_height = 0;
+                for(int i2 = 0; i2 < width; i2++)
+                {
+                    int[] col = ToArrays().Rows(i+x_gap + i2).ToArray();
+                    int h = Column - (GetSurfacePoint(col)+1);
+                    sum_height += h;
+                }
+                int start_y = Column>sum_height+height?Column-sum_height-height-1:0;
+                for (int y=start_y; start_y < Column; start_y++)
+                {
+                    Point start_point = new Point(i, start_y);
+                    BlockObject clone = (BlockObject)block.Clone();
+                    clone.SetDirection(direction);
+                    if (!CanMoveTo(clone, start_point)) break ;
+                }
+                result.Add(new Point(i,start_y-1));
             }
             return result;
         }

@@ -86,6 +86,44 @@ namespace TetrisCore.Source
             }
             return result;
         }
+        public int GetXGap()
+        {
+            return GetXGap(_direction);
+        }
+        public int GetXGap(Directions direction)
+        {
+            int result = 0;
+            for (int d1 = 0; d1 < TransformedData[direction].GetLength(0); d1++)
+            {
+                int count = 0;
+                for (int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
+                {
+                    count += TransformedData[direction][d1, d2];
+                }
+                if (count == 0) result++;
+                else break;
+            }
+            return result;
+        }
+        public int GetYGap()
+        {
+            return GetYGap(_direction);
+        }
+        public int GetYGap(Directions direction)
+        {
+            int result = 0;
+            for (int d1 = 0; d1 < TransformedData[direction].GetLength(0); d1++)
+            {
+                int count = 0;
+                for (int d2 = 0; d2 < TransformedData[direction].GetLength(1); d2++)
+                {
+                    count += TransformedData[direction][d2, d1];
+                }
+                if (count == 0) result++;
+                else break;
+            }
+            return result;
+        }
 
         public IReadOnlyList<Block> GetBlocks(Point offset)
         {
@@ -99,6 +137,10 @@ namespace TetrisCore.Source
                     .Select(x => new Point(x.X + offset.X, x.Y + offset.Y))
                     .Select(x => new Block(_color, x))
                     .ToArray();
+        }
+        public void SetDirection(Directions direction)
+        {
+            this._direction = direction;
         }
 
         //操作系メソッド

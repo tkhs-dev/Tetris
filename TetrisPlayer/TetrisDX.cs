@@ -19,6 +19,8 @@ using log4net;
 using SharpDX.Mathematics.Interop;
 using SharpDX.DirectInput;
 using System.Runtime.InteropServices;
+using TetrisCore.Source.Util;
+using static TetrisCore.Source.BlockObject;
 
 namespace TetrisPlayer
 {
@@ -57,6 +59,8 @@ namespace TetrisPlayer
                 RenderBlocks(10, 10);
                 if (field.Object != null) RenderObject(field.Object, field.ObjectPoint, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
+                RenderObjectAxis(10,10);
+                RenderPlaceablePosition(10,10);
                 RenderHoles(10,10);
                 RenderWells(10,10);
             }
@@ -75,6 +79,18 @@ namespace TetrisPlayer
             foreach (List<System.Drawing.Point> pl in field.GetWells())
             {
                 foreach (System.Drawing.Point p in pl) RenderDiagonalWires(SharpDX.Color.Green,p,x,y);
+            }
+        }
+        private void RenderObjectAxis(int x,int y)
+        {
+            RenderDiagonalWires(SharpDX.Color.Cyan, field.ObjectPoint, x, y);
+        }
+        private void RenderPlaceablePosition(int x,int y)
+        {
+            ENumDictionary<Directions, List<System.Drawing.Point>> point = field.GetPlaceablePositions(field.Object);
+            foreach (var p in point[field.Object.Direction])
+            {
+                RenderDiagonalWires(SharpDX.Color.Orange,p,x,y);
             }
         }
         public override void Render()
@@ -116,10 +132,6 @@ namespace TetrisPlayer
                         break;
                 }
             }
-        }
-
-        public void OnFieldUpdate(Field field, BlockObject lastObject, Queue<BlockObject> queue)
-        {
         }
     }
 }
