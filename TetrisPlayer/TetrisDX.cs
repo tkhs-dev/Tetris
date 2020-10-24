@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using TetrisAI.Source.util;
+using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Util;
@@ -23,14 +25,15 @@ namespace TetrisPlayer
             //初期化
         }
 
-        public void InitRender(Field field)
-        {
-        }
-
         public void InitController(Field field)
         {
             //タイマーON
             game.TimerEnabled = true;
+
+            field.OnRoundEnd += (object sender, RoundResult result) =>
+            {
+                TetrisPlayer.GetLogger().Debug(EvaluationItem.GetEvaluation(result));
+            };
         }
 
         public void OnTimerTick()

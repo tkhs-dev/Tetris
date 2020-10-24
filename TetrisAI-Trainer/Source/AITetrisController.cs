@@ -6,6 +6,7 @@ using TetrisAI.Source.util;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
+using TetrisCore.Source.Extension;
 
 namespace TetrisAI.Source
 {
@@ -43,11 +44,7 @@ namespace TetrisAI.Source
 
         public void OnRoundEnd(object sender, RoundResult result)
         {
-            Field field = result.FieldAtEnd;
-            List<Point> holes = field.GetHoles();
-            logger.Debug("Round End");
-            Enumerable.Range(0, Game.ROW - 1);
-            EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count, result.FieldAtEnd.GetWells().Select(x => x.ToArray()).ToArray().Length, erodedObjectCells, 0, 0, 0);
+            
         }
 
         public void OnTimerTick()
