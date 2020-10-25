@@ -1,6 +1,6 @@
-﻿using log4net;
+﻿using Alba.CsConsoleFormat;
+using log4net;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using TetrisCore;
@@ -8,13 +8,10 @@ using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
-using static TetrisCore.Source.BlockObject;
-using System;
-using System.Data;
-using TetrisAI.Source.util;
-using Alba.CsConsoleFormat;
-using Cell = Alba.CsConsoleFormat.Cell;
 using static System.ConsoleColor;
+using static TetrisAI.Source.Evaluation;
+using static TetrisCore.Source.BlockObject;
+using Cell = Alba.CsConsoleFormat.Cell;
 
 namespace TetrisAI.Source
 {
@@ -48,7 +45,7 @@ namespace TetrisAI.Source
         {
             Field field = (Field)sender;
             ENumDictionary<Directions, List<System.Drawing.Point>> points = field.GetPlaceablePositions(field.Object);
-            List<Task<RoundResult>> tasks = points.Select(x => x.Value.Select(y =>ExecuteFieldAsync(field, x.Key, y)))
+            List<Task<RoundResult>> field_tasks = points.Select(x => x.Value.Select(y => ExecuteFieldAsync(field, x.Key, y)))
             .Select(x => x.ToArray())
             .ToArray()
             .ToDimensionalArray()
@@ -56,9 +53,8 @@ namespace TetrisAI.Source
             .ToList();
             this.logger.Debug("Round Start");
 
-            RoundResult[] result = await Task.WhenAll(tasks.Where(x=>x!=null));
+            RoundResult[] round_result = await Task.WhenAll(field_tasks.Where(x => x != null));
             var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
-
             var doc = new Document(
                 new Grid
                 {
@@ -69,7 +65,7 @@ namespace TetrisAI.Source
                         new Cell("Object") { Stroke = headerThickness },
                         new Cell("Point") { Stroke = headerThickness },
                         new Cell("Evaluation") { Stroke = headerThickness },
-                        result.Select(item => new[] {
+                        round_result.Select(item => new[] {
                             new Cell(item.Object.Direction){ Align = Align.Center},
                             new Cell(item.Object.ToString()),
                             new Cell(item.FieldAtEnd.ObjectPoint),
@@ -78,19 +74,24 @@ namespace TetrisAI.Source
                     }
                 }
             );
-            string text = ConsoleRenderer.RenderDocumentToText(doc,new TextRenderTarget());
-            logger.Debug("\n"+text);
+            string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
+            logger.Debug("\n" + text);
+            List<Task<EvaluationResult>> evaluation_tasks = round_result
+                .Select(x => Evaluation.EvaluateAsync(EvaluationItem.GetEvaluation(x))).ToList();
+            EvaluationResult[] evaluation_result = await Task.WhenAll(evaluation_tasks.Where(x => x != null));
+            evaluation_result = evaluation_result.OrderBy(x => x.EvaluationValue).ToArray();
             //foreach(var v in result) logger.Debug(v);
         }
+
         private Task<RoundResult> ExecuteFieldAsync(Field field, Directions direction, System.Drawing.Point point)
         {
             field = (Field)field.Clone();
             var tcs = new TaskCompletionSource<RoundResult>();
-            field.OnRoundEnd += (object sender, RoundResult result) => 
+            field.OnRoundEnd += (object sender, RoundResult result) =>
             {
                 tcs.TrySetResult(result);
             };
-            if (!field.Rotate((int)direction) || !field.CanMoveTo(field.Object,point)) tcs.TrySetCanceled();
+            if (!field.Rotate((int)direction) || !field.CanMoveTo(field.Object, point)) tcs.TrySetCanceled();
             field.PlaceAt(point);
 
             return tcs.Task;
@@ -98,7 +99,6 @@ namespace TetrisAI.Source
 
         public void OnRoundEnd(object sender, RoundResult result)
         {
-
         }
 
         public void OnTimerTick()
