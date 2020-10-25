@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TetrisAI.Source.util;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Util;
+using static TetrisAI.Source.Evaluation;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisPlayer
