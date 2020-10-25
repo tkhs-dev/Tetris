@@ -170,6 +170,16 @@ namespace TetrisCore.Source
         {
             return new BlockObject(_color, _data, TransformedData);
         }
+        public override string ToString()
+        {
+            string result = $"{Color}\n";
+            foreach (var i in _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => x.ToArray()).ToList())
+            {
+                result = result + "\n";
+                foreach (var ii in i) result = result + ii;
+            }
+            return result;
+        }
 
         //列挙子
         public enum Kind

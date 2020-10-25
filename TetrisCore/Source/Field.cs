@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockObject;
@@ -88,7 +90,7 @@ namespace TetrisCore.Source
             OnRoundStart?.Invoke(this);
         }
 
-        internal bool Move(Directions direction)
+        public bool Move(Directions direction)
         {
             Point point = _objectPoint;
             switch (direction)
@@ -118,7 +120,7 @@ namespace TetrisCore.Source
             return MoveTo(point);
         }
 
-        internal bool MoveTo(Point point)
+        public bool MoveTo(Point point)
         {
             if (CanMoveTo(point))
             {
@@ -128,12 +130,12 @@ namespace TetrisCore.Source
             return false;
         }
 
-        internal void PlaceImmediately()
+        public void PlaceImmediately()
         {
             PlaceAt(GetImmediatePlacementPoint());
         }
 
-        internal bool Rotate(int rotation)
+        public bool Rotate(int rotation)
         {
             if (CanRotate(rotation))
             {
@@ -143,7 +145,7 @@ namespace TetrisCore.Source
             return false;
         }
 
-        private bool PlaceAt(Point point)
+        public bool PlaceAt(Point point)
         {
             if (_object == null) return false;
             foreach (Block block in _object.GetBlocks(point))
@@ -359,7 +361,26 @@ namespace TetrisCore.Source
 
         public object Clone()
         {
-            return new Field(_row, _column) { _cells = (Cell[,])this._cells.Clone(), _object = (BlockObject)this.Object.Clone(), _objectPoint = this._objectPoint };
+            Cell[,] cells_new = new Cell[Row,Column];
+            for(int d1 = 0; d1 < Row; d1++)
+            {
+                for(int d2 = 0; d2 < Column; d2++)
+                {
+                    cells_new[d1, d2] = (Cell)_cells[d1, d2].Clone();
+                }
+            }
+            return new Field(_row, _column) { _cells = cells_new, _object = (BlockObject)this.Object.Clone(), _objectPoint = new Point(this._objectPoint.X,this._objectPoint.Y) };
+        }
+        public override string ToString()
+        {
+            string result = "";
+            foreach(var i in ToArrays().Flatten(SquareDirection.Column).ToArray().Chunk(Row).Select(x => x.ToArray()).ToList())
+            {
+                foreach (var ii in i) result = result + ii;
+                result = result + "\n";
+            }
+            
+            return result;
         }
     }
 }

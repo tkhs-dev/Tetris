@@ -1,6 +1,8 @@
-﻿namespace TetrisCore.Source
+﻿using System;
+
+namespace TetrisCore.Source
 {
-    public class Cell
+    public class Cell : ICloneable
     {
         private Block _block;
         public Block Block => _block;
@@ -22,6 +24,11 @@
         public bool HasBlock()
         {
             return _block != null;
+        }
+
+        public object Clone()
+        {
+            return new Cell() { _block = this._block };
         }
     }
 }
