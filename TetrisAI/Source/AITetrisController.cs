@@ -77,9 +77,14 @@ namespace TetrisAI.Source
             string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
             logger.Debug("\n" + text);
             List<Task<EvaluationResult>> evaluation_tasks = round_result
-                .Select(x => Evaluation.EvaluateAsync(EvaluationItem.GetEvaluation(x))).ToList();
-            EvaluationResult[] evaluation_result = await Task.WhenAll(evaluation_tasks.Where(x => x != null));
-            evaluation_result = evaluation_result.OrderBy(x => x.EvaluationValue).ToArray();
+                .Select(x => Evaluation.EvaluateAsync(EvaluationItem.GetEvaluationItem(x))).ToList();
+            Task.WaitAll(evaluation_tasks.ToArray());
+            //EvaluationResult[] evaluation_result = await Task.WaitAll(evaluation_tasks);
+            foreach (var v in evaluation_tasks)
+            {
+                logger.Debug(v.Status);
+            }
+            //evaluation_result = evaluation_result.OrderBy(x => x.EvaluationValue).ToArray();
             //foreach(var v in result) logger.Debug(v);
         }
 

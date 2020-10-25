@@ -1,12 +1,17 @@
-﻿using KelpNet.CL;
+﻿using Alba.CsConsoleFormat.Markup;
+using KelpNet;
+using KelpNet.CL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Extension;
+
+using Real = System.Single;
 
 namespace TetrisAI.Source
 {
@@ -14,18 +19,20 @@ namespace TetrisAI.Source
     {
         public static Task<EvaluationResult> EvaluateAsync(EvaluationItem item)
         {
-            return new Task<EvaluationResult>(() => { return Evaluate(item); });
+            return Task.Run(() => { return Evaluate(item); });
         }
 
         private static EvaluationResult Evaluate(EvaluationItem item)
         {
-            /*
-            new FunctionStack<EvaluationItem>(
-                new Linear<EvaluationItem>(),
-                new 
+            Console.WriteLine("now");
+            FunctionStack<Real> nn = new FunctionStack<Real>(
+                new Linear<Real>(8,8),
+                new Linear<Real>(8,5),
+                new Linear<Real>(5,1)
                 );
-            */
-            return null;
+            NdArray<Real> result =  nn.Predict(item.GetReal())[0];
+            Console.WriteLine("0");
+            return new EvaluationResult();
         }
 
         public class EvaluationItem
@@ -87,11 +94,10 @@ namespace TetrisAI.Source
                 return $"ObjectHeight:{ObjectHeight},Holes:{NumHole},HoleDepth:{HoleDepth},CumulativeWells:{CumulativeWells},ErodedPieceOfCells:{ErodedPieceCells},RowsWithHoles:{NumRowWithHole},RowTransition:{NumRowTransition},ColTransition:{NumColTransition}";
             }
 
-            public static EvaluationItem GetEvaluation(RoundResult result)
+            public static EvaluationItem GetEvaluationItem(RoundResult result)
             {
                 Field field = result.FieldAtEnd;
                 List<Point> holes = field.GetHoles();
-                Console.WriteLine(holes.Count);
                 int holeDepth = holes.Count == 0?0:holes.Select(x => x.X)
                     .Distinct()
                     .Select(x => holes.Where(y => y.X == x).OrderBy(y => y.Y).First())
@@ -127,6 +133,10 @@ namespace TetrisAI.Source
                     if (array[i] != array[i + 1]) result++;
                 }
                 return result;
+            }
+            internal Real[] GetReal()
+            {
+                return new Real[] { ObjectHeight, NumHole, HoleDepth, CumulativeWells, ErodedPieceCells, NumRowWithHole, NumRowTransition, NumColTransition };
             }
         }
 

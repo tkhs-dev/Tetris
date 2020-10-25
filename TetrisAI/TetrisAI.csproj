@@ -1,8 +1,46 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="lib\KelpNet.CL.Common.dll" />
+    <None Remove="lib\KelpNet.CL.Function.dll" />
+    <None Remove="lib\KelpNet.CL.Function.Double.dll" />
+    <None Remove="lib\KelpNet.Common.dll" />
+    <None Remove="lib\KelpNet.Function.dll" />
+    <None Remove="lib\KelpNet.Function.Double.dll" />
+    <None Remove="lib\KelpNet.Tools.dll" />
+    <None Remove="lib\KelpNet.Tools.Double.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="lib\KelpNet.CL.Common.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.CL.Function.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.CL.Function.Double.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.Common.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.Function.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.Function.Double.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.Tools.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\KelpNet.Tools.Double.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
@@ -38,33 +76,6 @@
     <Reference Include="KelpNet.Tools.Double">
       <HintPath>lib\KelpNet.Tools.Double.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="lib\KelpNet.CL.Common.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.CL.Function.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.CL.Function.Double.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.Common.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.Function.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.Function.Double.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.Tools.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="lib\KelpNet.Tools.Double.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
