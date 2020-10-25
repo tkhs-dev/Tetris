@@ -5,11 +5,39 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="log4net" Version="2.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TetrisCore\TetrisCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="KelpNet.CL.Common">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.CL.Function">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Function.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.CL.Function.Double">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Function.Double.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.Common">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.Function">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Function.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.Function.Double">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Function.Double.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.Tools">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Tools.dll</HintPath>
+    </Reference>
+    <Reference Include="KelpNet.Tools.Double">
+      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Tools.Double.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
