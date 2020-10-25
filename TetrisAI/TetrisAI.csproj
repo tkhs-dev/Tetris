@@ -15,29 +15,60 @@
 
   <ItemGroup>
     <Reference Include="KelpNet.CL.Common">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Common.dll</HintPath>
+      <HintPath>lib\KelpNet.CL.Common.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.CL.Function">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Function.dll</HintPath>
+      <HintPath>lib\KelpNet.CL.Function.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.CL.Function.Double">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.CL.Function.Double.dll</HintPath>
+      <HintPath>lib\KelpNet.CL.Function.Double.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.Common">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Common.dll</HintPath>
+      <HintPath>lib\KelpNet.Common.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.Function">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Function.dll</HintPath>
+      <HintPath>lib\KelpNet.Function.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.Function.Double">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Function.Double.dll</HintPath>
+      <HintPath>lib\KelpNet.Function.Double.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.Tools">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Tools.dll</HintPath>
+      <HintPath>lib\KelpNet.Tools.dll</HintPath>
     </Reference>
     <Reference Include="KelpNet.Tools.Double">
-      <HintPath>C:\Users\MukaiDaiki\source\repos\KelpNet\dlls\KelpNet.Tools.Double.dll</HintPath>
+      <HintPath>lib\KelpNet.Tools.Double.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="lib\KelpNet.CL.Common.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.CL.Function.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.CL.Function.Double.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.Common.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.Function.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.Function.Double.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.Tools.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="lib\KelpNet.Tools.Double.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Source\Util\" />
   </ItemGroup>
 
 </Project>
