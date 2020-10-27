@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Drawing;
-using static TetrisCore.Source.BlockObject;
+using static TetrisCore.Source.BlockUnit;
 
 namespace TetrisCore.Source.Extension
 {
-    /// <see cref="BlockObject.Directions"/>
+    /// <see cref="BlockUnit.Directions"/>
     public static class DirectionsExt
     {
         public static Directions Rotate(this Directions self, int num)
@@ -13,11 +13,11 @@ namespace TetrisCore.Source.Extension
         }
     }
 
-    /// <see cref="BlockObject.Kind"/>
+    /// <see cref="BlockUnit.Kind"/>
     public static class KindExt
     {
-        private static readonly BlockObject Object_I =
-            new BlockObject(
+        private static readonly BlockUnit Object_I =
+            new BlockUnit(
                     Color.Aqua,
                     new int[,]{
                         {0,0,0,0},
@@ -26,16 +26,16 @@ namespace TetrisCore.Source.Extension
                         {0,0,0,0}
                     });
 
-        private static readonly BlockObject Object_O =
-            new BlockObject(
+        private static readonly BlockUnit Object_O =
+            new BlockUnit(
                     Color.Yellow,
                     new int[,]{
                         {1,1},
                         {1,1}
                     });
 
-        private static readonly BlockObject Object_T =
-            new BlockObject(
+        private static readonly BlockUnit Object_T =
+            new BlockUnit(
                     Color.Purple,
                     new int[,]{
                         {0,1,0},
@@ -43,8 +43,8 @@ namespace TetrisCore.Source.Extension
                         {0,0,0}
                     });
 
-        private static readonly BlockObject Object_J =
-            new BlockObject(
+        private static readonly BlockUnit Object_J =
+            new BlockUnit(
                     Color.Blue,
                     new int[,]{
                         {1,0,0},
@@ -52,8 +52,8 @@ namespace TetrisCore.Source.Extension
                         {0,0,0}
                     });
 
-        private static readonly BlockObject Object_L =
-            new BlockObject(
+        private static readonly BlockUnit Object_L =
+            new BlockUnit(
                     Color.Orange,
                     new int[,]{
                         {0,0,1},
@@ -61,8 +61,8 @@ namespace TetrisCore.Source.Extension
                         {0,0,0}
                     });
 
-        private static readonly BlockObject Object_S =
-            new BlockObject(
+        private static readonly BlockUnit Object_S =
+            new BlockUnit(
                     Color.Green,
                     new int[,]{
                         {0,1,1},
@@ -70,8 +70,8 @@ namespace TetrisCore.Source.Extension
                         {0,0,0}
                     });
 
-        private static readonly BlockObject Object_Z =
-            new BlockObject(
+        private static readonly BlockUnit Object_Z =
+            new BlockUnit(
                     Color.Red,
                     new int[,]{
                         {1,1,0},
@@ -79,7 +79,7 @@ namespace TetrisCore.Source.Extension
                         {0,0,0}
                     });
 
-        public static BlockObject GetObject(this Kind self)
+        public static BlockUnit GetObject(this Kind self)
         {
             switch (self)
             {

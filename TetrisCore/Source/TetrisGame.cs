@@ -6,7 +6,7 @@ using System.Linq;
 using System.Timers;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
-using static TetrisCore.Source.BlockObject;
+using static TetrisCore.Source.BlockUnit;
 
 namespace TetrisCore.Source
 {
@@ -16,15 +16,15 @@ namespace TetrisCore.Source
 
         private Field field;
 
-        public static List<BlockObject> DefaultObjectPool;
+        public static List<BlockUnit> DefaultObjectPool;
 
         //使用されるオブジェクトの一覧
-        public List<BlockObject> ObjectPool;
+        public List<BlockUnit> ObjectPool;
 
         //キュー
-        private Queue<BlockObject> _objectQueue;
+        private Queue<BlockUnit> _objectQueue;
 
-        public Queue<BlockObject> ObjectQueue => _objectQueue;
+        public Queue<BlockUnit> ObjectQueue => _objectQueue;
 
         public bool TimerEnabled { get; set; }
         private Timer timer;
@@ -40,7 +40,7 @@ namespace TetrisCore.Source
 
         static TetrisGame()
         {
-            DefaultObjectPool = new List<BlockObject>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList());
+            DefaultObjectPool = new List<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList());
         }
 
         public TetrisGame(ILog logger, int row = 10, int column = 20)
@@ -49,7 +49,7 @@ namespace TetrisCore.Source
             logger.Info($"TetrisInstance Creating : row{row},column{column}");
 
             ObjectPool = TetrisGame.DefaultObjectPool;
-            _objectQueue = new Queue<BlockObject>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
+            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
 
             timer = new Timer();
             timer.Interval = 300;
@@ -65,11 +65,11 @@ namespace TetrisCore.Source
             {
                 //logger.Debug($"Block was changed:{point}");
             };
-            field.OnBlockPlaced += (object sender, BlockObject obj, Point point) =>
+            field.OnBlockPlaced += (object sender, BlockObject obj) =>
             {
                 //logger.Debug("Block was placed");
                 Draw();
-                field.SetObject((BlockObject)_objectQueue.Dequeue().Clone());
+                field.SetObject((BlockUnit)_objectQueue.Dequeue().Clone());
                 timer.Stop();
                 timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
@@ -101,13 +101,13 @@ namespace TetrisCore.Source
 
         public void Start()
         {
-            field.SetObject((BlockObject)ObjectPool.GetRandom().Clone());
+            field.SetObject((BlockUnit)ObjectPool.GetRandom().Clone());
             if (TimerEnabled) timer.Start();
             Draw();
         }
 
         //操作
-        public bool Move(BlockObject.Directions direction)
+        public bool Move(BlockUnit.Directions direction)
         {
             return field.Move(direction);
         }

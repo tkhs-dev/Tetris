@@ -24,21 +24,20 @@ namespace TetrisAI.Source
 
         private static EvaluationResult Evaluate(EvaluationItem item)
         {
-            Console.WriteLine("now");
             FunctionStack<Real> nn = new FunctionStack<Real>(
                 new Linear<Real>(8,8),
                 new Linear<Real>(8,5),
                 new Linear<Real>(5,1)
                 );
             NdArray<Real> result =  nn.Predict(item.GetReal())[0];
-            Console.WriteLine("0");
-            return new EvaluationResult();
+            return new EvaluationResult(item.ID,result.Data[0]);
         }
 
         public class EvaluationItem
         {
-            public EvaluationItem(int objectHeight, int numHole, int holeDepth,int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
+            public EvaluationItem(Guid id,int objectHeight, int numHole, int holeDepth,int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
             {
+                ID = id;
                 ObjectHeight = objectHeight;
                 NumHole = numHole;
                 HoleDepth = holeDepth;
@@ -48,6 +47,11 @@ namespace TetrisAI.Source
                 NumRowTransition = numRowTransition;
                 NumColTransition = numColTransition;
             }
+
+            /// <summary>
+            /// UUID
+            /// </summary>
+            public readonly Guid ID;
 
             /// <summary>
             /// 設置したオブジェクトの高さ
@@ -121,7 +125,7 @@ namespace TetrisAI.Source
                 .Flatten(SquareDirection.Row)
                 .ToArray());
 
-                EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count,holeDepth, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x,y)=>x+y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
+                EvaluationItem ev = new EvaluationItem(result.ID,result.Object.GetHeight(), holes.Count,holeDepth, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x,y)=>x+y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
                 return ev;
             }
 
@@ -142,7 +146,13 @@ namespace TetrisAI.Source
 
         public class EvaluationResult
         {
-            public readonly int EvaluationValue;
+            public readonly Guid ID;
+            public readonly float EvaluationValue;
+            public EvaluationResult(Guid id,float value)
+            {
+                ID = id;
+                EvaluationValue = value;
+            }
         }
     }
 }

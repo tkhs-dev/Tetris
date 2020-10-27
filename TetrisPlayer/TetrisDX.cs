@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using TetrisAI.Source;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
@@ -32,7 +33,7 @@ namespace TetrisPlayer
 
             field.OnRoundEnd += (object sender, RoundResult result) =>
             {
-                TetrisPlayer.GetLogger().Debug(EvaluationItem.GetEvaluation(result));
+                TetrisPlayer.GetLogger().Debug(Evaluation.EvaluateAsync(EvaluationItem.GetEvaluationItem(result)).Result.EvaluationValue);
             };
         }
 
