@@ -6,12 +6,14 @@ namespace TetrisPlayer
 {
     internal static class TetrisPlayer
     {
+
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
         private static void Main()
         {
+            log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
             GetLogger().Info("Start up TetrisPlayer...");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

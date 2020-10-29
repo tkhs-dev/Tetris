@@ -29,7 +29,7 @@ namespace TetrisPlayer
             SetStyle(ControlStyles.AllPaintingInWmPaint |// ちらつき抑える
                 ControlStyles.Opaque, true);            // 背景は描画しない
 
-            System.Windows.Media.CompositionTarget.Rendering += RenderingEvent;
+            System.Windows.Media.CompositionTarget.Rendering += RenderingEvent ;
         }
 
         //--------------------------------------------------------------//
@@ -243,9 +243,9 @@ namespace TetrisPlayer
             _RenderTarget2D.FillRectangle(new SharpDX.Mathematics.Interop.RawRectangleF(x + size * point.X + 1, y + size * point.Y + 1, x + size * point.X + size - 1, y + size * point.Y + size - 1), _ColorBrush);
         }
 
-        protected void RenderObject(BlockObject obj, System.Drawing.Point point, int x, int y)
+        protected void RenderObject(BlockObject obj, int x, int y)
         {
-            foreach (Block b in obj.GetBlocks(point))
+            foreach (Block b in obj.GetBlocks())
             {
                 RenderBlock(b, b.Point, x, y);
             }
@@ -259,7 +259,7 @@ namespace TetrisPlayer
                 if (game.ObjectQueue.Count >= i)
                 {
                     RenderFlame(flame_size, flame_size, x, y * (i + 1) + size * flame_size * i);
-                    RenderObject(game.ObjectQueue.ToArray()[i], System.Drawing.Point.Empty, x, y * (i + 1) + size * flame_size * i);
+                    RenderObject(new BlockObject(game.ObjectQueue.ToArray()[i]), x, y * (i + 1) + size * flame_size * i);
                 }
             }
         }

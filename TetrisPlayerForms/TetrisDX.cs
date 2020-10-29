@@ -39,7 +39,7 @@ namespace TetrisPlayer
 
         public void OnTimerTick()
         {
-            game.Move(BlockObject.Directions.SOUTH);
+            game.Move(BlockUnit.Directions.SOUTH);
         }
 
         public override void MainLoop()
@@ -55,7 +55,7 @@ namespace TetrisPlayer
                 size = this.Height / Column - 1;
                 RenderFlame(Row, Column, 10, 10);
                 RenderBlocks(10, 10);
-                if (field.Object != null) RenderObject(field.Object, field.ObjectPoint, 10, 10);
+                if (field.Object != null) RenderObject(field.Object, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
                 RenderObjectAxis(10, 10);
                 RenderPlaceablePosition(10, 10);
@@ -85,13 +85,13 @@ namespace TetrisPlayer
 
         private void RenderObjectAxis(int x, int y)
         {
-            RenderDiagonalWires(SharpDX.Color.Cyan, field.ObjectPoint, x, y);
+            RenderDiagonalWires(SharpDX.Color.Cyan, field.Object.Point, x, y);
         }
 
         private void RenderPlaceablePosition(int x, int y)
         {
-            ENumDictionary<Directions, List<System.Drawing.Point>> point = field.GetPlaceablePositions(field.Object);
-            foreach (var p in point[field.Object.Direction])
+            List<BlockPosition> point = field.GetPlaceablePositions(field.Object.Unit);
+            foreach (var p in point.Where(x=>x.Point.Equals(field.Object.Point)).Select(x=>x.Point))
             {
                 RenderDiagonalWires(SharpDX.Color.Orange, p, x, y);
             }
@@ -120,11 +120,11 @@ namespace TetrisPlayer
                 switch (key.Key)
                 {
                     case Key.Left:
-                        game.Move(BlockObject.Directions.WEST);
+                        game.Move(BlockUnit.Directions.WEST);
                         break;
 
                     case Key.Right:
-                        game.Move(BlockObject.Directions.EAST);
+                        game.Move(BlockUnit.Directions.EAST);
                         break;
 
                     case Key.Up:
