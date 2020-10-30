@@ -91,7 +91,7 @@ namespace TetrisPlayer
         private void RenderPlaceablePosition(int x, int y)
         {
             List<BlockPosition> point = field.GetPlaceablePositions(field.Object.Unit);
-            foreach (var p in point.Where(x=>x.Point.Equals(field.Object.Point)).Select(x=>x.Point))
+            foreach (var p in point.Where(x=>x.Direction.Equals(field.Object.Direction)).Select(x=>x.Point))
             {
                 RenderDiagonalWires(SharpDX.Color.Orange, p, x, y);
             }
