@@ -69,7 +69,7 @@ namespace TetrisCore.Source
             {
                 //logger.Debug("Block was placed");
                 Draw();
-                field.SetObject((BlockUnit)_objectQueue.Dequeue().Clone());
+                field.SetObject(_objectQueue.Dequeue());
                 timer.Stop();
                 timer.Start();
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
@@ -101,7 +101,7 @@ namespace TetrisCore.Source
 
         public void Start()
         {
-            field.SetObject((BlockUnit)ObjectPool.GetRandom().Clone());
+            field.SetObject(ObjectPool.GetRandom());
             if (TimerEnabled) timer.Start();
             Draw();
         }
