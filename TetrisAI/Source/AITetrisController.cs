@@ -44,56 +44,56 @@ namespace TetrisAI.Source
 
         public async void OnRoundStart(object sender)
         {
+            var sw = new System.Diagnostics.Stopwatch();
             Field field = (Field)sender;
+            sw.Restart();
             List<BlockPosition> positions = field.GetPlaceablePositions(field.Object.Unit);
-            List<Tuple<BlockPosition, Task<RoundResult>>> field_tasks = positions
-                .Select(x => new Tuple<BlockPosition, Task<RoundResult>>(x, ExecuteFieldAsync(field, x)))
+            List<Task<RoundResult>> field_tasks = positions
+                .Select(x => ExecuteFieldAsync(field, x))
                 .ToList();
             this.logger.Debug("Round Start");
 
-            List<Tuple<BlockPosition,RoundResult>> round_result = await Task.WhenAll(field_tasks.Select(x=>x.Item2).Where(x => x != null));
+            RoundResult[] round_result = await Task.WhenAll(field_tasks);
+            this.logger.Debug(sw.Elapsed);
             var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
             var doc = new Document(
                 new Grid
                 {
                     Color = Gray,
-                    Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto },
+                    Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto},
                     Children = {
                         new Cell("Direction") { Stroke = headerThickness },
                         new Cell("Object") { Stroke = headerThickness },
                         new Cell("Point") { Stroke = headerThickness },
-                        new Cell("Evaluation") { Stroke = headerThickness },
                         round_result.Select(item => new[] {
-                            new Cell(item.Object.Direction){ Align = Align.Center},
+                            new Cell(item.Position.Direction){ Align = Align.Center},
                             new Cell(item.Object.ToString()),
-                            new Cell(item.FieldAtEnd.Object.Point),
-                            new Cell(0) { Align = Align.Center },
+                            new Cell(item.Position.Point),
                         })
                     }
                 }
             );
             string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
             logger.Debug("\n" + text);
-            EvaluationItem[] evaluation_items = round_result.Select(x=>EvaluationItem.GetEvaluationItem(x)).ToArray();
-            List<Task<EvaluationResult>> evaluation_tasks = evaluation_items
-                .Select(x => Evaluation.EvaluateAsync(x)).ToList();
-            Task.WaitAll(evaluation_tasks.ToArray());
-            EvaluationResult[] results = await Task.WhenAll(evaluation_tasks.ToArray());
+            sw.Restart();
+            List<Tuple<BlockPosition, EvaluationResult>> results = round_result
+                .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, Evaluate(EvaluationItem.GetEvaluationItem(x))))
+                .ToList();
+            this.logger.Debug(sw.Elapsed);
+            sw.Stop();
             doc = new Document(
                 new Grid
                 {
                     Color = Gray,
-                    Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto },
+                    Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto },
                     Children = {
-                        new Cell("UUID") { Stroke = headerThickness },
                         new Cell("Point") { Stroke = headerThickness },
                         new Cell("Direction") { Stroke = headerThickness },
                         new Cell("Result") { Stroke = headerThickness },
-                        results.OrderByDescending(x=>x.EvaluationValue).Select(item => new[] {
-                            new Cell(item.ID){ Align = Align.Center},
-                            new Cell(round_result.Where(x=>x.ID.Equals(item.ID)).Select(x=>x.Object.Point).FirstOrDefault()),
-                            new Cell(round_result.Where(x=>x.ID.Equals(item.ID)).Select(x=>x.Object.Direction).FirstOrDefault()),
-                            new Cell(item.EvaluationValue),
+                        results.OrderByDescending(x=>x.Item2.EvaluationValue).Select(item => new[] {
+                            new Cell(item.Item1.Point),
+                            new Cell(item.Item1.Direction),
+                            new Cell(item.Item2.EvaluationValue),
                         })
                     }
                 }
