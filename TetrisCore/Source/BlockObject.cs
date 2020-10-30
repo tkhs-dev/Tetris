@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using TetrisCore.Source.Extension;
 using static TetrisCore.Source.BlockUnit;
@@ -56,6 +57,11 @@ namespace TetrisCore.Source
         public object Clone()
         {
             return new BlockObject(_unit) { _point = this._point,_direction=this._direction };
+        }
+        public override string ToString()
+        {
+            int[,] _data = _unit.TransformedData[_direction];
+            return String.Join("\n", _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => String.Join("",x)).ToArray());
         }
     }
 }

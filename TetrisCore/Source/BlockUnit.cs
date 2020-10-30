@@ -28,7 +28,7 @@ namespace TetrisCore.Source
         /// <summary>
         /// 回転済みデータのキャッシュ
         /// </summary>
-        private ReadOnlyDictionary<Directions, int[,]> TransformedData;
+        public ReadOnlyDictionary<Directions, int[,]> TransformedData { get; }
 
         public BlockUnit(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
@@ -116,13 +116,7 @@ namespace TetrisCore.Source
         }
         public override string ToString()
         {
-            string result = $"{Color}\n";
-            foreach (var i in _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => x.ToArray()).ToList())
-            {
-                result = result + "\n";
-                foreach (var ii in i) result = result + ii;
-            }
-            return result;
+            return String.Join("\n", _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => String.Join("", x)).ToArray());
         }
 
         //列挙子
