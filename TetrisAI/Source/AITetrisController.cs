@@ -1,5 +1,6 @@
 ﻿using Alba.CsConsoleFormat;
 using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,11 +46,12 @@ namespace TetrisAI.Source
         {
             Field field = (Field)sender;
             List<BlockPosition> positions = field.GetPlaceablePositions(field.Object.Unit);
-            List<Task<RoundResult>> field_tasks = positions.Select(x => ExecuteFieldAsync(field, x))
-            .ToList();
+            List<Tuple<BlockPosition, Task<RoundResult>>> field_tasks = positions
+                .Select(x => new Tuple<BlockPosition, Task<RoundResult>>(x, ExecuteFieldAsync(field, x)))
+                .ToList();
             this.logger.Debug("Round Start");
 
-            RoundResult[] round_result = await Task.WhenAll(field_tasks.Where(x => x != null));
+            List<Tuple<BlockPosition,RoundResult>> round_result = await Task.WhenAll(field_tasks.Select(x=>x.Item2).Where(x => x != null));
             var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
             var doc = new Document(
                 new Grid
