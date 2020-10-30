@@ -144,12 +144,14 @@ namespace TetrisCore.Source
         public bool PlaceAt(BlockPosition position)
         {
             if (_object == null) return false;
+            BlockObject clone = (BlockObject)_object.Clone();
+            clone.Point = position.Point;
             foreach (Block block in _object.Unit.GetBlocks(position))
             {
                 GetCell(block.Point)?.SetBlock(block);
                 OnBlockChanged?.Invoke(this, block.Point);
             }
-            OnBlockPlaced?.Invoke(this, _object);
+            OnBlockPlaced?.Invoke(this, clone);
 
             return true;
         }
@@ -311,7 +313,7 @@ namespace TetrisCore.Source
                 for (int y = start_y; start_y < Column; start_y++)
                 {
                     Point start_point = new Point(i, start_y);
-                    BlockObject obj = new BlockObject((BlockUnit)block.Clone()) { Direction = direction};
+                    BlockObject obj = new BlockObject(block) { Direction = direction};
                     if (!CanMoveTo(obj, start_point)) break;
                 }
                 result.Add(new BlockPosition(new Point(i, start_y - 1),direction));
