@@ -104,7 +104,7 @@ namespace TetrisCore.Source
                     //ブロックがあった時
                     if (!CanMoveTo(point))
                     {
-                        PlaceAt(new BlockPosition(point,direction));
+                        PlaceAt(new BlockPosition(Object.Point,direction));
                         return true;
                     }
                     break;
