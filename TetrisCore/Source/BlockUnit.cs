@@ -8,7 +8,7 @@ using TetrisCore.Source.Extension;
 
 namespace TetrisCore.Source
 {
-    public class BlockUnit : ICloneable
+    public class BlockUnit
     {
         /// <summary>
         /// デフォルトのブロック配置データ
@@ -113,12 +113,6 @@ namespace TetrisCore.Source
                     .Select(x => new Point(x.X + position.Point.X, x.Y + position.Point.Y))
                     .Select(x => new Block(_color, x))
                     .ToArray();
-        }
-
-        //実装
-        public object Clone()
-        {
-            return new BlockUnit(_color, _data, TransformedData);
         }
         public override string ToString()
         {
