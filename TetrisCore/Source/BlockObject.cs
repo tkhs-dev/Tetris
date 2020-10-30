@@ -21,7 +21,6 @@ namespace TetrisCore.Source
         public BlockObject(BlockUnit unit,Directions direction = Directions.NORTH)
         {
             this._unit = unit;
-            _point = Point.Empty;
         }
         public IReadOnlyList<Block> GetBlocks()
         {
