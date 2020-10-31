@@ -16,5 +16,10 @@ namespace TetrisCore.Source
             Point = point;
             Direction = direction;
         }
+        public override bool Equals(object obj)
+        {
+            BlockPosition pos = (BlockPosition)obj;
+            return this.Point.Equals(pos) && this.Direction == pos.Direction;
+        }
     }
 }
