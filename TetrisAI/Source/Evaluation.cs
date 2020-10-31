@@ -25,9 +25,17 @@ namespace TetrisAI.Source
         public static EvaluationResult Evaluate(EvaluationItem item)
         {
             FunctionStack<Real> nn = new FunctionStack<Real>(
-                new Linear<Real>(8,8),
-                new Linear<Real>(8,5),
-                new Linear<Real>(5,1)
+                new Linear<Real>(8, 8, false, new float[] {
+                    -0.1f,-0.1f,-0.1f,-0.1f, -0.1f, -0.1f, -0.1f, -0.1f,
+                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
+                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
+                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+                    0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
+                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f }),
+                new Linear<Real>(8, 5, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
+                new Linear<Real>(5, 1, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f })
                 );
             NdArray<Real> result =  nn.Predict(item.GetReal())[0];
             return new EvaluationResult(result.Data[0]);

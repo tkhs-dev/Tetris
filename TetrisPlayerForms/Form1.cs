@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using TetrisAI.Source;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 
@@ -25,7 +26,7 @@ namespace TetrisPlayer
                 {
                     TetrisPlayer.GetLogger().Info("Find a Renderer:" + c.GetType().Name);
                     Game.SetRenderer((IRenderer)c);
-                    Game.SetController((IController)c);
+                    Game.SetController((IController)new AITetrisController());
                 }
             }
             Game.Start();
