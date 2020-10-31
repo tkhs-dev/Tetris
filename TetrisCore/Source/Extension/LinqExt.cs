@@ -15,5 +15,10 @@ namespace TetrisCore.Source.Extension
                 .GroupBy(x => x.i / size)
                 .Select(g => g.Select(x => x.v));
         }
+        public static T GetRandom<T>(this IEnumerable<T> self)
+        {
+            Random random = new Random();
+            return self.ElementAt(random.Next(0, self.Count()));
+        }
     }
 }
