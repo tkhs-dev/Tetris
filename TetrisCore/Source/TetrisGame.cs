@@ -70,9 +70,13 @@ namespace TetrisCore.Source
                 //logger.Debug("Block was placed");
                 Draw();
                 field.SetObject(_objectQueue.Dequeue());
-                timer.Stop();
-                timer.Start();
+                if (TimerEnabled)
+                {
+                    timer.Stop();
+                    timer.Start();
+                }
                 _objectQueue.Enqueue(ObjectPool.GetRandom());
+                field.StartRound();
             };
             field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
             {
@@ -102,6 +106,7 @@ namespace TetrisCore.Source
         public void Start()
         {
             field.SetObject(ObjectPool.GetRandom());
+            field.StartRound();
             if (TimerEnabled) timer.Start();
             Draw();
         }

@@ -48,6 +48,10 @@ namespace TetrisCore.Source
 
         public event OnRoundStartEvent OnRoundStart;
 
+        public delegate void OnGameOverEvent(object sender);
+
+        public event OnGameOverEvent OnGameOver;
+
         private Field fieldStart;
 
         public Field(int row, int column)
@@ -82,7 +86,15 @@ namespace TetrisCore.Source
         //フィールド操作系関数
         public void SetObject(BlockUnit o,Directions direction=Directions.NORTH)
         {
-            _object = new BlockObject(o,direction) { Point= new Point(((int)(_row / 2)) - (int)(o.GetWidth(direction) / 2), 0) };
+            Point point = new Point(((int)(_row / 2)) - (int)(o.GetWidth(direction) / 2), 0);
+            if(CanMoveTo(new BlockObject(o), point))
+            {
+                OnGameOver?.Invoke(this);
+            }
+            _object = new BlockObject(o,direction) { Point=point  };
+        }
+        public void StartRound()
+        {
             OnRoundStart?.Invoke(this);
         }
 
