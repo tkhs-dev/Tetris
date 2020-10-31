@@ -60,6 +60,7 @@ namespace TetrisPlayer
                 RenderObjectAxis(10, 10);
                 RenderPlaceablePosition(10, 10);
                 RenderHoles(10, 10);
+                RenderDeadSpace(10,10);
                 RenderWells(10, 10);
             }
 
@@ -71,7 +72,14 @@ namespace TetrisPlayer
         {
             foreach (System.Drawing.Point p in field.GetHoles())
             {
-                RenderDiagonalWires(SharpDX.Color.Red, p, x, y);
+                RenderDiagonalWires(SharpDX.Color.Red, p, x, y,false);
+            }
+        }
+        private void RenderDeadSpace(int x,int y)
+        {
+            foreach (System.Drawing.Point p in field.GetDeadSpace())
+            {
+                RenderDiagonalWires(SharpDX.Color.HotPink, p, x, y, true);
             }
         }
 

@@ -229,12 +229,21 @@ namespace TetrisPlayer
             }
         }
 
-        protected void RenderDiagonalWires(SharpDX.Color color, System.Drawing.Point point, int x, int y)
+        protected void RenderDiagonalWires(SharpDX.Color color, System.Drawing.Point point, int x, int y, bool normal = true)
         {
             _ColorBrush.Color = color;
-            _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, (y + size * point.Y + 1) + size * 0.5f), new RawVector2((x + size * (point.X + 1) + 1) - size * 0.5f, y + size * (point.Y + 1) + 1), _ColorBrush);
-            _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, y + size * point.Y + 1), new RawVector2(x + size * (point.X + 1) + 1, y + size * (point.Y + 1) + 1), _ColorBrush);
-            _RenderTarget2D.DrawLine(new RawVector2((x + size * point.X + 1) + size * 0.5f, y + size * point.Y + 1), new RawVector2(x + size * (point.X + 1) + 1, (y + size * (point.Y + 1) + 1) - size * 0.5f), _ColorBrush);
+            if (normal)
+            {
+                _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, (y + size * point.Y + 1) + size * 0.5f), new RawVector2((x + size * (point.X + 1) + 1) - size * 0.5f, y + size * (point.Y + 1) + 1), _ColorBrush);
+                _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, y + size * point.Y + 1), new RawVector2(x + size * (point.X + 1) + 1, y + size * (point.Y + 1) + 1), _ColorBrush);
+                _RenderTarget2D.DrawLine(new RawVector2((x + size * point.X + 1) + size * 0.5f, y + size * point.Y + 1), new RawVector2(x + size * (point.X + 1) + 1, (y + size * (point.Y + 1) + 1) - size * 0.5f), _ColorBrush);
+            }
+            else
+            {
+                _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, (y + size * point.Y + 1) + size * 0.5f), new RawVector2((x + size * (point.X + 1) + 1) - size * 0.5f, (y + size * point.Y + 1)), _ColorBrush);
+                _RenderTarget2D.DrawLine(new RawVector2(x + size * point.X + 1, y + size * (point.Y + 1) + 1), new RawVector2(x + size * (point.X + 1) + 1, y + size * point.Y + 1), _ColorBrush);
+                _RenderTarget2D.DrawLine(new RawVector2((x + size * point.X + 1) + size * 0.5f, y + size * (point.Y + 1) + 1), new RawVector2(x + size * (point.X + 1) + 1, (y + size * (point.Y + 1) + 1) - size * 0.5f), _ColorBrush);
+            }
         }
 
         protected void RenderBlock(Block block, System.Drawing.Point point, int x, int y)

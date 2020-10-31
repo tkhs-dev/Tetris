@@ -25,16 +25,17 @@ namespace TetrisAI.Source
         public static EvaluationResult Evaluate(EvaluationItem item)
         {
             FunctionStack<Real> nn = new FunctionStack<Real>(
-                new Linear<Real>(8, 8, false, new float[] {
-                    -0.1f,-0.1f,-0.1f,-0.1f, -0.1f, -0.1f, -0.1f, -0.1f,
-                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
-                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
-                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-                    0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
-                    -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,
-                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f }),
-                new Linear<Real>(8, 5, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
+                new Linear<Real>(9, 9, false, new float[] {
+                    -0.1f,-0.1f,-0.1f,-0.1f, -0.1f, -0.1f, -0.1f, -0.1f, 0.1f,//objectHeight
+                    -0.2f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,//numHole
+                    -0.25f, -0.2f, -0.25f, -0.25f, -0.2f, -0.25f, -0.25f, -0.25f, -0.25f,//holeDepth
+                    0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f,//numDeadSpace
+                    -0.5f, -0.5f, -0.25f, -0.5f, -0.25f, -0.5f, -0.5f, -0.5f, -0.5f,//wells
+                    0.5f, 0.25f, 0.5f, 0.5f, 0.5f, 0.5f, 0.25f, 0.5f, 0.5f,//erodedPiece
+                    -0.25f, -0.25f, -0.2f, -0.25f, -0.25f, -0.25f, -0.2f, -0.25f, -0.25f,//numRowWithHole
+                    -0.25f, -0.5f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,//rowTrans
+                    -0.2f, -0.25f, -0.25f, -0.25f, -0.25f, -0.2f, -0.25f, -0.25f, -0.25f }),//colTrans
+                new Linear<Real>(9, 5, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
                 new Linear<Real>(5, 1, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f })
                 );
             NdArray<Real> result =  nn.Predict(item.GetReal())[0];
@@ -43,11 +44,12 @@ namespace TetrisAI.Source
 
         public class EvaluationItem
         {
-            public EvaluationItem(int objectHeight, int numHole, int holeDepth,int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
+            public EvaluationItem(int objectHeight, int numHole, int holeDepth,int numDeadSpace,int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
             {
                 ObjectHeight = objectHeight;
                 NumHole = numHole;
                 HoleDepth = holeDepth;
+                NumDeadSpace = numDeadSpace;
                 CumulativeWells = cumulativeWells;
                 ErodedPieceCells = erodedPieceCells;
                 NumRowWithHole = numRowWithHole;
@@ -69,6 +71,11 @@ namespace TetrisAI.Source
             /// 穴の上のブロック数の和
             /// </summary>
             public readonly int HoleDepth;
+
+            /// <summary>
+            /// デッドスペースの数
+            /// </summary>
+            public readonly int NumDeadSpace;
 
             /// <summary>
             /// 井戸の高さの階乗の和
@@ -97,7 +104,7 @@ namespace TetrisAI.Source
 
             public override string ToString()
             {
-                return $"ObjectHeight:{ObjectHeight},Holes:{NumHole},HoleDepth:{HoleDepth},CumulativeWells:{CumulativeWells},ErodedPieceOfCells:{ErodedPieceCells},RowsWithHoles:{NumRowWithHole},RowTransition:{NumRowTransition},ColTransition:{NumColTransition}";
+                return $"ObjectHeight:{ObjectHeight},Holes:{NumHole},HoleDepth:{HoleDepth},DeadSpace:{NumDeadSpace},CumulativeWells:{CumulativeWells},ErodedPieceOfCells:{ErodedPieceCells},RowsWithHoles:{NumRowWithHole},RowTransition:{NumRowTransition},ColTransition:{NumColTransition}";
             }
 
             public static EvaluationItem GetEvaluationItem(RoundResult result)
@@ -127,7 +134,7 @@ namespace TetrisAI.Source
                 .Flatten(SquareDirection.Row)
                 .ToArray());
 
-                EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count,holeDepth, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x,y)=>x+y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
+                EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count,holeDepth,field.GetDeadSpace().Count, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x,y)=>x+y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
                 return ev;
             }
 
@@ -142,7 +149,7 @@ namespace TetrisAI.Source
             }
             internal Real[] GetReal()
             {
-                return new Real[] { ObjectHeight, NumHole, HoleDepth, CumulativeWells, ErodedPieceCells, NumRowWithHole, NumRowTransition, NumColTransition };
+                return new Real[] { ObjectHeight, NumHole, HoleDepth, NumDeadSpace, CumulativeWells, ErodedPieceCells, NumRowWithHole, NumRowTransition, NumColTransition };
             }
         }
 

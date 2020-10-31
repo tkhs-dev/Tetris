@@ -271,6 +271,21 @@ namespace TetrisCore.Source
             }
             return result;
         }
+        public List<Point> GetDeadSpace()
+        {
+            int[,] data = ToArrays();
+            List<int[]> cols = data.Rows().Select(x => x.ToArray()).ToList();
+            List<Point> result = new List<Point>();
+            for (int i = 0; i < cols.Count; i++)
+            {
+                int sp = GetSurfacePoint(cols[i])+1;
+                for(int j = sp; j < cols[i].Length; j++)
+                {
+                    if (data[i, j] == 0) result.Add(new Point(i,j));
+                }
+            }
+            return result;
+        }
 
         public List<List<Point>> GetWells()
         {
