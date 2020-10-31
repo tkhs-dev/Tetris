@@ -54,6 +54,9 @@ namespace TetrisCore.Source
 
         private Field fieldStart;
 
+        private bool _isGameOvered;
+        public bool IsGameOvered { get => _isGameOvered; set => _isGameOvered = value; }
+
         public Field(int row, int column)
         {
             this._column = column;
@@ -81,13 +84,17 @@ namespace TetrisCore.Source
               {
                   fieldStart = (Field)Clone();
               };
+            OnGameOver += (object sender) =>
+            {
+                _isGameOvered = true;
+            };
         }
 
         //フィールド操作系関数
         public void SetObject(BlockUnit o,Directions direction=Directions.NORTH)
         {
             Point point = new Point(((int)(_row / 2)) - (int)(o.GetWidth(direction) / 2), 0);
-            if(CanMoveTo(new BlockObject(o), point))
+            if(!CanMoveTo(new BlockObject(o), point))
             {
                 OnGameOver?.Invoke(this);
             }
@@ -95,7 +102,7 @@ namespace TetrisCore.Source
         }
         public void StartRound()
         {
-            OnRoundStart?.Invoke(this);
+            if(!_isGameOvered)OnRoundStart?.Invoke(this);
         }
 
         public bool Move(Directions direction)
@@ -321,7 +328,7 @@ namespace TetrisCore.Source
                     int h = Column - (GetSurfacePoint(col) + 1);
                     sum_height += h;
                 }
-                int start_y = Column > sum_height + height ? Column - sum_height - height - 1 : 0;
+                int start_y = Column > sum_height + height ? Column - sum_height - height - 1 : 3;
                 for (int y = start_y; start_y < Column; start_y++)
                 {
                     Point start_point = new Point(i, start_y);
