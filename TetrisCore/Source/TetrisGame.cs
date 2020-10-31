@@ -65,17 +65,20 @@ namespace TetrisCore.Source
             {
                 //logger.Debug($"Block was changed:{point}");
             };
+            field.OnRoundStart += (object sender) =>
+            {
+                field.SetObject(_objectQueue.Dequeue());
+                _objectQueue.Enqueue(ObjectPool.GetRandom());
+            };
             field.OnBlockPlaced += (object sender, BlockObject obj) =>
             {
                 //logger.Debug("Block was placed");
                 Draw();
-                field.SetObject(_objectQueue.Dequeue());
                 if (TimerEnabled)
                 {
                     timer.Stop();
                     timer.Start();
                 }
-                _objectQueue.Enqueue(ObjectPool.GetRandom());
                 field.StartRound();
             };
             field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
