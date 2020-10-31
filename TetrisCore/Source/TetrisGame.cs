@@ -52,7 +52,7 @@ namespace TetrisCore.Source
             _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
 
             timer = new Timer();
-            timer.Interval = 300;
+            timer.Interval = 700;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
             Setting = new GameSetting(row,column);
@@ -74,12 +74,6 @@ namespace TetrisCore.Source
             {
                 //logger.Debug("Block was placed");
                 Draw();
-                if (TimerEnabled)
-                {
-                    timer.Stop();
-                    timer.Start();
-                }
-                field.StartRound();
             };
             field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
             {
@@ -89,7 +83,14 @@ namespace TetrisCore.Source
              {
                  logger.Info($"Round {_state.Round} End");
                  _state.Round++;
+                 field.StartRound();
              };
+            field.OnGameOver += (object sender) =>
+            {
+                logger.Debug("Game Over");
+                timer.Stop();
+                timer.Dispose();
+            };
         }
 
         public void SetRenderer(IRenderer renderer)

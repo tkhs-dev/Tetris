@@ -154,6 +154,7 @@ namespace TetrisAI.Source
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
             }
+            Thread.Sleep(500);
             field.PlaceImmediately();
             return tcs.Task;
         }
