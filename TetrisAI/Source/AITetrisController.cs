@@ -23,9 +23,13 @@ namespace TetrisAI.Source
         private TetrisGame Game;
         private Field field;
 
-        public AITetrisController()
+        //操作間隔:msec
+        private int interval;
+
+        public AITetrisController(int interval)
         {
             logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            this.interval = interval;
         }
 
         public void initialize(TetrisGame game)
@@ -74,8 +78,12 @@ namespace TetrisAI.Source
                         }
                     }
                 );
-                //string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                //logger.Debug("\n" + text);
+                try
+                {
+                    string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
+                    logger.Debug("\n" + text);
+                }
+                catch (Exception e) { };
                 sw.Restart();
                 List<Tuple<BlockPosition, EvaluationResult>> results = round_result
                     .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, Evaluate(EvaluationItem.GetEvaluationItem(x))))
@@ -100,8 +108,12 @@ namespace TetrisAI.Source
                         }
                     }
                 );
-                //text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                //logger.Debug("\n" + text);
+                try
+                {
+                    string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
+                    logger.Debug("\n" + text);
+                }
+                catch (Exception e) { };
                 if (results.Count == 0) return;
                 BlockPosition dest = results
                     .GroupBy(x => x.Item2.EvaluationValue)
@@ -131,8 +143,6 @@ namespace TetrisAI.Source
         }
         private Task<bool> TryPlaceAsync(Field field,BlockPosition position)
         {
-            //操作間隔:msec
-            int interval = 100;
             var tcs = new TaskCompletionSource<bool>();
             bool placed = false;
             field.OnRoundEnd += (object sender, RoundResult result) =>
@@ -154,7 +164,7 @@ namespace TetrisAI.Source
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
             }
-            Thread.Sleep(500);
+            Thread.Sleep(interval*2);
             field.PlaceImmediately();
             return tcs.Task;
         }
@@ -162,7 +172,6 @@ namespace TetrisAI.Source
         public void OnRoundEnd(object sender, RoundResult result)
         {
         }
-
         public void OnTimerTick()
         {
             Game.Move(Directions.SOUTH);

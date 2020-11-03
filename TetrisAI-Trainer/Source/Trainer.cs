@@ -15,7 +15,7 @@ namespace TetrisAI_Trainer.Source
         {
             logger = TetrisAITrainer.Logger;
             game = new TetrisGame(logger);
-            controller = new AITetrisController();
+            controller = new AITetrisController(2);
 
             game.SetController(controller);
         }
@@ -23,6 +23,7 @@ namespace TetrisAI_Trainer.Source
         public void Start()
         {
             game.Start();
+            game.WhenGameEnd().Wait();
         }
     }
 }

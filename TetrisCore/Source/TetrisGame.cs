@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
@@ -113,6 +114,14 @@ namespace TetrisCore.Source
             field.StartRound();
             if (TimerEnabled) timer.Start();
             Draw();
+        }
+        public Task<bool> WhenGameEnd()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            field.OnGameOver += (object sender) => {
+                tcs.SetResult(true);
+            };
+            return tcs.Task;
         }
 
         //操作
