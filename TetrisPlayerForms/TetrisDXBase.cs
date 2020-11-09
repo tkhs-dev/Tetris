@@ -2,9 +2,11 @@
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DirectInput;
+using SharpDX.DirectWrite;
 using SharpDX.DXGI;
 using SharpDX.Mathematics.Interop;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
@@ -272,6 +274,22 @@ namespace TetrisPlayer
                 }
             }
         }
+        protected void RenderGameState(int x,int y)
+        {
+            const int flame_size = 4;
+            int start_y = y*2 +(flame_size*size)*game.ObjectQueue.Count;
+            _ColorBrush.Color = SharpDX.Color.Gray;
+            TextFormat font = new TextFormat(_FactoryDWrite, "Meiryo", 15);
+            _RenderTarget2D.DrawText($"Round:{game.State.Round}",font, new RawRectangleF(x, start_y, x + 100, start_y + 100),_ColorBrush);
+            _RenderTarget2D.DrawText($"Score:{game.State.Score}",font, new RawRectangleF(x, start_y+20, x + 100, start_y + 100), _ColorBrush);
+        }
+        public System.Drawing.SizeF MeasureString(string Message, TextFormat textFormat, float Width, ContentAlignment Align=ContentAlignment.MiddleLeft)
+{
+    SharpDX.DirectWrite.TextLayout layout = 
+        new SharpDX.DirectWrite.TextLayout(_FactoryDWrite, Message, textFormat, Width, textFormat.FontSize);
+
+    return new System.Drawing.SizeF(layout.Metrics.Width, layout.Metrics.Height);
+}
 
         public void initialize(TetrisGame game)
         {

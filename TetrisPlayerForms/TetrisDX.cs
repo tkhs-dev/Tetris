@@ -57,6 +57,7 @@ namespace TetrisPlayer
                 RenderBlocks(10, 10);
                 if (field.Object != null) RenderObject(field.Object, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
+                RenderGameState(size*Row+50,10);
                 RenderObjectAxis(10, 10);
                 RenderPlaceablePosition(10, 10);
                 RenderHoles(10, 10);

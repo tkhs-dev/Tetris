@@ -60,7 +60,7 @@ namespace TetrisCore.Source
 
             field = new Field(row, column);
 
-            _state = new GameState() { Round = 0, Score = 0, RemovedLines = 0 };
+            _state = new GameState() { Round = 0, RemovedLines = 0 };
 
             field.OnBlockChanged += (object sender, Point point) =>
             {
@@ -115,11 +115,11 @@ namespace TetrisCore.Source
             if (TimerEnabled) timer.Start();
             Draw();
         }
-        public Task<bool> WhenGameEnd()
+        public Task<GameResult> WhenGameEnd()
         {
-            var tcs = new TaskCompletionSource<bool>();
+            var tcs = new TaskCompletionSource<GameResult>();
             field.OnGameOver += (object sender) => {
-                tcs.SetResult(true);
+                tcs.SetResult(new GameResult());
             };
             return tcs.Task;
         }
@@ -153,7 +153,7 @@ namespace TetrisCore.Source
 
         public class GameState
         {
-            public int Score { get; set; }
+            public int Score { get => RemovedLines*RemovedLines; }
             public int Round { get; set; }
             public int RemovedLines { get; set; }
         }
