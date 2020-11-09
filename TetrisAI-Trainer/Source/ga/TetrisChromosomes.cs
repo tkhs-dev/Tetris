@@ -5,12 +5,21 @@ using System.Text;
 
 namespace TetrisAI_Trainer.Source.ga
 {
-    public class TetrisChromosomes
+    public class TetrisChromosomes:ChromosomeBase
     {
-        FloatingPointChromosome chromosome;
-        public TetrisChromosomes()
+        public TetrisChromosomes():base(0)
         {
-            chromosome = new FloatingPointChromosome(new double[] {-10,-10,-10 },new double[] {10,10,10 },new int[] {32,32,32 },new int[] { });
+           
+        }
+
+        public override IChromosome CreateNew()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Gene GenerateGene(int geneIndex)
+        {
+            throw new NotImplementedException();
         }
     }
 }
