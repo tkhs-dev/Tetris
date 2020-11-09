@@ -35,8 +35,10 @@ namespace TetrisCore.Source
 
         //Setting
         public readonly GameSetting Setting;
+
         //State
         private GameState _state;
+
         public GameState State => _state;
 
         static TetrisGame()
@@ -56,11 +58,11 @@ namespace TetrisCore.Source
             timer.Interval = 700;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
-            Setting = new GameSetting(row,column);
+            Setting = new GameSetting(row, column);
 
             field = new Field(row, column);
 
-            _state = new GameState() { Round = 0, RemovedLines = 0 };
+            _state = new GameState() { Round = 0, Score = 0, RemovedLines = 0 };
 
             field.OnBlockChanged += (object sender, Point point) =>
             {
@@ -84,6 +86,7 @@ namespace TetrisCore.Source
              {
                  logger.Info($"Round {_state.Round} End");
                  _state.Round++;
+                 _state.Score += result.Score;
                  field.StartRound();
              };
             field.OnGameOver += (object sender) =>
@@ -115,10 +118,12 @@ namespace TetrisCore.Source
             if (TimerEnabled) timer.Start();
             Draw();
         }
+
         public Task<GameResult> WhenGameEnd()
         {
             var tcs = new TaskCompletionSource<GameResult>();
-            field.OnGameOver += (object sender) => {
+            field.OnGameOver += (object sender) =>
+            {
                 tcs.SetResult(new GameResult());
             };
             return tcs.Task;
@@ -153,15 +158,17 @@ namespace TetrisCore.Source
 
         public class GameState
         {
-            public int Score { get => RemovedLines*RemovedLines; }
+            public int Score { get; set; }
             public int Round { get; set; }
             public int RemovedLines { get; set; }
         }
+
         public class GameSetting
         {
             public readonly int ROW;
             public readonly int COLUMN;
-            public GameSetting(int row,int column)
+
+            public GameSetting(int row, int column)
             {
                 ROW = row;
                 COLUMN = column;
