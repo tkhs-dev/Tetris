@@ -1,11 +1,9 @@
-﻿using Alba.CsConsoleFormat.Markup;
-using KelpNet;
+﻿using KelpNet;
 using KelpNet.CL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using TetrisCore;
 using TetrisCore.Source;
@@ -17,6 +15,10 @@ namespace TetrisAI.Source
 {
     public class Evaluation
     {
+        public const int NumInput = 9;
+        public const int NumMiddle = 5;
+        public const int NumOutput = 1;
+
         public static Task<EvaluationResult> EvaluateAsync(EvaluationItem item)
         {
             return Task.Run(() => { return Evaluate(item); });
@@ -25,7 +27,7 @@ namespace TetrisAI.Source
         public static EvaluationResult Evaluate(EvaluationItem item)
         {
             FunctionStack<Real> nn = new FunctionStack<Real>(
-                new Linear<Real>(9, 9, false, new float[] {
+                new Linear<Real>(NumInput, NumInput, false, new float[] {
                     -0.1f,-0.1f,-0.1f,-0.1f, -0.1f, -0.1f, -0.1f, -0.1f, 0.1f,//objectHeight
                     -0.2f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,//numHole
                     -0.25f, -0.2f, -0.25f, -0.25f, -0.2f, -0.25f, -0.25f, -0.25f, -0.25f,//holeDepth
@@ -35,16 +37,60 @@ namespace TetrisAI.Source
                     -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f,//numRowWithHole
                     -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f,//rowTrans
                     -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f }),//colTrans
-                new Linear<Real>(9, 5, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
-                new Linear<Real>(5, 1, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f })
+                new Linear<Real>(NumInput, NumMiddle, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
+                new Linear<Real>(NumMiddle, NumOutput, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f })
                 );
-            NdArray<Real> result =  nn.Predict(item.GetReal())[0];
+            NdArray<Real> result = nn.Predict(item.GetReal())[0];
             return new EvaluationResult(result.Data[0]);
+        }
+
+        public class EvaluationNNParameter
+        {
+            public float[] InputLayerWeight { get; }
+            public float[] MiddleLayerWeight { get; }
+            public float[] OutputLayerWeight { get; }
+
+            public EvaluationNNParameter(float[] iw=null, float[] mw=null, float[] ow=null)
+            {
+                if ((iw!=null&&mw!=null&&ow!=null)&&(iw.Length >= NumInput*NumInput && mw.Length >= NumInput*NumMiddle && ow.Length >= NumMiddle*NumOutput))
+                {
+                    InputLayerWeight = iw;
+                    MiddleLayerWeight = mw;
+                    OutputLayerWeight = ow;
+                }
+                else
+                {
+                    InputLayerWeight = new float[NumInput*NumInput];
+                    MiddleLayerWeight = new float[NumInput*NumMiddle];
+                    OutputLayerWeight = new float[NumMiddle*NumOutput];
+                    CreateParameter();
+                }
+            }
+
+            private void CreateParameter()
+            {
+                Random rnd = new Random();
+                float MIN_VALUE = -1f;
+                float MAX_VALUE = 1f;
+
+                for (int i = 0; i < NumInput*NumInput; i++)
+                {
+                    InputLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
+                }
+                for (int i = 0; i < NumInput*NumMiddle; i++)
+                {
+                    MiddleLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
+                }
+                for (int i = 0; i < NumMiddle*NumOutput; i++)
+                {
+                    OutputLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
+                }
+            }
         }
 
         public class EvaluationItem
         {
-            public EvaluationItem(int objectHeight, int numHole, int holeDepth,int numDeadSpace,int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
+            public EvaluationItem(int objectHeight, int numHole, int holeDepth, int numDeadSpace, int cumulativeWells, int erodedPieceCells, int numRowWithHole, int numRowTransition, int numColTransition)
             {
                 ObjectHeight = objectHeight;
                 NumHole = numHole;
@@ -111,15 +157,16 @@ namespace TetrisAI.Source
             {
                 Field field = result.FieldAtEnd;
                 List<Point> holes = field.GetHoles();
-                int holeDepth = holes.Count == 0?0:holes.Select(x => x.X)
+                int holeDepth = holes.Count == 0 ? 0 : holes.Select(x => x.X)
                     .Distinct()
                     .Select(x => holes.Where(y => y.X == x).OrderBy(y => y.Y).First())
-                    .Select(x=>{
-                    int r = 0;
-                    int[] col = field.ToArrays().Rows(x.X).ToArray();
-                    for (int i = x.Y; i >= 0; i--) if (col[i] != 0) r++;
-                    return r;
-                }).Aggregate((x,y)=>x+y);
+                    .Select(x =>
+                    {
+                        int r = 0;
+                        int[] col = field.ToArrays().Rows(x.X).ToArray();
+                        for (int i = x.Y; i >= 0; i--) if (col[i] != 0) r++;
+                        return r;
+                    }).Aggregate((x, y) => x + y);
                 int numRowWithHoles = Enumerable.Range(0, field.Row - 1)
                     .Select(x => holes.Where(y => y.X == x)
                     .ToList().Count != 0)
@@ -134,7 +181,7 @@ namespace TetrisAI.Source
                 .Flatten(SquareDirection.Row)
                 .ToArray());
 
-                EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count,holeDepth,field.GetDeadSpace().Count, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x,y)=>x+y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
+                EvaluationItem ev = new EvaluationItem(result.Object.GetHeight(), holes.Count, holeDepth, field.GetDeadSpace().Count, field.GetWells().Select(x => Enumerable.Range(1, x.ToArray().Count()).Aggregate(1, (p, item) => p * item)).Aggregate((x, y) => x + y), result.ErodedObjectCells, numRowWithHoles, rowTransition, colTransition);
                 return ev;
             }
 
@@ -147,6 +194,7 @@ namespace TetrisAI.Source
                 }
                 return result;
             }
+
             internal Real[] GetReal()
             {
                 return new Real[] { ObjectHeight, NumHole, HoleDepth, NumDeadSpace, CumulativeWells, ErodedPieceCells, NumRowWithHole, NumRowTransition, NumColTransition };
@@ -156,6 +204,7 @@ namespace TetrisAI.Source
         public class EvaluationResult
         {
             public readonly float EvaluationValue;
+
             public EvaluationResult(float value)
             {
                 EvaluationValue = value;
