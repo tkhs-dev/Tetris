@@ -11,7 +11,7 @@ using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
 using static System.ConsoleColor;
-using static TetrisAI.Source.Evaluation;
+using static TetrisAI.Source.Evaluator;
 using static TetrisCore.Source.BlockUnit;
 using Cell = Alba.CsConsoleFormat.Cell;
 
@@ -19,28 +19,30 @@ namespace TetrisAI.Source
 {
     public class AITetrisController : IController
     {
-        private ILog logger;
-        private TetrisGame Game;
-        private Field field;
+        private ILog _logger;
+        private TetrisGame _game;
+        private Field _field;
+        private Evaluator _evaluator;
 
         //操作間隔:msec
         private int interval;
 
-        public AITetrisController(int interval)
+        public AITetrisController(Evaluator evaluator,int interval=1)
         {
-            logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            this._evaluator = evaluator;
             this.interval = interval;
         }
 
         public void initialize(TetrisGame game)
         {
-            Game = game;
+            _game = game;
         }
 
         public void InitController(Field field)
         {
-            Game.TimerEnabled = true;
-            this.field = field;
+            _game.TimerEnabled = true;
+            this._field = field;
             field.OnRoundEnd += OnRoundEnd;
             field.OnRoundStart += OnRoundStart;
         }
@@ -56,10 +58,10 @@ namespace TetrisAI.Source
                 List<Task<RoundResult>> field_tasks = positions
                     .Select(x => ExecuteFieldAsync(field, x))
                     .ToList();
-                this.logger.Debug("Round Start");
+                this._logger.Debug("Round Start");
 
                 RoundResult[] round_result = Task.WhenAll(field_tasks.Where(x => x.Status != TaskStatus.Canceled)).Result;
-                this.logger.Debug(sw.Elapsed);
+                this._logger.Debug(sw.Elapsed);
                 var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
                 var doc = new Document(
                     new Grid
@@ -81,15 +83,15 @@ namespace TetrisAI.Source
                 try
                 {
                     string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                    logger.Debug("\n" + text);
+                    _logger.Debug("\n" + text);
                 }
                 catch (Exception e) { };
                 sw.Restart();
                 List<Tuple<BlockPosition, EvaluationResult>> results = round_result
-                    .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, Evaluate(EvaluationItem.GetEvaluationItem(x))))
+                    .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, _evaluator.Evaluate(EvaluationItem.GetEvaluationItem(x))))
                     .OrderByDescending(x => x.Item2.EvaluationValue)
                     .ToList();
-                this.logger.Debug(sw.Elapsed);
+                this._logger.Debug(sw.Elapsed);
                 sw.Stop();
                 doc = new Document(
                     new Grid
@@ -111,7 +113,7 @@ namespace TetrisAI.Source
                 try
                 {
                     string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                    logger.Debug("\n" + text);
+                    _logger.Debug("\n" + text);
                 }
                 catch (Exception e) { };
                 if (results.Count == 0) return;
@@ -155,12 +157,12 @@ namespace TetrisAI.Source
                 Thread.Sleep(interval);
                 if (field.Object.Point.X!=position.Point.X)
                 {
-                    Game.Move((position.Point.X- field.Object.Point.X)>0?Directions.EAST:Directions.WEST);
+                    _game.Move((position.Point.X- field.Object.Point.X)>0?Directions.EAST:Directions.WEST);
                 }
                 Thread.Sleep(interval) ;
                 if (field.Object.Direction != position.Direction)
                 {
-                    Game.Rotate(true);
+                    _game.Rotate(true);
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
             }
@@ -174,7 +176,7 @@ namespace TetrisAI.Source
         }
         public void OnTimerTick()
         {
-            Game.Move(Directions.SOUTH);
+            _game.Move(Directions.SOUTH);
         }
     }
 }

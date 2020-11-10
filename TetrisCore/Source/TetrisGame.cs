@@ -30,6 +30,8 @@ namespace TetrisCore.Source
         public bool TimerEnabled { get; set; }
         private Timer timer;
 
+        public int MaxRound { get; set; }
+
         private IRenderer renderer;
         private IController controller;
 
@@ -40,6 +42,9 @@ namespace TetrisCore.Source
         private GameState _state;
 
         public GameState State => _state;
+
+        public delegate void OnGameEndEvent(object sender);
+        public event OnGameEndEvent OnGameEnd;
 
         static TetrisGame()
         {
@@ -87,13 +92,21 @@ namespace TetrisCore.Source
                  logger.Info($"Round {_state.Round} End");
                  _state.Round++;
                  _state.Score += result.Score;
-                 field.StartRound();
+                 if (MaxRound > 0 && _state.Round <= MaxRound)
+                 {
+                     timer.Stop();
+                     timer.Dispose();
+                     OnGameEnd?.Invoke(this);
+                     return;
+                 }
+                     field.StartRound();
              };
             field.OnGameOver += (object sender) =>
             {
                 logger.Debug("Game Over");
                 timer.Stop();
                 timer.Dispose();
+                OnGameEnd?.Invoke(this);
             };
         }
 
@@ -122,9 +135,9 @@ namespace TetrisCore.Source
         public Task<GameResult> WhenGameEnd()
         {
             var tcs = new TaskCompletionSource<GameResult>();
-            field.OnGameOver += (object sender) =>
+            OnGameEnd += (object sender) =>
             {
-                tcs.SetResult(new GameResult());
+                tcs.SetResult(new GameResult() { Score = State.Score });
             };
             return tcs.Task;
         }

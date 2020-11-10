@@ -2,7 +2,12 @@
 using GeneticSharp.Domain.Fitnesses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using TetrisAI.Source;
+using TetrisCore.Source;
+using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI_Trainer.Source.ga
 {
@@ -10,7 +15,19 @@ namespace TetrisAI_Trainer.Source.ga
     {
         public double Evaluate(IChromosome chromosome)
         {
-            throw new NotImplementedException();
+            const int sample = 3;
+            EvaluationNNParameter parameter = (chromosome as TetrisChromosome).GetParameter();
+            Evaluator evaluator = new Evaluator(parameter);
+            List<TetrisGame> games = Enumerable.Range(0, sample).Select(x => new TetrisGame(TetrisAITrainer.Logger)).ToList();
+            games.ForEach(x=> { x.SetController(new AITetrisController(evaluator)); });
+            games.ForEach(x => { x.MaxRound = 500; });
+            games.ForEach(x => { x.Start(); });
+            Task<GameResult>[] tasks = games.Select(x => x.WhenGameEnd()).ToArray();
+            Task.WaitAll(tasks);
+            GameResult[] results = tasks.Select(x => x.Result).ToArray();
+            double av = results.Average(x => x.Score);
+
+            return av;
         }
     }
 }

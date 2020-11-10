@@ -1,6 +1,7 @@
 ﻿using log4net;
 using TetrisAI.Source;
 using TetrisCore.Source;
+using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI_Trainer.Source
 {
@@ -15,7 +16,7 @@ namespace TetrisAI_Trainer.Source
         {
             logger = TetrisAITrainer.Logger;
             game = new TetrisGame(logger);
-            controller = new AITetrisController(2);
+            controller = new AITetrisController(new Evaluator(EvaluationNNParameter.CreateNew()),2);
 
             game.SetController(controller);
         }

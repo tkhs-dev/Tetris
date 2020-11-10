@@ -13,32 +13,29 @@ using Real = System.Single;
 
 namespace TetrisAI.Source
 {
-    public class Evaluation
+    public class Evaluator
     {
         public const int NumInput = 9;
         public const int NumMiddle = 5;
         public const int NumOutput = 1;
 
-        public static Task<EvaluationResult> EvaluateAsync(EvaluationItem item)
+        EvaluationNNParameter _parameter;
+        public Evaluator(EvaluationNNParameter parameter)
+        {
+            _parameter = parameter;
+        }
+
+        public Task<EvaluationResult> EvaluateAsync(EvaluationItem item)
         {
             return Task.Run(() => { return Evaluate(item); });
         }
 
-        public static EvaluationResult Evaluate(EvaluationItem item)
+        public EvaluationResult Evaluate(EvaluationItem item)
         {
             FunctionStack<Real> nn = new FunctionStack<Real>(
-                new Linear<Real>(NumInput, NumInput, false, new float[] {
-                    -0.1f,-0.1f,-0.1f,-0.1f, -0.1f, -0.1f, -0.1f, -0.1f, 0.1f,//objectHeight
-                    -0.2f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f, -0.25f,//numHole
-                    -0.25f, -0.2f, -0.25f, -0.25f, -0.2f, -0.25f, -0.25f, -0.25f, -0.25f,//holeDepth
-                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,//numDeadSpace
-                    -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,//wells
-                    2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f,//erodedPiece
-                    -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f, -0.15f,//numRowWithHole
-                    -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f,//rowTrans
-                    -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f, -0.35f }),//colTrans
-                new Linear<Real>(NumInput, NumMiddle, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f }),
-                new Linear<Real>(NumMiddle, NumOutput, false, new float[] { 0.25f, 0.25f, 0.25f, 0.25f, 0.25f })
+                new Linear<Real>(NumInput, NumInput, false, _parameter.InputLayerWeight),
+                new Linear<Real>(NumInput, NumMiddle, false, _parameter.MiddleLayerWeight),
+                new Linear<Real>(NumMiddle, NumOutput, false, _parameter.OutputLayerWeight)
                 );
             NdArray<Real> result = nn.Predict(item.GetReal())[0];
             return new EvaluationResult(result.Data[0]);
@@ -65,6 +62,10 @@ namespace TetrisAI.Source
                     OutputLayerWeight = new float[NumMiddle*NumOutput];
                     CreateParameter();
                 }
+            }
+            public static EvaluationNNParameter CreateNew()
+            {
+                return new EvaluationNNParameter();
             }
 
             private void CreateParameter()

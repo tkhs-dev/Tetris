@@ -10,7 +10,7 @@ using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Util;
-using static TetrisAI.Source.Evaluation;
+using static TetrisAI.Source.Evaluator;
 using static TetrisCore.Source.BlockObject;
 
 namespace TetrisPlayer
@@ -33,7 +33,6 @@ namespace TetrisPlayer
 
             field.OnRoundEnd += (object sender, RoundResult result) =>
             {
-                TetrisPlayer.GetLogger().Debug(Evaluation.EvaluateAsync(EvaluationItem.GetEvaluationItem(result)).Result.EvaluationValue);
             };
         }
 
