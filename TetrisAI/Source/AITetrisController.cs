@@ -1,5 +1,6 @@
 ﻿using Alba.CsConsoleFormat;
 using log4net;
+using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,12 +118,11 @@ namespace TetrisAI.Source
                 }
                 catch (Exception e) { };
                 if (results.Count == 0) return;
-                BlockPosition dest = results
+                var dest = results
                     .GroupBy(x => x.Item2.EvaluationValue)
                     .First()
-                    .Select(x => x.Item1)
                     .GetRandom();
-                TryPlaceAsync(field, dest);
+                TryPlaceAsync(field, dest.Item1);
             });
         }
 
@@ -173,6 +173,7 @@ namespace TetrisAI.Source
 
         public void OnRoundEnd(object sender, RoundResult result)
         {
+            //_logger.Info("\n"+result.FieldAtEnd.ToString());
         }
         public void OnTimerTick()
         {

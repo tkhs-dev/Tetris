@@ -54,7 +54,7 @@ namespace TetrisCore.Source
         public TetrisGame(ILog logger, int row = 10, int column = 20)
         {
             this.logger = logger;
-            logger.Info($"TetrisInstance Creating : row{row},column{column}");
+            logger.Debug($"TetrisInstance Creating : row{row},column{column}");
 
             ObjectPool = TetrisGame.DefaultObjectPool;
             _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
@@ -89,10 +89,10 @@ namespace TetrisCore.Source
             };
             field.OnRoundEnd += (object sender, RoundResult result) =>
              {
-                 logger.Info($"Round {_state.Round} End");
+                 logger.Debug($"Round {_state.Round} End");
                  _state.Round++;
                  _state.Score += result.Score;
-                 if (MaxRound > 0 && _state.Round <= MaxRound)
+                 if (MaxRound > 0 && _state.Round >= MaxRound)
                  {
                      timer.Stop();
                      timer.Dispose();
@@ -107,6 +107,10 @@ namespace TetrisCore.Source
                 timer.Stop();
                 timer.Dispose();
                 OnGameEnd?.Invoke(this);
+            };
+            OnGameEnd += (object sender) =>
+            {
+                logger.Debug(State.Score);
             };
         }
 
@@ -137,7 +141,7 @@ namespace TetrisCore.Source
             var tcs = new TaskCompletionSource<GameResult>();
             OnGameEnd += (object sender) =>
             {
-                tcs.SetResult(new GameResult() { Score = State.Score });
+                tcs.TrySetResult(new GameResult() { Score = State.Score ,Round = State.Round});
             };
             return tcs.Task;
         }
