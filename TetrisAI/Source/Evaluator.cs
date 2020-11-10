@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Extension;
@@ -43,11 +44,12 @@ namespace TetrisAI.Source
 
         public class EvaluationNNParameter
         {
-            public float[] InputLayerWeight { get; }
-            public float[] MiddleLayerWeight { get; }
-            public float[] OutputLayerWeight { get; }
+            public float[] InputLayerWeight { get; set; }
+            public float[] MiddleLayerWeight { get; set; }
+            public float[] OutputLayerWeight { get; set; }
 
-            public EvaluationNNParameter(float[] iw=null, float[] mw=null, float[] ow=null)
+            public EvaluationNNParameter() : this(new float[0],new float[0],new float[0]) { }
+            public EvaluationNNParameter(float[] iw, float[] mw, float[] ow)
             {
                 if ((iw!=null&&mw!=null&&ow!=null)&&(iw.Length >= NumInput*NumInput && mw.Length >= NumInput*NumMiddle && ow.Length >= NumMiddle*NumOutput))
                 {
@@ -66,6 +68,10 @@ namespace TetrisAI.Source
             public static EvaluationNNParameter CreateNew()
             {
                 return new EvaluationNNParameter();
+            }
+            public static XmlSerializer Serialize()
+            {
+                return new XmlSerializer(typeof(EvaluationNNParameter));
             }
 
             private void CreateParameter()
