@@ -20,7 +20,8 @@ namespace TetrisAI.Source
         public const int NumMiddle = 5;
         public const int NumOutput = 1;
 
-        EvaluationNNParameter _parameter;
+        private EvaluationNNParameter _parameter;
+
         public Evaluator(EvaluationNNParameter parameter)
         {
             _parameter = parameter;
@@ -48,10 +49,13 @@ namespace TetrisAI.Source
             public float[] MiddleLayerWeight { get; set; }
             public float[] OutputLayerWeight { get; set; }
 
-            public EvaluationNNParameter() : this(new float[0],new float[0],new float[0]) { }
+            public EvaluationNNParameter() : this(new float[0], new float[0], new float[0])
+            {
+            }
+
             public EvaluationNNParameter(float[] iw, float[] mw, float[] ow)
             {
-                if ((iw!=null&&mw!=null&&ow!=null)&&(iw.Length >= NumInput*NumInput && mw.Length >= NumInput*NumMiddle && ow.Length >= NumMiddle*NumOutput))
+                if ((iw != null && mw != null && ow != null) && (iw.Length >= NumInput * NumInput && mw.Length >= NumInput * NumMiddle && ow.Length >= NumMiddle * NumOutput))
                 {
                     InputLayerWeight = iw;
                     MiddleLayerWeight = mw;
@@ -59,16 +63,18 @@ namespace TetrisAI.Source
                 }
                 else
                 {
-                    InputLayerWeight = new float[NumInput*NumInput];
-                    MiddleLayerWeight = new float[NumInput*NumMiddle];
-                    OutputLayerWeight = new float[NumMiddle*NumOutput];
+                    InputLayerWeight = new float[NumInput * NumInput];
+                    MiddleLayerWeight = new float[NumInput * NumMiddle];
+                    OutputLayerWeight = new float[NumMiddle * NumOutput];
                     CreateParameter();
                 }
             }
+
             public static EvaluationNNParameter CreateNew()
             {
                 return new EvaluationNNParameter();
             }
+
             public static XmlSerializer Serialize()
             {
                 return new XmlSerializer(typeof(EvaluationNNParameter));
@@ -80,15 +86,15 @@ namespace TetrisAI.Source
                 float MIN_VALUE = -1f;
                 float MAX_VALUE = 1f;
 
-                for (int i = 0; i < NumInput*NumInput; i++)
+                for (int i = 0; i < NumInput * NumInput; i++)
                 {
                     InputLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
                 }
-                for (int i = 0; i < NumInput*NumMiddle; i++)
+                for (int i = 0; i < NumInput * NumMiddle; i++)
                 {
                     MiddleLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
                 }
-                for (int i = 0; i < NumMiddle*NumOutput; i++)
+                for (int i = 0; i < NumMiddle * NumOutput; i++)
                 {
                     OutputLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
                 }

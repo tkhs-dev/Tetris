@@ -34,9 +34,9 @@ namespace TetrisAI_Trainer.Source.ga
         {
             float[] iw = GetGenes().Skip(0).Take(NumInput * NumInput).Select(x => (float)x.Value).ToArray();
             float[] mw = GetGenes().Skip(NumInput * NumInput).Take(NumInput * NumMiddle).Select(x => (float)x.Value).ToArray();
-            float[] ow = GetGenes().Skip(NumInput * NumInput+ NumInput * NumMiddle).Take(NumMiddle * NumOutput).Select(x => (float)x.Value).ToArray();
+            float[] ow = GetGenes().Skip(NumInput * NumInput + NumInput * NumMiddle).Take(NumMiddle * NumOutput).Select(x => (float)x.Value).ToArray();
 
-            return new EvaluationNNParameter(iw,mw,ow);
+            return new EvaluationNNParameter(iw, mw, ow);
         }
     }
 }

@@ -6,14 +6,11 @@ using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
 using GeneticSharp.Infrastructure.Framework.Threading;
 using log4net;
-using Microsoft.VisualBasic.FileIO;
 using System;
-using System.Data;
 using System.IO;
 using TetrisAI.Source;
 using TetrisAI_Trainer.Source.ga;
 using TetrisCore.Source;
-using TetrisCore.Source.Config;
 using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI_Trainer.Source
@@ -36,7 +33,7 @@ namespace TetrisAI_Trainer.Source
 
         public void Start()
         {
-            var dirInfo = Directory.CreateDirectory("results/"+DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
+            var dirInfo = Directory.CreateDirectory("results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
             bool training = true;
             while (training)
             {
@@ -57,7 +54,7 @@ namespace TetrisAI_Trainer.Source
                     if (ga.Population.GenerationsNumber % 1 == 0)
                     {
                         ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
-                        config.Save(dirInfo.FullName,ga.Population.GenerationsNumber.ToString());
+                        config.Save(dirInfo.FullName, ga.Population.GenerationsNumber.ToString());
                     }
                 };
                 ga.TerminationReached += delegate
