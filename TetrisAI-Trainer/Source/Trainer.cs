@@ -12,6 +12,7 @@ using System.IO;
 using TetrisAI.Source;
 using TetrisAI_Trainer.Source.ga;
 using TetrisCore.Source;
+using TetrisCore.Source.Config;
 using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI_Trainer.Source
@@ -53,9 +54,9 @@ namespace TetrisAI_Trainer.Source
 
                     if (ga.Population.GenerationsNumber % 1 == 0)
                     {
-                        System.IO.StreamWriter sw = new System.IO.StreamWriter(dirInfo.FullName+"/"+ga.Population.GenerationsNumber.ToString(), false, new System.Text.UTF8Encoding(false));
-                        EvaluationNNParameter.Serialize().Serialize(sw, (ga.Population.BestChromosome as TetrisChromosome).GetParameter());
-                        }
+                        ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
+                        config.Save(dirInfo.FullName,ga.Population.GenerationsNumber.ToString());
+                    }
                 };
                 ga.TerminationReached += delegate
                 {

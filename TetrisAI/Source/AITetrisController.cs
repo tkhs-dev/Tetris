@@ -63,6 +63,7 @@ namespace TetrisAI.Source
 
                 RoundResult[] round_result = Task.WhenAll(field_tasks.Where(x => x.Status != TaskStatus.Canceled)).Result;
                 this._logger.Debug(sw.Elapsed);
+                /*
                 var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
                 var doc = new Document(
                     new Grid
@@ -86,7 +87,7 @@ namespace TetrisAI.Source
                     string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
                     _logger.Debug("\n" + text);
                 }
-                catch (Exception e) { };
+                catch (Exception e) { };*/
                 sw.Restart();
                 List<Tuple<BlockPosition, EvaluationResult>> results = round_result
                     .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, _evaluator.Evaluate(EvaluationItem.GetEvaluationItem(x))))
@@ -94,6 +95,7 @@ namespace TetrisAI.Source
                     .ToList();
                 this._logger.Debug(sw.Elapsed);
                 sw.Stop();
+                /*
                 doc = new Document(
                     new Grid
                     {
@@ -116,7 +118,7 @@ namespace TetrisAI.Source
                     string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
                     _logger.Debug("\n" + text);
                 }
-                catch (Exception e) { };
+                catch (Exception e) { };*/
                 if (results.Count == 0) return;
                 var dest = results
                     .GroupBy(x => x.Item2.EvaluationValue)
