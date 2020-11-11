@@ -75,8 +75,11 @@ namespace TetrisCore.Source
             };
             field.OnRoundStart += (object sender) =>
             {
-                _objectQueue.Enqueue(ObjectPool.GetRandom());
-                field.SetObject(_objectQueue.Dequeue());
+                lock (_objectQueue)
+                {
+                    _objectQueue.Enqueue(ObjectPool.GetRandom());
+                    field.SetObject(_objectQueue.Dequeue());
+                }
             };
             field.OnBlockPlaced += (object sender, BlockObject obj) =>
             {
