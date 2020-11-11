@@ -20,7 +20,7 @@ namespace TetrisAI_Trainer.Source.ga
             Evaluator evaluator = new Evaluator(parameter);
             List<TetrisGame> games = Enumerable.Range(0, sample).Select(x => new TetrisGame(TetrisAITrainer.Logger)).ToList();
             List<Task<GameResult>> tasks = new List<Task<GameResult>>(); 
-            Parallel.ForEach(games, async x => 
+            Parallel.ForEach(games, x => 
             {
                 x.SetController(new AITetrisController(evaluator));
                 x.MaxRound = 200;

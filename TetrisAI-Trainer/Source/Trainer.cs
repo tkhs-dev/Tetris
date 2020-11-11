@@ -4,6 +4,7 @@ using GeneticSharp.Domain.Mutations;
 using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
+using GeneticSharp.Infrastructure.Framework.Threading;
 using log4net;
 using Microsoft.VisualBasic.FileIO;
 using System;
@@ -35,14 +36,15 @@ namespace TetrisAI_Trainer.Source
 
         public void Start()
         {
-            var dirInfo = Directory.CreateDirectory(DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
+            var dirInfo = Directory.CreateDirectory("results/"+DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
             bool training = true;
             while (training)
             {
                 var termination = new FitnessStagnationTermination(5);
-                GeneticAlgorithm ga = new GeneticAlgorithm(new Population(10, 20, new TetrisChromosome()), new TetrisFitness(), new EliteSelection(), new UniformCrossover(), new UniformMutation());
+                GeneticAlgorithm ga = new GeneticAlgorithm(new Population(100, 200, new TetrisChromosome()), new TetrisFitness(), new EliteSelection(), new UniformCrossover(), new UniformMutation());
                 ga.Termination = termination;
                 var terminationName = ga.Termination.GetType().Name;
+                ga.TaskExecutor = new ParallelTaskExecutor();
                 ga.GenerationRan += delegate
                 {
                     var bestChromosome = ga.Population.BestChromosome;
