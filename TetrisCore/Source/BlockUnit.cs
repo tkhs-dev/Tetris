@@ -30,6 +30,8 @@ namespace TetrisCore.Source
         /// </summary>
         public ReadOnlyDictionary<Directions, int[,]> TransformedData { get; }
 
+        private Dictionary<BlockPosition,IReadOnlyList<Block>> BlockCache { get;}
+
         public BlockUnit(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
         { }
@@ -40,6 +42,7 @@ namespace TetrisCore.Source
             this._data = data;
 
             TransformedData = transformed;
+            BlockCache = new Dictionary<BlockPosition, IReadOnlyList<Block>>();
         }
 
         public int GetWidth(Directions direction)
@@ -107,12 +110,18 @@ namespace TetrisCore.Source
 
         public IReadOnlyList<Block> GetBlocks(BlockPosition position)
         {
-            return Enumerable.Range(0, TransformedData[position.Direction].GetLength(0))
+            if (BlockCache.ContainsKey(position))
+            {
+                return BlockCache[position];
+            }
+            var result = Enumerable.Range(0, TransformedData[position.Direction].GetLength(0))
                     .SelectMany(r => Enumerable.Range(0, _data.GetLength(1)).Select(c => new Point(r, c)))
                     .Where(x => TransformedData[position.Direction][x.X, x.Y] != 0)
                     .Select(x => new Point(x.X + position.Point.X, x.Y + position.Point.Y))
                     .Select(x => new Block(_color, x))
                     .ToArray();
+            BlockCache.Add(position,result);
+            return result;
         }
         public override string ToString()
         {

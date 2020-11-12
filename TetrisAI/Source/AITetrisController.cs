@@ -52,9 +52,7 @@ namespace TetrisAI.Source
         {
             await Task.Run(() =>
             {
-                var sw = new System.Diagnostics.Stopwatch();
                 Field field = (Field)sender;
-                sw.Restart();
                 List<BlockPosition> positions = field.GetPlaceablePositions(field.Object.Unit);
                 List<Task<RoundResult>> field_tasks = positions
                     .Select(x => ExecuteFieldAsync(field, x))
@@ -62,7 +60,7 @@ namespace TetrisAI.Source
                 this._logger.Debug("Round Start");
 
                 RoundResult[] round_result = Task.WhenAll(field_tasks.Where(x => x.Status != TaskStatus.Canceled)).Result;
-                this._logger.Debug(sw.Elapsed);
+                field_tasks.ForEach(x=>x.Dispose());
                 /*
                 var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
                 var doc = new Document(
@@ -88,13 +86,10 @@ namespace TetrisAI.Source
                     _logger.Debug("\n" + text);
                 }
                 catch (Exception e) { };*/
-                sw.Restart();
                 List<Tuple<BlockPosition, EvaluationResult>> results = round_result
                     .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, _evaluator.Evaluate(EvaluationItem.GetEvaluationItem(x))))
                     .OrderByDescending(x => x.Item2.EvaluationValue)
                     .ToList();
-                this._logger.Debug(sw.Elapsed);
-                sw.Stop();
                 /*
                 doc = new Document(
                     new Grid
@@ -124,7 +119,9 @@ namespace TetrisAI.Source
                     .GroupBy(x => x.Item2.EvaluationValue)
                     .First()
                     .GetRandom();
-                TryPlaceAsync(field, dest.Item1);
+                var task = TryPlaceAsync(field, dest.Item1);
+                task.Wait();
+                task.Dispose();
             });
         }
 
@@ -156,19 +153,19 @@ namespace TetrisAI.Source
             };
             while (!placed)
             {
-                Thread.Sleep(interval);
+                Task.Delay(interval).Wait();
                 if (field.Object.Point.X!=position.Point.X)
                 {
                     _game.Move((position.Point.X- field.Object.Point.X)>0?Directions.EAST:Directions.WEST);
                 }
-                Thread.Sleep(interval) ;
+                Task.Delay(interval).Wait() ;
                 if (field.Object.Direction != position.Direction)
                 {
                     _game.Rotate(true);
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
             }
-            Thread.Sleep(interval*2);
+            Task.Delay(interval*2).Wait();
             field.PlaceImmediately();
             return tcs.Task;
         }

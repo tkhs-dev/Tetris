@@ -28,6 +28,7 @@ namespace TetrisCore.Source
         public Queue<BlockUnit> ObjectQueue => _objectQueue;
 
         public bool TimerEnabled { get; set; }
+        public int TimerSpan { get; set; } = 700;
         private Timer timer;
 
         public int MaxRound { get; set; }
@@ -43,7 +44,7 @@ namespace TetrisCore.Source
 
         public GameState State => _state;
 
-        public delegate void OnGameEndEvent(object sender);
+        public delegate void OnGameEndEvent(object sender,GameResult result);
         public event OnGameEndEvent OnGameEnd;
 
         static TetrisGame()
@@ -57,10 +58,10 @@ namespace TetrisCore.Source
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
 
             ObjectPool = TetrisGame.DefaultObjectPool;
-            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
+            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(5));
 
             timer = new Timer();
-            timer.Interval = 700;
+            timer.Interval = TimerSpan;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
             Setting = new GameSetting(row, column);
@@ -98,8 +99,7 @@ namespace TetrisCore.Source
                  if (MaxRound > 0 && _state.Round >= MaxRound)
                  {
                      timer.Stop();
-                     timer.Dispose();
-                     OnGameEnd?.Invoke(this);
+                     OnGameEnd?.Invoke(this, new GameResult() { Score = State.Score, Round = State.Round });
                      return;
                  }
                      field.StartRound();
@@ -108,10 +108,9 @@ namespace TetrisCore.Source
             {
                 logger.Debug("Game Over");
                 timer.Stop();
-                timer.Dispose();
-                OnGameEnd?.Invoke(this);
+                OnGameEnd?.Invoke(this, new GameResult() { Score = State.Score, Round = State.Round });
             };
-            OnGameEnd += (object sender) =>
+            OnGameEnd += (object sender,GameResult result) =>
             {
                 logger.Debug(State.Score);
             };
@@ -135,16 +134,20 @@ namespace TetrisCore.Source
         {
             field.SetObject(ObjectPool.GetRandom());
             field.StartRound();
-            if (TimerEnabled) timer.Start();
+            if (TimerEnabled)
+            {
+                timer.Interval = TimerSpan;
+                timer.Start();
+            }
             Draw();
         }
 
         public Task<GameResult> WhenGameEnd()
         {
-            var tcs = new TaskCompletionSource<GameResult>();
-            OnGameEnd += (object sender) =>
+            var tcs = new TaskCompletionSource<GameResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+            OnGameEnd += (object sender,GameResult result) =>
             {
-                tcs.TrySetResult(new GameResult() { Score = State.Score ,Round = State.Round});
+                tcs.TrySetResult(result);
             };
             return tcs.Task;
         }
