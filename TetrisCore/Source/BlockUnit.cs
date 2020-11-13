@@ -29,8 +29,7 @@ namespace TetrisCore.Source
         /// 回転済みデータのキャッシュ
         /// </summary>
         public ReadOnlyDictionary<Directions, int[,]> TransformedData { get; }
-
-        private Dictionary<BlockPosition,IReadOnlyList<Block>> BlockCache { get;}
+        public ReadOnlyDictionary<Directions,ReadOnlyCollection<Block>> TransformedBlock { get; }
 
         public BlockUnit(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
@@ -42,7 +41,8 @@ namespace TetrisCore.Source
             this._data = data;
 
             TransformedData = transformed;
-            BlockCache = new Dictionary<BlockPosition, IReadOnlyList<Block>>();
+
+            TransformedBlock = new ReadOnlyDictionary<Directions,ReadOnlyCollection<Block>>(transformed.ToDictionary(x => x.Key, y => y.Value.ToJaggedArray().SelectMany((arry1, index1) => arry1.Select((val, index2) => new { Val = val, Point = new Point(index1, index2) })).Where(pair => pair.Val == 1).Select(pair => new Block(_color, pair.Point)).ToList().AsReadOnly()));
         }
 
         public int GetWidth(Directions direction)
@@ -110,18 +110,7 @@ namespace TetrisCore.Source
 
         public IReadOnlyList<Block> GetBlocks(BlockPosition position)
         {
-            if (BlockCache.ContainsKey(position))
-            {
-                return BlockCache[position];
-            }
-            var result = Enumerable.Range(0, TransformedData[position.Direction].GetLength(0))
-                    .SelectMany(r => Enumerable.Range(0, _data.GetLength(1)).Select(c => new Point(r, c)))
-                    .Where(x => TransformedData[position.Direction][x.X, x.Y] != 0)
-                    .Select(x => new Point(x.X + position.Point.X, x.Y + position.Point.Y))
-                    .Select(x => new Block(_color, x))
-                    .ToArray();
-            BlockCache.Add(position,result);
-            return result;
+            var result = TransformedBlock[position.Direction];
         }
         public override string ToString()
         {

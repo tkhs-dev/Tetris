@@ -120,8 +120,6 @@ namespace TetrisAI.Source
                     .First()
                     .GetRandom();
                 var task = TryPlaceAsync(field, dest.Item1);
-                task.Wait();
-                task.Dispose();
             });
         }
 
@@ -142,15 +140,10 @@ namespace TetrisAI.Source
 
             return tcs.Task;
         }
-        private Task<bool> TryPlaceAsync(Field field,BlockPosition position)
+        private bool TryPlaceAsync(Field field,BlockPosition position)
         {
             var tcs = new TaskCompletionSource<bool>();
             bool placed = false;
-            field.OnRoundEnd += (object sender, RoundResult result) =>
-            {
-                placed = true;
-                tcs.TrySetResult(result.Position.Equals(position));
-            };
             while (!placed)
             {
                 Task.Delay(interval).Wait();
@@ -167,7 +160,7 @@ namespace TetrisAI.Source
             }
             Task.Delay(interval*2).Wait();
             field.PlaceImmediately();
-            return tcs.Task;
+            return true;
         }
 
         public void OnRoundEnd(object sender, RoundResult result)
