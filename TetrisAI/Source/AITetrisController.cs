@@ -119,7 +119,7 @@ namespace TetrisAI.Source
                     .GroupBy(x => x.Item2.EvaluationValue)
                     .First()
                     .GetRandom();
-                var task = TryPlaceAsync(field, dest.Item1);
+                TryPlaceAsync(field, dest.Item1);
             });
         }
 
@@ -140,11 +140,17 @@ namespace TetrisAI.Source
 
             return tcs.Task;
         }
-        private bool TryPlaceAsync(Field field,BlockPosition position)
+        private Task<bool> TryPlaceAsync(Field field,BlockPosition position)
         {
             var tcs = new TaskCompletionSource<bool>();
             bool placed = false;
-            while (!placed)
+            field.OnBlockPlaced += (object sender,BlockObject obj) =>
+            {
+                placed = true;
+                tcs.TrySetResult(true);
+            };
+            int count = 0;
+            while (!placed&&count<=50)
             {
                 Task.Delay(interval).Wait();
                 if (field.Object.Point.X!=position.Point.X)
@@ -157,10 +163,11 @@ namespace TetrisAI.Source
                     _game.Rotate(true);
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
+                count++;
             }
             Task.Delay(interval*2).Wait();
             field.PlaceImmediately();
-            return true;
+            return tcs.Task;
         }
 
         public void OnRoundEnd(object sender, RoundResult result)

@@ -43,10 +43,10 @@ namespace TetrisAI_Trainer.Source
             /*while (training)
             {*/
                 var termination = new GenerationNumberTermination(100);
-                GeneticAlgorithm ga = new GeneticAlgorithm(new Population(10,20, new TetrisChromosome()) { GenerationStrategy = new PerformanceGenerationStrategy()}, new TetrisFitness(), new EliteSelection(), new UniformCrossover(), new UniformMutation());
+                GeneticAlgorithm ga = new GeneticAlgorithm(new Population(100,200, new TetrisChromosome()) { GenerationStrategy = new PerformanceGenerationStrategy()}, new TetrisFitness(), new EliteSelection(), new UniformCrossover(), new UniformMutation());
                 ga.Termination = termination;
                 var terminationName = ga.Termination.GetType().Name;
-                ga.TaskExecutor = new TplTaskExecutor() {};
+                ga.TaskExecutor = new ParallelTaskExecutor() {};
                 ga.GenerationRan += delegate
                 {
                     var time = sw2.Elapsed;

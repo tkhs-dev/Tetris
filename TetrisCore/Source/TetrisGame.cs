@@ -58,7 +58,7 @@ namespace TetrisCore.Source
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
 
             ObjectPool = TetrisGame.DefaultObjectPool;
-            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(5));
+            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
 
             timer = new Timer();
             timer.Interval = TimerSpan;
