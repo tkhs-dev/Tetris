@@ -15,7 +15,7 @@ namespace TetrisAI_Trainer.Source.ga
     {
         public double Evaluate(IChromosome chromosome)
         {
-            const int sample = 2;
+            const int sample = 4;
             EvaluationNNParameter parameter = (chromosome as TetrisChromosome).GetParameter();
             Evaluator evaluator = new Evaluator(parameter);
             List<TetrisGame> games = Enumerable.Range(0, sample).Select(x => new TetrisGame(TetrisAITrainer.Logger)).ToList();
@@ -37,7 +37,7 @@ namespace TetrisAI_Trainer.Source.ga
                 results.Add(x.WhenGameEnd().Result);
                 x.Dispose();
             });
-            double av = results.Average(x => x.Score+x.Round*x.Round*100);
+            double av = results.Average(x => x.Score);
             TetrisAITrainer.Logger.Info(av);
             return av;
         }
