@@ -28,11 +28,15 @@ namespace TetrisAI_Trainer.Source
         {
             logger = TetrisAITrainer.Logger;
             game = new TetrisGame(logger);
+
+            TrainerConfig config = new TrainerConfig() { NumSample=4,PopulationSize=100};
+            config.Save();
+            config.Load();
         }
 
         public void Start()
         {
-            var dirInfo = Directory.CreateDirectory("results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
+            var dirInfo = "results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss");
 
             logger.Info("Start training...");
             Stopwatch sw1 = new Stopwatch();
@@ -61,7 +65,7 @@ namespace TetrisAI_Trainer.Source
                     if (ga.Population.GenerationsNumber % 1 == 0)
                     {
                         ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
-                        config.Save(dirInfo.FullName, ga.Population.GenerationsNumber.ToString());
+                        config.Save(dirInfo, ga.Population.GenerationsNumber.ToString()+".xml");
                     }
                     sw2.Restart();
                     logger.Info($"Start Generation {ga.GenerationsNumber}....");
