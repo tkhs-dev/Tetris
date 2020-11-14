@@ -26,11 +26,15 @@ namespace TetrisAI_Trainer.Source
         {
             logger = TetrisAITrainer.Logger;
             game = new TetrisGame(logger);
+
+            TrainerConfig config = new TrainerConfig() { NumSample=4,PopulationSize=100};
+            config.Save();
+            config.Load();
         }
 
         public void Start()
         {
-            var dirInfo = Directory.CreateDirectory("results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss"));
+            var dirInfo = "results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss");
 
             logger.Info("Start training...");
             Stopwatch sw1 = new Stopwatch();
@@ -56,32 +60,32 @@ namespace TetrisAI_Trainer.Source
                 logger.Info($"EvolvingTime: {ga.TimeEvolving}");
                 logger.Info($"Speed (gen/sec): {ga.Population.GenerationsNumber / ga.TimeEvolving.TotalSeconds}");
 
-                if (ga.Population.GenerationsNumber % 1 == 0)
+                    if (ga.Population.GenerationsNumber % 1 == 0)
+                    {
+                        ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
+                        config.Save(dirInfo, ga.Population.GenerationsNumber.ToString()+".xml");
+                    }
+                    sw2.Restart();
+                    logger.Info($"Start Generation {ga.GenerationsNumber}....");
+                };
+                ga.TerminationReached += delegate
                 {
-                    ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
-                    config.Save(dirInfo.FullName, ga.Population.GenerationsNumber.ToString());
-                }
-                sw2.Restart();
+                    var total_time = sw1.Elapsed;
+                    sw1.Stop();
+                    sw2.Stop();
+                    var param = (ga.Population.BestChromosome as TetrisChromosome).GetParameter();
+                    logger.Info("Training Finished!!");
+                    logger.Info($"TotalGeneration:{ga.GenerationsNumber}");
+                    logger.Info($"Time:{total_time}");
+                    logger.Info("-----Result-----");
+                    logger.Info(param.InputLayerWeight);
+                    logger.Info(param.MiddleLayerWeight);
+                    logger.Info(param.OutputLayerWeight);
+                    training = false;
+                };
                 logger.Info($"Start Generation {ga.GenerationsNumber}....");
-            };
-            ga.TerminationReached += delegate
-            {
-                var total_time = sw1.Elapsed;
-                sw1.Stop();
-                sw2.Stop();
-                var param = (ga.Population.BestChromosome as TetrisChromosome).GetParameter();
-                logger.Info("Training Finished!!");
-                logger.Info($"TotalGeneration:{ga.GenerationsNumber}");
-                logger.Info($"Time:{total_time}");
-                logger.Info("-----Result-----");
-                logger.Info(param.InputLayerWeight);
-                logger.Info(param.MiddleLayerWeight);
-                logger.Info(param.OutputLayerWeight);
-                training = false;
-            };
-            logger.Info($"Start Generation {ga.GenerationsNumber}....");
-            sw2.Start();
-            ga.Start();
+                sw2.Start();
+                ga.Start();
             //}
             //game.Start();
             //game.WhenGameEnd().Wait();

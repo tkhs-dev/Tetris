@@ -7,7 +7,7 @@ using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI.Source
 {
-    public class ParameterConfig : ConfigBase
+    public class ParameterConfig : SerializableBase
     {
         public EvaluationNNParameter Parameter { get; set; }
         public override Type GetType()
@@ -16,7 +16,7 @@ namespace TetrisAI.Source
         }
         public static ParameterConfig Load(string path,string file_name)
         {
-            return ConfigBase.Load(typeof(ParameterConfig),path,file_name) as ParameterConfig;
+            return SerializableBase.Load(typeof(ParameterConfig),path,file_name) as ParameterConfig;
         }
     }
 }
