@@ -11,7 +11,7 @@ namespace TetrisAI_Trainer.Source.ga
         private const float MIN_VALUE = -1f;
         private const float MAX_VALUE = 1f;
 
-        public TetrisChromosome() : base(NumInput * NumInput + NumInput * NumMiddle + NumMiddle * NumOutput)
+        public TetrisChromosome() : base(NumInput * NumMiddle + NumMiddle * NumOutput)
         {
             for (int i = 0; i < Length; i++)
             {
@@ -32,11 +32,10 @@ namespace TetrisAI_Trainer.Source.ga
 
         public EvaluationNNParameter GetParameter()
         {
-            float[] iw = GetGenes().Skip(0).Take(NumInput * NumInput).Select(x => (float)x.Value).ToArray();
             float[] mw = GetGenes().Skip(NumInput * NumInput).Take(NumInput * NumMiddle).Select(x => (float)x.Value).ToArray();
             float[] ow = GetGenes().Skip(NumInput * NumInput + NumInput * NumMiddle).Take(NumMiddle * NumOutput).Select(x => (float)x.Value).ToArray();
 
-            return new EvaluationNNParameter(iw, mw, ow);
+            return new EvaluationNNParameter(mw, ow);
         }
     }
 }

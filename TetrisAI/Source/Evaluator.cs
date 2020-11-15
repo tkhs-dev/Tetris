@@ -35,7 +35,6 @@ namespace TetrisAI.Source
         public EvaluationResult Evaluate(EvaluationItem item)
         {
             FunctionStack<Real> nn = new FunctionStack<Real>(
-                new Linear<Real>(NumInput, NumInput, false, _parameter.InputLayerWeight),
                 new Linear<Real>(NumInput, NumMiddle, false, _parameter.MiddleLayerWeight),
                 new Linear<Real>(NumMiddle, NumOutput, false, _parameter.OutputLayerWeight)
                 );
@@ -45,25 +44,22 @@ namespace TetrisAI.Source
 
         public class EvaluationNNParameter
         {
-            public float[] InputLayerWeight { get; set; }
             public float[] MiddleLayerWeight { get; set; }
             public float[] OutputLayerWeight { get; set; }
 
-            public EvaluationNNParameter() : this(new float[0], new float[0], new float[0])
+            public EvaluationNNParameter() : this(new float[0], new float[0])
             {
             }
 
-            public EvaluationNNParameter(float[] iw, float[] mw, float[] ow)
+            public EvaluationNNParameter( float[] mw, float[] ow)
             {
-                if ((iw != null && mw != null && ow != null) && (iw.Length >= NumInput * NumInput && mw.Length >= NumInput * NumMiddle && ow.Length >= NumMiddle * NumOutput))
+                if ((mw != null && ow != null) && (mw.Length >= NumInput * NumMiddle && ow.Length >= NumMiddle * NumOutput))
                 {
-                    InputLayerWeight = iw;
                     MiddleLayerWeight = mw;
                     OutputLayerWeight = ow;
                 }
                 else
                 {
-                    InputLayerWeight = new float[NumInput * NumInput];
                     MiddleLayerWeight = new float[NumInput * NumMiddle];
                     OutputLayerWeight = new float[NumMiddle * NumOutput];
                     CreateParameter();
@@ -86,10 +82,6 @@ namespace TetrisAI.Source
                 float MIN_VALUE = -1f;
                 float MAX_VALUE = 1f;
 
-                for (int i = 0; i < NumInput * NumInput; i++)
-                {
-                    InputLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
-                }
                 for (int i = 0; i < NumInput * NumMiddle; i++)
                 {
                     MiddleLayerWeight[i] = (float)rnd.NextDouble() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE;
