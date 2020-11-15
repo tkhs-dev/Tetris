@@ -14,10 +14,10 @@ namespace TetrisAI_Trainer
 
             Trainer trainer = new Trainer();
             TrainerConfig config = new TrainerConfig() {
-                PopulationSize = 100,
-                NumSample = 8, 
-                MaxRound = 200, 
-                CrossoverProbability = 0.95f, 
+                PopulationSize = 50,
+                NumSample = 2, 
+                MaxRound = 50, 
+                CrossoverProbability = 0.5f, 
                 MutationProbability = 1f / 13f
             };
             config.Save();
