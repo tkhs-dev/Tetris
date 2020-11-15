@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -39,6 +40,17 @@ namespace TetrisCore.Source.Config
                     result =new XmlSerializer(type).Deserialize(deserializer) as SerializableBase;
                 }
             }
+            return result;
+        }
+        public override string ToString()
+        {
+            string result = GetType().Name+"{";
+            var property = GetType().GetProperties()
+                .Where(x => !x.CustomAttributes.Any(x => x.AttributeType == typeof(XmlIgnoreAttribute)))
+                .Select(x => $"{ x.Name}={x.GetValue(this)}")
+                .ToArray(); ;
+            result += String.Join(",",property);
+            result += "}";
             return result;
         }
     }

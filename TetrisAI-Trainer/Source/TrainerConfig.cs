@@ -23,6 +23,10 @@ namespace TetrisAI_Trainer.Source
         /// 最大のラウンド数
         /// </summary>
         public int MaxRound { get; set; }
+
+        public float CrossoverProbability { get; set; }
+
+        public float MutationProbability { get; set; }
         public TrainerConfig() : base("TrainerConfig")
         {
 

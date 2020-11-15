@@ -9,6 +9,7 @@ using log4net;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using TetrisAI.Source;
 using TetrisAI_Trainer.Source.ga;
 using TetrisCore.Source;
@@ -26,16 +27,13 @@ namespace TetrisAI_Trainer.Source
         {
             logger = TetrisAITrainer.Logger;
             game = new TetrisGame(logger);
-
-            TrainerConfig config = new TrainerConfig() { NumSample=4,PopulationSize=100};
-            config.Save();
-            config.Load();
         }
 
-        public void Start()
+        public void Start(TrainerConfig config)
         {
             var dirInfo = "results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss");
 
+            logger.Info(config.ToString());
             logger.Info("Start training...");
             Stopwatch sw1 = new Stopwatch();
             Stopwatch sw2 = new Stopwatch();
@@ -44,10 +42,12 @@ namespace TetrisAI_Trainer.Source
             bool training = true;
             /*while (training)
             {*/
-            var termination = new GenerationNumberTermination(100);
-            GeneticAlgorithm ga = new GeneticAlgorithm(new Population(100, 1000, new TetrisChromosome()), new TetrisFitness(), new EliteSelection(), new TwoPointCrossover(), new ReverseSequenceMutation());
+            var termination = new FitnessStagnationTermination(100);
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new AlternatingPositionCrossover(), new InsertionMutation());
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
+            ga.CrossoverProbability = config.CrossoverProbability;
+            ga.MutationProbability = config.MutationProbability;
             ga.TaskExecutor = new TplTaskExecutor() { };
             ga.GenerationRan += delegate
             {
@@ -78,7 +78,6 @@ namespace TetrisAI_Trainer.Source
                     logger.Info($"TotalGeneration:{ga.GenerationsNumber}");
                     logger.Info($"Time:{total_time}");
                     logger.Info("-----Result-----");
-                    logger.Info(param.InputLayerWeight);
                     logger.Info(param.MiddleLayerWeight);
                     logger.Info(param.OutputLayerWeight);
                     training = false;
