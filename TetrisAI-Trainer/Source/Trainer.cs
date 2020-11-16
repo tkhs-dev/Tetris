@@ -52,6 +52,11 @@ namespace TetrisAI_Trainer.Source
             ga.GenerationRan += delegate
             {
                 var time = sw2.Elapsed;
+                if (ga.Population.GenerationsNumber % 1 == 0)
+                {
+                    var genResult= GenerationResult.Create(ga,time);
+                    genResult.Save($"results/{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}", genResult.CreateFileName());
+                }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");
                 logger.Info($"Generations: {ga.Population.GenerationsNumber}");
@@ -60,14 +65,9 @@ namespace TetrisAI_Trainer.Source
                 logger.Info($"EvolvingTime: {ga.TimeEvolving}");
                 logger.Info($"Speed (gen/sec): {ga.Population.GenerationsNumber / ga.TimeEvolving.TotalSeconds}");
 
-                    if (ga.Population.GenerationsNumber % 1 == 0)
-                    {
-                        ParameterConfig config = new ParameterConfig() { Parameter = (bestChromosome as TetrisChromosome).GetParameter() };
-                        config.Save(dirInfo, ga.Population.GenerationsNumber.ToString()+".xml");
-                    }
-                    sw2.Restart();
-                    logger.Info($"Start Generation {ga.GenerationsNumber}....");
-                };
+                sw2.Restart();
+                logger.Info($"Start Generation {ga.GenerationsNumber}....");
+            };
                 ga.TerminationReached += delegate
                 {
                     var total_time = sw1.Elapsed;

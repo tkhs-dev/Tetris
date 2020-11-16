@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using TetrisCore;
 using TetrisCore.Source;
+using TetrisCore.Source.Config;
 using TetrisCore.Source.Extension;
 
 using Real = System.Single;
@@ -42,7 +43,7 @@ namespace TetrisAI.Source
             return new EvaluationResult(result.Data[0]);
         }
 
-        public class EvaluationNNParameter
+        public class EvaluationNNParameter : SerializableBase
         {
             public float[] MiddleLayerWeight { get; set; }
             public float[] OutputLayerWeight { get; set; }

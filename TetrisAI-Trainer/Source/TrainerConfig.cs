@@ -31,9 +31,5 @@ namespace TetrisAI_Trainer.Source
         {
 
         }
-        public override Type GetType()
-        {
-            return typeof(TrainerConfig);
-        }
     }
 }

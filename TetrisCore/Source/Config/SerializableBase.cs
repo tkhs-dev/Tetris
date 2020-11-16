@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace TetrisCore.Source.Config
 {
-    public abstract class SerializableBase: ISerializable
+    public abstract class SerializableBase
     {
         [XmlIgnoreAttribute]
         protected XmlSerializer Serializer { get; }
@@ -17,7 +17,6 @@ namespace TetrisCore.Source.Config
         {
             Serializer = new XmlSerializer(GetType());
         }
-        public abstract Type GetType();
         public bool Save(string path,string file_name)
         {
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
