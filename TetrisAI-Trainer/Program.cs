@@ -13,14 +13,8 @@ namespace TetrisAI_Trainer
             log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo("log4net.config"));
 
             Trainer trainer = new Trainer();
-            TrainerConfig config = new TrainerConfig() {
-                PopulationSize = 50,
-                NumSample = 2, 
-                MaxRound = 50, 
-                CrossoverProbability = 0.5f, 
-                MutationProbability = 1f / 13f
-            };
-            config.Save();
+            TrainerConfig config = new TrainerConfig();
+            if(!config.Load())config.Save();
             trainer.Start(config);
         }
     }

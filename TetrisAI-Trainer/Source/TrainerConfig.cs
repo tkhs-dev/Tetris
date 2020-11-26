@@ -31,5 +31,17 @@ namespace TetrisAI_Trainer.Source
         {
 
         }
+
+        public override ConfigBase GetDefault()
+        {
+            return new TrainerConfig()
+            {
+                PopulationSize = 50,
+                NumSample = 2,
+                MaxRound = 50,
+                CrossoverProbability = 0.5f,
+                MutationProbability = 1f / 13f
+            };
+        }
     }
 }

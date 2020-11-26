@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -20,9 +21,20 @@ namespace TetrisCore.Source.Config
         {
             return base.Save(ConfigDirectory,Name+".xml");
         }
-        public ConfigBase Load()
+        public bool Load()
         {
-            return SerializableBase.Load(GetType(),ConfigDirectory,Name+".xml") as ConfigBase;
+            var value = SerializableBase.Load(GetType(), ConfigDirectory, Name + ".xml") as ConfigBase;
+            SetValue(value ?? GetDefault());
+            return value==null;
         }
+        protected void SetValue(ConfigBase value)
+        {
+            var type = value.GetType();
+            foreach(var prop in type.GetProperties().Where(x=>!x.CustomAttributes.Any(x=>x.AttributeType==typeof(XmlIgnoreAttribute))))
+            {
+                this.GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(value));
+            }
+        }
+        public abstract ConfigBase GetDefault();
     }
 }
