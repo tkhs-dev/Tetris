@@ -55,7 +55,7 @@ namespace TetrisAI_Trainer.Source
                 if (ga.Population.GenerationsNumber % 1 == 0)
                 {
                     var genResult= GenerationResult.Create(ga,time);
-                    genResult.Save($"results/{DateTime.Now.ToString("yyyy-MM-dd-HHmmss")}", genResult.CreateFileName());
+                    genResult.Save(dirInfo, genResult.CreateFileName());
                 }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");
