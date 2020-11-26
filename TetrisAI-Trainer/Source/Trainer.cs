@@ -39,9 +39,6 @@ namespace TetrisAI_Trainer.Source
             Stopwatch sw2 = new Stopwatch();
 
             sw1.Start();
-            bool training = true;
-            /*while (training)
-            {*/
             var termination = new FitnessStagnationTermination(100);
             GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new AlternatingPositionCrossover(), new InsertionMutation());
             ga.Termination = termination;
@@ -80,14 +77,10 @@ namespace TetrisAI_Trainer.Source
                     logger.Info("-----Result-----");
                     logger.Info(param.MiddleLayerWeight);
                     logger.Info(param.OutputLayerWeight);
-                    training = false;
                 };
                 logger.Info($"Start Generation {ga.GenerationsNumber}....");
                 sw2.Start();
                 ga.Start();
-            //}
-            //game.Start();
-            //game.WhenGameEnd().Wait();
         }
     }
 }
