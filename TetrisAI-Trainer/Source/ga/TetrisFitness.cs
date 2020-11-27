@@ -71,7 +71,7 @@ namespace TetrisAI_Trainer.Source.ga
                 x.Dispose();
             });
              */
-            double av = results.Average(x => x.Score+x.Round*x.Round);
+            double av = results.Average(x => x.Score);
             TetrisAITrainer.Logger.Info(av);
             return av;
         }

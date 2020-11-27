@@ -40,7 +40,7 @@ namespace TetrisAI_Trainer.Source
 
             sw1.Start();
             var termination = new FitnessStagnationTermination(100);
-            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new AlternatingPositionCrossover(), new InsertionMutation());
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new InsertionMutation());
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
             ga.CrossoverProbability = config.CrossoverProbability;
@@ -53,6 +53,7 @@ namespace TetrisAI_Trainer.Source
                 {
                     var genResult= GenerationResult.Create(ga,time);
                     genResult.Save(dirInfo, genResult.CreateFileName());
+                    genResult.Parameter.Save(dirInfo,"params.xml");
                 }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");
