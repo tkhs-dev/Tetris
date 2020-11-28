@@ -26,6 +26,6 @@ jobs:
       if: success()
       with:
         name: home/runner/work/Tetris/Tetris/TetrisAI-Trainer/bin/Release/net5.0/
-        path: ./home/runner/work/Tetris/Tetris/TetrisAI-Trainer/bin/Release/net5.0/
+        path: TetrisAI-Trainer/bin/Release/net5.0/
     - name: Test
       run: dotnet test TetrisAI-Trainer --no-restore --verbosity normal
