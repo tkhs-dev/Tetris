@@ -1,10 +1,7 @@
 name: Publish-Trainer
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,6 +15,12 @@ jobs:
       with:
         dotnet-version: 5.0.100
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore TetrisAI-Trainer
     - name: Publish
-      run: dotnet publish --configuration Release --no-restore -r win-x64
+      run: dotnet publish TetrisAI-Trainer --configuration Release --no-restore -r win-x64
+    - name: Save Artifacts
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: publish
+        path: TetrisAI-Trainer/bin/Release/net5.0/
