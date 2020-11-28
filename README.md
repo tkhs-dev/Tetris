@@ -1,4 +1,5 @@
 # 課題研究 テトリスを人工知能でプレイ
+![.NET Core](https://github.com/tkhs-dev/Tetris/workflows/.NET%20Core/badge.svg)
 [![GitHub version](https://badge.fury.io/gh/tkhs-dev%2FTetris.svg)](https://badge.fury.io/gh/tkhs-dev%2FTetris)
 ![GitHub issues](https://img.shields.io/github/issues/tkhs-dev/Tetris)
 ![Nuget](https://img.shields.io/nuget/v/log4net?label=log4net)
