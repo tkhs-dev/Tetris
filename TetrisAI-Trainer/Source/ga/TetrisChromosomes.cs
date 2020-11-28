@@ -32,8 +32,8 @@ namespace TetrisAI_Trainer.Source.ga
 
         public EvaluationNNParameter GetParameter()
         {
-            float[] mw = GetGenes().Skip(NumInput * NumInput).Take(NumInput * NumMiddle).Select(x => (float)x.Value).ToArray();
-            float[] ow = GetGenes().Skip(NumInput * NumInput + NumInput * NumMiddle).Take(NumMiddle * NumOutput).Select(x => (float)x.Value).ToArray();
+            float[] mw = GetGenes().Take(NumInput * NumMiddle).Select(x => (float)x.Value).ToArray();
+            float[] ow = GetGenes().Skip(NumInput * NumMiddle).Take(NumMiddle * NumOutput).Select(x => (float)x.Value).ToArray();
 
             return new EvaluationNNParameter(mw, ow);
         }
