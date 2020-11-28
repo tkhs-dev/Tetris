@@ -25,7 +25,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        name: home/runner/work/Tetris/Tetris/TetrisAI-Trainer/bin/Release/net5.0/
+        name: bin
         path: TetrisAI-Trainer/bin/Release/net5.0/
     - name: Test
       run: dotnet test TetrisAI-Trainer --no-restore --verbosity normal
