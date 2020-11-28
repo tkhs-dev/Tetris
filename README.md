@@ -1,4 +1,9 @@
 # 課題研究 テトリスを人工知能でプレイ
+![.NET Core](https://github.com/tkhs-dev/Tetris/workflows/.NET%20Core/badge.svg)
+[![GitHub version](https://badge.fury.io/gh/tkhs-dev%2FTetris.svg)](https://badge.fury.io/gh/tkhs-dev%2FTetris)
+![GitHub issues](https://img.shields.io/github/issues/tkhs-dev/Tetris)
+![Nuget](https://img.shields.io/nuget/v/log4net?label=log4net)
+![Nuget](https://img.shields.io/nuget/v/geneticsharp?label=GeneticSharp)
 
 ## 概要
 次の設置可能な盤面をすべて予想し、ニューラルネットワークでその盤面の評価値を算出し最も評価が高い物を次の行動として採用する。
@@ -24,6 +29,7 @@ Windows .Formsを使用したシングルプレイ用のプレイヤー
   * フィールド上の穴の数
   * 穴のある列の数
   * 穴の上のブロックの数
+  * 入り組んだスペースの数
   * 設置したオブジェクトの高さ
   * 消されたラインの数
   * 設置したオブジェクトから消えたブロックの数
@@ -31,12 +37,13 @@ Windows .Formsを使用したシングルプレイ用のプレイヤー
   * Y方向のブロックの変化の合計
   #### 実装
   * KelpNetを使用
-  * 入力層:8 中間層:未定 出力層:1
-  * 活性化関数: 恒等関数(予定)
+  * 入力層:9 中間層:5 出力層:1
+  * 活性化関数: 恒等関数
 ### 遺伝的アルゴリズム
   #### 目的
   * ニューラルネットワークの各バイアスを適切に調整する。
   #### 実装
-  * GeneticSharpを使用(予定)
-  * 三試合の平均スコアが最も高い個体を選定
-  * 突然変異なし
+  * GeneticSharpを使用
+  * 数試合の平均スコアを適応度とする
+  * 交叉 均一交配
+  * 突然変異 0.1%

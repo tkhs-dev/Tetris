@@ -1,0 +1,26 @@
+name: Publish-Trainer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore TetrisAI-Trainer
+    - name: Publish
+      run: dotnet publish TetrisAI-Trainer --configuration Release -r win-x64 --no-self-contained
+    - name: Save Artifacts
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: publish
+        path: TetrisAI-Trainer/bin/Release/net5.0/
