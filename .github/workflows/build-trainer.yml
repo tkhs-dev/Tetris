@@ -20,12 +20,6 @@ jobs:
     - name: Install dependencies
       run: dotnet restore TetrisAI-Trainer
     - name: Build
-      run: dotnet build TetrisAI-Trainer --configuration Release --no-restore --runtime win-x64
-    - name: Save Artifacts
-      uses: actions/upload-artifact@v2
-      if: success()
-      with:
-        name: bin
-        path: TetrisAI-Trainer/bin/Release/net5.0/
+      run: dotnet build TetrisAI-Trainer --configuration Release --no-restore
     - name: Test
       run: dotnet test TetrisAI-Trainer --no-restore --verbosity normal
