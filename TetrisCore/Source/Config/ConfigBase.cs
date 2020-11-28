@@ -25,7 +25,7 @@ namespace TetrisCore.Source.Config
         {
             var value = SerializableBase.Load(GetType(), ConfigDirectory, Name + ".xml") as ConfigBase;
             SetValue(value ?? GetDefault());
-            return value==null;
+            return value!=null;
         }
         protected void SetValue(ConfigBase value)
         {
