@@ -1,5 +1,5 @@
 # 課題研究 テトリスを人工知能でプレイ
-[![NuGet version](https://badge.fury.io/nu/Net.svg)](https://badge.fury.io/nu/Net)
+[![NuGet version](https://badge.fury.io/nu/log4net.svg)](https://badge.fury.io/nu/log4net)
 
 ## 概要
 次の設置可能な盤面をすべて予想し、ニューラルネットワークでその盤面の評価値を算出し最も評価が高い物を次の行動として採用する。
