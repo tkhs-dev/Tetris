@@ -39,8 +39,8 @@ namespace TetrisAI_Trainer.Source
             Stopwatch sw2 = new Stopwatch();
 
             sw1.Start();
-            var termination = new FitnessStagnationTermination(100);
-            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new InsertionMutation());
+            var termination = new FitnessStagnationTermination(15);
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new UniformMutation());
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
             ga.CrossoverProbability = config.CrossoverProbability;
