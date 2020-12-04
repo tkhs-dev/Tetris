@@ -15,6 +15,7 @@ namespace TetrisAI_Trainer.Source
         /// </summary>
         public DateTime Date { get; set; }
         public TimeSpan ElapsedTime { get; set; }
+        public TimeSpan TotalTime { get; set; }
         public int Generation { get; set; }
         public double? Fitness { get; set; }
         public EvaluationNNParameter Parameter {get;set;}
@@ -31,6 +32,7 @@ namespace TetrisAI_Trainer.Source
             {
                 Date = DateTime.Now,
                 ElapsedTime = time,
+                TotalTime = ga.TimeEvolving,
                 Generation = ga.GenerationsNumber,
                 Fitness = ga.BestChromosome.Fitness,
                 Parameter = (ga.BestChromosome as TetrisChromosome).GetParameter()

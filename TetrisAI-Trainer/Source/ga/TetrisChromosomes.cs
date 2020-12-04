@@ -18,6 +18,14 @@ namespace TetrisAI_Trainer.Source.ga
                 ReplaceGene(i, GenerateGene(i));
             }
         }
+        public TetrisChromosome(EvaluationNNParameter param): base(NumInput * NumMiddle + NumMiddle * NumOutput)
+        {
+            float[] p = param.Flatten();
+            for (int i = 0; i < Length; i++)
+            {
+                ReplaceGene(i, new Gene(p[i]));
+            }
+        }
 
         public override IChromosome CreateNew()
         {

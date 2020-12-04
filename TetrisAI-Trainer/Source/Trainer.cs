@@ -20,15 +20,25 @@ namespace TetrisAI_Trainer.Source
     {
         private ILog logger;
 
-        private TetrisGame game;
-        private AITetrisController controller;
+        private int initialGeneration;
+        private TimeSpan initialTime;
+        private TetrisChromosome initialChromosome;
 
         public Trainer()
         {
             logger = TetrisAITrainer.Logger;
-            game = new TetrisGame(logger);
-        }
 
+            initialGeneration = 0;
+            initialTime = TimeSpan.Zero;
+        }
+        public void Continuation(GenerationResult generation)
+        {
+            initialGeneration = generation.Generation;
+            initialTime = generation.TotalTime;
+            initialChromosome = new TetrisChromosome(generation.Parameter);
+
+            logger.Info($"Continue a training(Date:{generation.Date},Generation:{generation.Generation})");
+        }
         public void Start(TrainerConfig config)
         {
             var dirInfo = "results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss");
@@ -40,7 +50,9 @@ namespace TetrisAI_Trainer.Source
 
             sw1.Start();
             var termination = new FitnessStagnationTermination(15);
-            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, new TetrisChromosome()), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new UniformMutation());
+            TetrisChromosome adamChromosome = initialChromosome ?? new TetrisChromosome(); 
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, adamChromosome), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new UniformMutation());
+            ga.TimeEvolving.Add(initialTime);
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
             ga.CrossoverProbability = config.CrossoverProbability;
@@ -57,14 +69,14 @@ namespace TetrisAI_Trainer.Source
                 }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");
-                logger.Info($"Generations: {ga.Population.GenerationsNumber}");
+                logger.Info($"Generations: {ga.Population.GenerationsNumber+initialGeneration}");
                 logger.Info($"Fitness: {bestChromosome.Fitness}");
                 logger.Info($"Time:{time}");
                 logger.Info($"EvolvingTime: {ga.TimeEvolving}");
                 logger.Info($"Speed (gen/sec): {ga.Population.GenerationsNumber / ga.TimeEvolving.TotalSeconds}");
 
                 sw2.Restart();
-                logger.Info($"Start Generation {ga.GenerationsNumber}....");
+                logger.Info($"Start Generation {ga.GenerationsNumber+initialGeneration}....");
             };
                 ga.TerminationReached += delegate
                 {

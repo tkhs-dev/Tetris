@@ -66,6 +66,10 @@ namespace TetrisAI.Source
                     CreateParameter();
                 }
             }
+            public float[] Flatten()
+            {
+                return MiddleLayerWeight.Concat(OutputLayerWeight).ToArray();
+            }
 
             public static EvaluationNNParameter CreateNew()
             {
