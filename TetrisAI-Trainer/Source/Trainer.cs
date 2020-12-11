@@ -91,7 +91,7 @@ namespace TetrisAI_Trainer.Source
                     logger.Info(param.MiddleLayerWeight);
                     logger.Info(param.OutputLayerWeight);
                 };
-                logger.Info($"Start Generation {ga.GenerationsNumber}....");
+                logger.Info($"Start Generation {ga.GenerationsNumber + initialGeneration}....");
                 sw2.Start();
                 ga.Start();
         }
