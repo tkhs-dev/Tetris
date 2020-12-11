@@ -18,10 +18,9 @@ using Cell = Alba.CsConsoleFormat.Cell;
 
 namespace TetrisAI.Source
 {
-    public class AITetrisController : IController
+    public class AITetrisController : ControllerBase
     {
         private ILog _logger;
-        private TetrisGame _game;
         private Field _field;
         private Evaluator _evaluator;
 
@@ -35,12 +34,12 @@ namespace TetrisAI.Source
             this.interval = interval;
         }
 
-        public void initialize(TetrisGame game)
+        public override void initialize(TetrisGame game)
         {
             _game = game;
         }
 
-        public void InitController(Field field)
+        public override void InitController(Field field)
         {
             _game.TimerEnabled = true;
             this._field = field;
@@ -174,7 +173,7 @@ namespace TetrisAI.Source
         {
             //_logger.Info("\n"+result.FieldAtEnd.ToString());
         }
-        public void OnTimerTick()
+        public override void OnTimerTick()
         {
             _game.Move(Directions.SOUTH);
         }

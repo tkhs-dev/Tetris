@@ -6,9 +6,14 @@ namespace TetrisCore.Source.Api
 {
     public abstract class ControllerBase : IController
     {
+        protected TetrisGame _game;
         public abstract void InitController(Field field);
-        public abstract void initialize(TetrisGame game);
         public abstract void OnTimerTick();
+
+        public void initialize(TetrisGame game)
+        {
+            _game = game;
+        }
 
         //コントロール
         public bool Move(BlockUnit.Directions direction)
