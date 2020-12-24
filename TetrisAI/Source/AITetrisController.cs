@@ -21,7 +21,6 @@ namespace TetrisAI.Source
     public class AITetrisController : ControllerBase
     {
         private ILog _logger;
-        private Field _field;
         private Evaluator _evaluator;
 
         //操作間隔:msec
@@ -34,15 +33,10 @@ namespace TetrisAI.Source
             this.interval = interval;
         }
 
-        public override void initialize(TetrisGame game)
-        {
-            _game = game;
-        }
-
         public override void InitController(Field field)
         {
+            base.InitController(field);
             _game.TimerEnabled = true;
-            this._field = field;
             field.OnRoundEnd += OnRoundEnd;
             field.OnRoundStart += OnRoundStart;
         }

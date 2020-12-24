@@ -15,8 +15,9 @@ using static TetrisCore.Source.BlockObject;
 
 namespace TetrisPlayer
 {
-    public partial class TetrisDX : TetrisDXBase, IDisposable, IController
+    public partial class TetrisDX : TetrisDXBase, IDisposable
     {
+        public DXPlayerController Controller;
         public TetrisDX()
         {
             // デザイナ設定反映
@@ -24,21 +25,6 @@ namespace TetrisPlayer
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
 
             //初期化
-        }
-
-        public void InitController(Field field)
-        {
-            //タイマーON
-            game.TimerEnabled = true;
-
-            field.OnRoundEnd += (object sender, RoundResult result) =>
-            {
-            };
-        }
-
-        public void OnTimerTick()
-        {
-            game.Move(BlockUnit.Directions.SOUTH);
         }
 
         public override void MainLoop()
@@ -128,24 +114,24 @@ namespace TetrisPlayer
                 switch (key.Key)
                 {
                     case Key.Left:
-                        game.Move(BlockUnit.Directions.WEST);
+                        Controller.Move(BlockUnit.Directions.WEST);
                         break;
 
                     case Key.Right:
-                        game.Move(BlockUnit.Directions.EAST);
+                        Controller.Move(BlockUnit.Directions.EAST);
                         break;
 
                     case Key.Up:
-                        game.Rotate(true);
+                        Controller.Rotate(true);
                         break;
 
                     case Key.Down:
-                        game.Rotate(false);
+                        Controller.Rotate(false);
                         break;
 
                     case Key.Return:
                     case Key.NumberPadEnter:
-                        game.Place();
+                        Controller.Place();
                         break;
                 }
             }

@@ -1,34 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TetrisCore.Source.Api
+﻿namespace TetrisCore.Source.Api
 {
     public abstract class ControllerBase : IController
     {
         protected TetrisGame _game;
-        public abstract void InitController(Field field);
-        public abstract void OnTimerTick();
+        protected Field _field;
 
-        public void initialize(TetrisGame game)
+        public virtual void initialize(TetrisGame game)
         {
             _game = game;
+        }
+
+        public virtual void InitController(Field field)
+        {
+            _field = field;
+        }
+        public virtual void OnTimerTick()
+        {
+            _game.Move(BlockUnit.Directions.SOUTH);
         }
 
         //コントロール
         public bool Move(BlockUnit.Directions direction)
         {
-            return field.Move(direction);
+            return _field.Move(direction);
         }
 
         public void Place()
         {
-            field.PlaceImmediately();
+            _field.PlaceImmediately();
         }
 
         public bool Rotate(bool clockwise)
         {
-            return field.Rotate(clockwise ? 1 : -1);
+            return _field.Rotate(clockwise ? 1 : -1);
         }
     }
 }
