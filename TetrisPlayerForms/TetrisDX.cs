@@ -25,6 +25,7 @@ namespace TetrisPlayer
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom);
 
             //初期化
+            Controller = new DXPlayerController();
         }
 
         public override void MainLoop()
