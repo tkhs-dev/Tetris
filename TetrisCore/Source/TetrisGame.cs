@@ -153,17 +153,17 @@ namespace TetrisCore.Source
         }
 
         //操作
-        public bool Move(BlockUnit.Directions direction)
+        internal bool Move(BlockUnit.Directions direction)
         {
             return field.Move(direction);
         }
 
-        public void Place()
+        internal void Place()
         {
             field.PlaceImmediately();
         }
 
-        public bool Rotate(bool clockwise)
+        internal bool Rotate(bool clockwise)
         {
             return field.Rotate(clockwise ? 1 : -1);
         }

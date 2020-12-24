@@ -22,17 +22,17 @@
         //コントロール
         public bool Move(BlockUnit.Directions direction)
         {
-            return _field.Move(direction);
+            return _game.Move(direction);
         }
 
         public void Place()
         {
-            _field.PlaceImmediately();
+            _game.Place();
         }
 
         public bool Rotate(bool clockwise)
         {
-            return _field.Rotate(clockwise ? 1 : -1);
+            return _game.Rotate(clockwise);
         }
     }
 }
