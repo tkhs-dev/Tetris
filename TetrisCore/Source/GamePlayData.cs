@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Xml.Serialization;
 using TetrisCore.Source.Config;
 using TetrisCore.Source.Extension;
@@ -23,12 +24,16 @@ namespace TetrisCore.Source
         /// <summary>
         /// オブジェクトプール
         /// </summary>
-        public List<SerializableBlockUnit> ObjectPool { get; set; }
+        public List<SerializableBlockUnit> SerializableObjectPool { get; set; }
+        [XmlIgnore]
+        public IReadOnlyList<BlockUnit> ObjectPool { get => SerializableObjectPool.Select(x => x.GetBlockUnit()).ToList(); set => SerializableObjectPool = value.Select((x, Index) => { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x); u.ID = Index; return u; }).ToList(); }
 
         /// <summary>
         /// 出現したブロック
         /// </summary>
-        public List<int> ObjectsQueue { get; set; }
+        public List<SerializableQueue> SerializableObjectQueue { get; set; }
+        [XmlIgnore]
+        public Queue<BlockUnit> ObjectQueue { get => new Queue<BlockUnit>(SerializableObjectQueue.OrderBy(x=>x.ID).Select(x => ObjectPool[x.Value])); }
 
         /// <summary>
         /// イベント
@@ -40,8 +45,8 @@ namespace TetrisCore.Source
 
         public GamePlayData()
         {
-            ObjectPool = new List<SerializableBlockUnit>();
-            ObjectsQueue = new List<int>();
+            SerializableObjectPool = new List<SerializableBlockUnit>();
+            SerializableObjectQueue = new List<SerializableQueue>();
             Events = new List<GamePlayEvent>();
         }
 
@@ -53,7 +58,9 @@ namespace TetrisCore.Source
         {
             public int ID { get; set; }
             public int[][] Data { get; set; }
-            public Color Color { get; set; }
+            public int ColorARGB { get; set; }
+            [XmlIgnore]
+            public Color Color { get => Color.FromArgb(ColorARGB); set => ColorARGB = value.ToArgb(); }
 
             public static SerializableBlockUnit FromBlockUnit(BlockUnit unit)
             {
@@ -63,6 +70,11 @@ namespace TetrisCore.Source
             {
                 return new BlockUnit(Color,Data.ToDimensionalArray());
             }
+        }
+        public class SerializableQueue
+        {
+            public int ID { get; set; }
+            public int Value { get; set; }
         }
         public class GamePlayEvent
         {
@@ -84,17 +96,6 @@ namespace TetrisCore.Source
 
             public class Argument
             {
-                [XmlIgnore]
-                public Type Type { get; set; }
-
-                public string TypeString {
-                    get { return Type.FullName; } 
-                    set{
-                        this.Type = Type.GetType(value);
-                        this.TypeString = value; 
-                    } 
-                }
-
                 [XmlElement(typeof(BlockUnit.Directions)),
                  XmlElement(typeof(bool))
                     ]

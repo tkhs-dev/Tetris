@@ -61,14 +61,11 @@ namespace TetrisCore.Source
         {
             DefaultObjectPool = new List<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList()).AsReadOnly();
         }
-        public TetrisGame(ILog logger, int row=10, int column=20,IReadOnlyList<BlockUnit> objectPool=null,Queue<BlockUnit> initialQueue=null)
+
+        public TetrisGame(ILog logger, int row = 10, int column = 20, IReadOnlyList<BlockUnit> objectPool = null, Queue<BlockUnit> initialQueue = null)
         {
             this.logger = logger;
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
-
-            ObjectPool = objectPool ?? TetrisGame.DefaultObjectPool;
-            _objectQueue = initialQueue ?? new Queue<BlockUnit>();
-            if (_objectQueue.Count < 2) Enqueue(2);
 
             timer = new Timer();
             timer.Interval = TimerSpan;
@@ -82,6 +79,9 @@ namespace TetrisCore.Source
 
             _gameWatch = new Stopwatch();
             _playData = new GamePlayData();
+
+            ObjectPool = objectPool ?? TetrisGame.DefaultObjectPool;
+            _objectQueue = initialQueue ?? new Queue<BlockUnit>();
 
             field.OnBlockChanged += (object sender, Point point) =>
             {
@@ -151,8 +151,9 @@ namespace TetrisCore.Source
             {
                 _playData.Date = DateTime.Now;
                 _playData.Setting = Setting;
-                _playData.ObjectPool = ObjectPool.Select((x,Index)=> { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x); u.ID = Index;return u; }).ToList();
+                _playData.ObjectPool = ObjectPool;
             }
+            if (_objectQueue.Count < 2) Enqueue(2);
             field.SetObject(Dequeue());
             field.StartRound();
             if (TimerEnabled)
@@ -172,17 +173,19 @@ namespace TetrisCore.Source
             };
             return tcs.Task;
         }
+
         private void Enqueue(int num = 1)
         {
-            for(int i = 0; i < num; i++)
+            for (int i = 0; i < num; i++)
             {
                 Random random = new Random();
                 int index = random.Next(0, ObjectPool.Count);
+                if (RecordPlayDataEnabled) _playData.SerializableObjectQueue.Add(new GamePlayData.SerializableQueue() { ID = _playData.SerializableObjectQueue.Count, Value = index });
                 BlockUnit unit = ObjectPool[index];
-                _objectQueue.Enqueue(unit);
-                if (RecordPlayDataEnabled) _playData.ObjectsQueue.Add(index);
+                _objectQueue.Enqueue(unit);              
             }
         }
+
         private BlockUnit Dequeue()
         {
             if (_objectQueue.Count <= 2) Enqueue();
@@ -192,7 +195,7 @@ namespace TetrisCore.Source
         //操作
         public bool Move(BlockUnit.Directions direction)
         {
-            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round=this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Type = typeof(Directions), Object = direction } });
+            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = direction } });
             return field.Move(direction);
         }
 
@@ -204,7 +207,7 @@ namespace TetrisCore.Source
 
         public bool Rotate(bool clockwise)
         {
-            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.ROTATE, Arg = new GamePlayData.GamePlayEvent.Argument() { Type = typeof(bool), Object = clockwise } });
+            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.ROTATE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = clockwise } });
             return field.Rotate(clockwise ? 1 : -1);
         }
 
