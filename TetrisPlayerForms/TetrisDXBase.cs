@@ -298,8 +298,8 @@ namespace TetrisPlayer
             this.game = game;
 
             //初期化処理
-            Row = game.Setting.ROW;
-            Column = game.Setting.COLUMN;
+            Row = game.Setting.Row;
+            Column = game.Setting.Column;
 
             Initialized = true;
         }

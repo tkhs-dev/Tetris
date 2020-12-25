@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,10 +18,10 @@ namespace TetrisCore.Source
 
         private Field field;
 
-        public static List<BlockUnit> DefaultObjectPool;
+        public static IReadOnlyList<BlockUnit> DefaultObjectPool;
 
         //使用されるオブジェクトの一覧
-        public List<BlockUnit> ObjectPool;
+        public IReadOnlyList<BlockUnit> ObjectPool { get; private set; }
 
         //キュー
         private Queue<BlockUnit> _objectQueue;
@@ -44,31 +45,43 @@ namespace TetrisCore.Source
 
         public GameState State => _state;
 
-        public delegate void OnGameEndEvent(object sender,GameResult result);
+        //ゲームのプレイデータ(リプレイなどに使用)
+        public bool RecordPlayDataEnabled { get; set; }
+
+        private GamePlayData _playData;
+
+        private Stopwatch _gameWatch;
+
+        //イベント
+        public delegate void OnGameEndEvent(object sender, GameResult result);
+
         public event OnGameEndEvent OnGameEnd;
 
         static TetrisGame()
         {
-            DefaultObjectPool = new List<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList());
+            DefaultObjectPool = new List<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList()).AsReadOnly();
         }
-
-        public TetrisGame(ILog logger, int row = 10, int column = 20)
+        public TetrisGame(ILog logger, int row=10, int column=20,IReadOnlyList<BlockUnit> objectPool=null,Queue<BlockUnit> initialQueue=null)
         {
             this.logger = logger;
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
 
-            ObjectPool = TetrisGame.DefaultObjectPool;
-            _objectQueue = new Queue<BlockUnit>(ObjectPool.OrderBy(x => Guid.NewGuid()).Take(2));
+            ObjectPool = objectPool ?? TetrisGame.DefaultObjectPool;
+            _objectQueue = initialQueue ?? new Queue<BlockUnit>();
+            if (_objectQueue.Count < 2) Enqueue(2);
 
             timer = new Timer();
             timer.Interval = TimerSpan;
             timer.Elapsed += new ElapsedEventHandler((object sender, ElapsedEventArgs e) => controller?.OnTimerTick());
 
-            Setting = new GameSetting(row, column);
+            Setting = new GameSetting() { Row = row, Column = column };
 
             field = new Field(row, column);
 
             _state = new GameState() { Round = 0, Score = 0, RemovedLines = 0 };
+
+            _gameWatch = new Stopwatch();
+            _playData = new GamePlayData();
 
             field.OnBlockChanged += (object sender, Point point) =>
             {
@@ -76,10 +89,10 @@ namespace TetrisCore.Source
             };
             field.OnRoundStart += (object sender) =>
             {
+                if (RecordPlayDataEnabled) _gameWatch.Restart();
                 lock (_objectQueue)
                 {
-                    _objectQueue.Enqueue(ObjectPool.GetRandom());
-                    field.SetObject(_objectQueue.Dequeue());
+                    field.SetObject(Dequeue());
                 }
             };
             field.OnBlockPlaced += (object sender, BlockObject obj) =>
@@ -102,7 +115,8 @@ namespace TetrisCore.Source
                      OnGameEnd?.Invoke(this, new GameResult() { Score = State.Score, Round = State.Round });
                      return;
                  }
-                     field.StartRound();
+                 if (RecordPlayDataEnabled) _playData.Save();
+                 field.StartRound();
              };
             field.OnGameOver += (object sender) =>
             {
@@ -110,9 +124,10 @@ namespace TetrisCore.Source
                 timer.Stop();
                 OnGameEnd?.Invoke(this, new GameResult() { Score = State.Score, Round = State.Round });
             };
-            OnGameEnd += (object sender,GameResult result) =>
+            OnGameEnd += (object sender, GameResult result) =>
             {
                 logger.Debug(State.Score);
+                _gameWatch.Stop();
             };
         }
 
@@ -132,7 +147,13 @@ namespace TetrisCore.Source
 
         public void Start()
         {
-            field.SetObject(ObjectPool.GetRandom());
+            if (RecordPlayDataEnabled)
+            {
+                _playData.Date = DateTime.Now;
+                _playData.Setting = Setting;
+                _playData.ObjectPool = ObjectPool.Select((x,Index)=> { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x); u.ID = Index;return u; }).ToList();
+            }
+            field.SetObject(Dequeue());
             field.StartRound();
             if (TimerEnabled)
             {
@@ -145,26 +166,45 @@ namespace TetrisCore.Source
         public Task<GameResult> WhenGameEnd()
         {
             var tcs = new TaskCompletionSource<GameResult>(TaskCreationOptions.RunContinuationsAsynchronously);
-            OnGameEnd += (object sender,GameResult result) =>
+            OnGameEnd += (object sender, GameResult result) =>
             {
                 tcs.TrySetResult(result);
             };
             return tcs.Task;
         }
+        private void Enqueue(int num = 1)
+        {
+            for(int i = 0; i < num; i++)
+            {
+                Random random = new Random();
+                int index = random.Next(0, ObjectPool.Count);
+                BlockUnit unit = ObjectPool[index];
+                _objectQueue.Enqueue(unit);
+                if (RecordPlayDataEnabled) _playData.ObjectsQueue.Add(index);
+            }
+        }
+        private BlockUnit Dequeue()
+        {
+            if (_objectQueue.Count <= 2) Enqueue();
+            return _objectQueue.Dequeue();
+        }
 
         //操作
-        internal bool Move(BlockUnit.Directions direction)
+        public bool Move(BlockUnit.Directions direction)
         {
+            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round=this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Type = typeof(Directions), Object = direction } });
             return field.Move(direction);
         }
 
-        internal void Place()
+        public void Place()
         {
+            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.PLACE, Arg = null });
             field.PlaceImmediately();
         }
 
-        internal bool Rotate(bool clockwise)
+        public bool Rotate(bool clockwise)
         {
+            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.ROTATE, Arg = new GamePlayData.GamePlayEvent.Argument() { Type = typeof(bool), Object = clockwise } });
             return field.Rotate(clockwise ? 1 : -1);
         }
 
@@ -177,6 +217,7 @@ namespace TetrisCore.Source
         {
             logger.Debug("Dispose");
             ((IDisposable)timer).Dispose();
+            _gameWatch.Stop();
         }
 
         public class GameState
@@ -188,13 +229,11 @@ namespace TetrisCore.Source
 
         public class GameSetting
         {
-            public readonly int ROW;
-            public readonly int COLUMN;
+            public int Row { get; set; }
+            public int Column { get; set; }
 
-            public GameSetting(int row, int column)
+            public GameSetting()
             {
-                ROW = row;
-                COLUMN = column;
             }
         }
     }

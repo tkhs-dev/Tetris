@@ -43,6 +43,7 @@ namespace TetrisPlayer
                     Game.SetController((IController)new AITetrisController(evaluator,100));
                 }
             }
+            Game.RecordPlayDataEnabled = true;
             Game.Start();
         }
     }

@@ -10,6 +10,8 @@ namespace TetrisCore.Source
 {
     public class BlockUnit
     {
+        public int[,] Data { get => _data; }
+
         /// <summary>
         /// デフォルトのブロック配置データ
         /// </summary>

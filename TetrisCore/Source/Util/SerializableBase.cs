@@ -17,6 +17,14 @@ namespace TetrisCore.Source.Config
         {
             Serializer = new XmlSerializer(GetType());
         }
+        protected void SetValue(SerializableBase value)
+        {
+            var type = value.GetType();
+            foreach (var prop in type.GetProperties().Where(x => !x.CustomAttributes.Any(x => x.AttributeType == typeof(XmlIgnoreAttribute))))
+            {
+                this.GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(value));
+            }
+        }
         public bool Save(string path,string file_name)
         {
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);

@@ -9,7 +9,7 @@ namespace TetrisCore.Source.Config
     public abstract class ConfigBase : SerializableBase
     {
         [XmlIgnore]
-        public const string ConfigDirectory = "config";
+        public const string Directory = "config";
 
         [XmlIgnore]
         public string Name { get; }
@@ -19,21 +19,13 @@ namespace TetrisCore.Source.Config
         }
         public bool Save()
         {
-            return base.Save(ConfigDirectory,Name+".xml");
+            return base.Save(Directory,Name+".xml");
         }
         public bool Load()
         {
-            var value = SerializableBase.Load(GetType(), ConfigDirectory, Name + ".xml") as ConfigBase;
+            var value = SerializableBase.Load(GetType(), Directory, Name + ".xml") as ConfigBase;
             SetValue(value ?? GetDefault());
             return value!=null;
-        }
-        protected void SetValue(ConfigBase value)
-        {
-            var type = value.GetType();
-            foreach(var prop in type.GetProperties().Where(x=>!x.CustomAttributes.Any(x=>x.AttributeType==typeof(XmlIgnoreAttribute))))
-            {
-                this.GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(value));
-            }
         }
         public abstract ConfigBase GetDefault();
     }

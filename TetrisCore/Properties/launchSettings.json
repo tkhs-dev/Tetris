@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TetrisCore": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

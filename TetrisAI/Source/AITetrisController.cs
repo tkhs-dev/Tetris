@@ -169,7 +169,7 @@ namespace TetrisAI.Source
         }
         public override void OnTimerTick()
         {
-            _game.Move(Directions.SOUTH);
+            this.Move(Directions.SOUTH);
         }
     }
 }
