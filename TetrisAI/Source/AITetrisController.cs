@@ -159,7 +159,7 @@ namespace TetrisAI.Source
                 count++;
             }
             Task.Delay(interval*2).Wait();
-            field.PlaceImmediately();
+            _game.Place();
             return tcs.Task;
         }
 
