@@ -20,11 +20,6 @@
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore">
-      <HintPath>lib\PresentationCore.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TetrisAI\TetrisAI.csproj">
       <Project>{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}</Project>
       <Name>TetrisAI</Name>
