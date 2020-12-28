@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 
-namespace TetrisPlayer
+namespace TetrisDXControll
 {
     public class DXPlayerController : ControllerBase
     {

@@ -13,7 +13,7 @@ using TetrisCore.Source.Util;
 using static TetrisAI.Source.Evaluator;
 using static TetrisCore.Source.BlockObject;
 
-namespace TetrisPlayer
+namespace TetrisDXControll
 {
     public partial class TetrisDX : TetrisDXBase, IDisposable
     {

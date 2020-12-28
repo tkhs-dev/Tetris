@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 
-namespace TetrisPlayer
+namespace TetrisDXControll
 {
     public abstract class TetrisDXBase : UserControl, IRenderer
     {

@@ -33,6 +33,7 @@
       <Project>{683283D8-7E49-44D0-B197-786E7D088C58}</Project>
       <Name>TetrisCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetrisDXControll\TetrisDXControll.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="log4net.config">

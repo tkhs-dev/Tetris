@@ -1,4 +1,4 @@
-﻿namespace TetrisPlayer.Source.Util
+﻿namespace TetrisDXControll.Source.Util
 {
     public class ColorConverter
     {

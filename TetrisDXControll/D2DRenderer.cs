@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TetrisPlayer
+namespace TetrisDXControll
 {
     public class D2DRenderer : IDisposable
     {

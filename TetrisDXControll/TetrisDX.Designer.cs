@@ -1,4 +1,4 @@
-﻿namespace TetrisPlayer
+﻿namespace TetrisDXControll
 {
     partial class TetrisDX
     {

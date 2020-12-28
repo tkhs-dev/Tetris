@@ -15,7 +15,6 @@ namespace TetrisPlayer
         public Form1()
         {
             InitializeComponent();
-            Game = new TetrisGame(TetrisPlayer.GetLogger());
             this.Shown += initialized;
             TetrisPlayer.GetLogger().Info("Initialization finished.");
         }
@@ -34,6 +33,11 @@ namespace TetrisPlayer
             var p = EvaluationNNParameter.Load(typeof(EvaluationNNParameter), path, "params.xml") as EvaluationNNParameter;
             if (p!=null) parameter = p;
             Evaluator evaluator = new Evaluator(parameter);
+
+            GamePlayData playdata = (GamePlayData)GamePlayData.Load(typeof(GamePlayData), "playdata","data.xml");
+
+            //Game = new TetrisGame(TetrisPlayer.GetLogger(),10,20,playdata.ObjectPool,playdata.ObjectQueue);
+            Game = new TetrisGame(TetrisPlayer.GetLogger());
             foreach (Control c in this.Controls)
             {
                 if (c is IRenderer)
@@ -41,9 +45,10 @@ namespace TetrisPlayer
                     TetrisPlayer.GetLogger().Info("Find a Renderer:" + c.GetType().Name);
                     Game.SetRenderer((IRenderer)c);
                     Game.SetController((IController)new AITetrisController(evaluator,100));
+                    //Game.SetController((IController)new ReplayController(playdata.Events));
                 }
             }
-            Game.RecordPlayDataEnabled = true;
+            Game.RecordPlayDataEnabled = false;
             Game.Start();
         }
     }
