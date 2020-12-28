@@ -10,6 +10,7 @@
     <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="GeneticSharp" Version="2.6.0" />
     <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="MathNet.Numerics" Version="4.12.0" />
   </ItemGroup>
 
   <ItemGroup>
