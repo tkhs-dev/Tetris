@@ -57,7 +57,7 @@ namespace TetrisAI_Trainer.Source
                 {
                     var genResult= GenerationResult.Create(ga,time);
                     genResult.Save(dirInfo+"/generation_result", genResult.CreateFileName());
-                    (ga.Population.BestChromosome as TetrisChromosome).GetParameter().Save(dirInfo,$"params-{genResult.Generation}.xml");
+                    (ga.Population.BestChromosome as TetrisChromosome).GetParameter().Save(dirInfo,$"params-{genResult.Generation}.nnprm");
                 }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");
