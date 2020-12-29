@@ -31,14 +31,6 @@ namespace TetrisAI_Trainer.Source
             initialGeneration = 0;
             initialTime = TimeSpan.Zero;
         }
-        public void Continuation(GenerationResult generation)
-        {
-            initialGeneration = generation.Generation;
-            initialTime = generation.TotalTime;
-            initialChromosome = new TetrisChromosome(generation.Parameter);
-
-            logger.Info($"Continue a training(Date:{generation.Date},Generation:{generation.Generation})");
-        }
         public void Start(TrainerConfig config)
         {
             var dirInfo = "results/" + DateTime.Now.ToString("yyyy-MM-dd-HHmmss");
@@ -49,23 +41,23 @@ namespace TetrisAI_Trainer.Source
             Stopwatch sw2 = new Stopwatch();
 
             sw1.Start();
-            var termination = new FitnessStagnationTermination(15);
+            var termination = new FitnessStagnationTermination(50);
             TetrisChromosome adamChromosome = initialChromosome ?? new TetrisChromosome(); 
-            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize,config.PopulationSize*2, adamChromosome), new TetrisFitness(config.NumSample,config.MaxRound), new EliteSelection(), new OnePointCrossover(5), new UniformMutation());
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize, config.PopulationSize * 2, adamChromosome) { GenerationStrategy=new PerformanceGenerationStrategy() }, new TetrisFitness(config.NumSample,config.MaxRound), new RouletteWheelSelection(), new TwoPointCrossover(5,20), new UniformMutation());
             ga.TimeEvolving.Add(initialTime);
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
             ga.CrossoverProbability = config.CrossoverProbability;
             ga.MutationProbability = config.MutationProbability;
-            ga.TaskExecutor = new TplTaskExecutor() { };
+            ga.TaskExecutor = new TplTaskExecutor() {};
             ga.GenerationRan += delegate
             {
                 var time = sw2.Elapsed;
                 if (ga.Population.GenerationsNumber % 1 == 0)
                 {
                     var genResult= GenerationResult.Create(ga,time);
-                    genResult.Save(dirInfo, genResult.CreateFileName());
-                    genResult.Parameter.Save(dirInfo,"params.xml");
+                    genResult.Save(dirInfo+"/generation_result", genResult.CreateFileName());
+                    (ga.Population.BestChromosome as TetrisChromosome).GetParameter().Save(dirInfo,$"params-{genResult.Generation}.xml");
                 }
                 var bestChromosome = ga.Population.BestChromosome;
                 logger.Info($"Termination: {terminationName}");

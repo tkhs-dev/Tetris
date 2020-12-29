@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MathNet.Numerics.Statistics;
 using TetrisAI.Source;
 using TetrisCore.Source;
 using static TetrisAI.Source.Evaluator;
@@ -72,6 +73,12 @@ namespace TetrisAI_Trainer.Source.ga
             });
              */
             double av = results.Average(x => x.Score);
+            double pv = results.Select(x => (double)x.Score).PopulationVariance()/100;
+            double sm = results.Select(x => x.Score).Sum();
+            TetrisAITrainer.Logger.Info("pv:"+pv);
+            pv /= (sm+1);
+            double bonus = 500/((1/(sm*0.05+50))*pv*pv+500);
+            av *= bonus;
             TetrisAITrainer.Logger.Info(av);
             return av;
         }

@@ -18,7 +18,6 @@ namespace TetrisAI_Trainer.Source
         public TimeSpan TotalTime { get; set; }
         public int Generation { get; set; }
         public double? Fitness { get; set; }
-        public EvaluationNNParameter Parameter {get;set;}
         public GenerationResult()
         {
         }
@@ -34,8 +33,7 @@ namespace TetrisAI_Trainer.Source
                 ElapsedTime = time,
                 TotalTime = ga.TimeEvolving,
                 Generation = ga.GenerationsNumber,
-                Fitness = ga.BestChromosome.Fitness,
-                Parameter = (ga.BestChromosome as TetrisChromosome).GetParameter()
+                Fitness = ga.BestChromosome.Fitness
             };
         }
     }

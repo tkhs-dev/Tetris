@@ -15,8 +15,6 @@ namespace TetrisAI_Trainer
             Trainer trainer = new Trainer();
             TrainerConfig config = new TrainerConfig();
             if(!config.Load())config.Save();
-            GenerationResult continuation = GenerationResult.Load(typeof(GenerationResult),"continuation","generation.xml") as GenerationResult;
-            if (continuation != null) trainer.Continuation(continuation);
             trainer.Start(config);
         }
     }
