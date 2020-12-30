@@ -265,7 +265,7 @@ namespace TetrisDXControll
         protected void RenderNextObject(int x, int y)
         {
             const int flame_size = 4;
-            for (int i = 0; i < game.ObjectQueue.Count; i++)
+            for (int i = 0; i < (game.ObjectQueue.Count>=2?2: game.ObjectQueue.Count); i++)
             {
                 if (game.ObjectQueue.Count >= i)
                 {
@@ -277,7 +277,7 @@ namespace TetrisDXControll
         protected void RenderGameState(int x,int y)
         {
             const int flame_size = 4;
-            int start_y = y*2 +(flame_size*size)*game.ObjectQueue.Count;
+            int start_y = y*2 +(flame_size*size)* (game.ObjectQueue.Count >= 2 ? 2 : game.ObjectQueue.Count);
             _ColorBrush.Color = SharpDX.Color.Gray;
             TextFormat font = new TextFormat(_FactoryDWrite, "Meiryo", 15);
             _RenderTarget2D.DrawText($"Round:{game.State.Round}",font, new RawRectangleF(x, start_y, x + 100, start_y + 100),_ColorBrush);

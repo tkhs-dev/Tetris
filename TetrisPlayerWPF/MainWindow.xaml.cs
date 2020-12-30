@@ -18,6 +18,7 @@ using TetrisAI.Source;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using static TetrisAI.Source.Evaluator;
+using static TetrisPlayerWPF.PlaySettingPage;
 
 namespace TetrisPlayerWPF
 {
@@ -26,46 +27,69 @@ namespace TetrisPlayerWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TetrisGame Game;
         public MainWindow()
         {
             InitializeComponent();
-            this.Loaded += initialized;
-            App.GetLogger().Info("Initialization finished.");
+            Loaded += loaded;
+            Frame.Navigate(new PlaySettingPage(PlayType.SINGLE));
         }
-        private void initialized(object sender, EventArgs a)
+        private void loaded(object sender,EventArgs e)
         {
-            EvaluationNNParameter parameter = new EvaluationNNParameter(
-                new float[] {
-                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f
-                },
-                new float[] {
-                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f
-                });
-            string path = "parameters";
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            var p = EvaluationNNParameter.Load(typeof(EvaluationNNParameter), path, "params.xml") as EvaluationNNParameter;
-            if (p != null) parameter = p;
-            Evaluator evaluator = new Evaluator(parameter);
+        }
 
-            GamePlayData playdata = (GamePlayData)GamePlayData.Load(typeof(GamePlayData), "playdata", "data.xml");
-
-            //Game = new TetrisGame(TetrisPlayer.GetLogger(),10,20,playdata.ObjectPool,playdata.ObjectQueue);
-            Game = new TetrisGame(App.GetLogger());
-            foreach (Object c in Grid.Children)
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            Page page = null;
+            switch (button.Tag as string)
             {
-                if (c is IRenderer)
-                {
-                    App.GetLogger().Info("Find a Renderer:" + c.GetType().Name);
-                    Game.SetRenderer((IRenderer)c);
-                    Game.SetController((IController)new AITetrisController(evaluator, 100));
-                    //Game.SetController((IController)new ReplayController(playdata.Events));
-                }
+                case "SinglePlay":
+                    page = new PlaySettingPage(PlayType.SINGLE);
+                    break;
+                case "AIPlay":
+                    page = new PlaySettingPage(PlayType.AI);
+                    break;
+                case "RePlay":
+                    page = new PlaySettingPage(PlayType.REPLAY);
+                    break;
+                case "Setting":
+                    break;
             }
-            Game.SetRenderer(DXPanel);
-            Game.SetController(DXPanel.Controller);
-            Game.RecordPlayDataEnabled = false;
-            Game.Start();
+            if (page != null) Frame.Navigate(page);
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if(Frame.Content is ITabablePage)
+            {
+                (Frame.Content as ITabablePage).Submit();
+            }
+        }
+
+        private void Frame_Navigated(object sender, NavigationEventArgs e)
+        {
+            Frame f = sender as Frame;
+            if (f.CanGoBack)
+            {
+                f.RemoveBackEntry();
+            }
+            if (f.Content is ITabablePage) SubmitButton.Content = (f.Content as ITabablePage).GetSubmitText();
+        }
+
+        private void Frame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            object o = (sender as Frame).Content;
+            if (o is IDisposable) (o as IDisposable).Dispose();
+        }
+
+        private void PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up || e.Key == Key.Down || e.Key == Key.Left ||
+                e.Key == Key.Right || e.Key == Key.Enter || e.Key == Key.Tab)
+            {
+                e.Handled = true;
+            }
         }
     }
 }

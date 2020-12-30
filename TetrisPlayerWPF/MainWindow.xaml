@@ -4,12 +4,62 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TetrisPlayerWPF"
-        xmlns:tetris="clr-namespace:TetrisDXControll;assembly=TetrisDXControll"
         mc:Ignorable="d"
-        Title="MainWindow" Height="601" Width="949">
-    <Grid x:Name="Grid">
-        <WindowsFormsHost VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <tetris:TetrisDX x:Name="DXPanel" Anchor="Top" Dock="Left"></tetris:TetrisDX>
-        </WindowsFormsHost>
+        Title="TetrisPlayer" Height="601" Width="949">
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel HorizontalAlignment="Stretch" PreviewKeyDown="PreviewKeyDown">
+            <StackPanel Background="#FF0159B2" Orientation="Horizontal" UseLayoutRounding="False" Height="117" DockPanel.Dock="Top" x:Name="TopTab">
+                <StackPanel.Effect>
+                    <DropShadowEffect ShadowDepth="5" Direction="290" Opacity="0.5" RenderingBias="Performance" BlurRadius="5" Color="#FFAAAAAA"></DropShadowEffect>
+                </StackPanel.Effect>
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="MinWidth" Value="100"/>
+                        <Setter Property="Margin" Value="5,1,5,1"/>
+                        <Setter Property="Padding" Value="10,1,10,1"/>
+                        <Setter Property="Background" Value="{x:Null}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontSize" Value="20"/>
+                        <Setter Property="BorderBrush" Value="{x:Null}"/>
+                        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="none"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Name="border" 
+      BorderThickness="{TemplateBinding BorderThickness}" 
+      Padding="{TemplateBinding Padding}" 
+      BorderBrush="{TemplateBinding BorderBrush}" 
+      CornerRadius="5" 
+      Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="Gainsboro" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="false">
+                                            <Setter Property="Opacity" Value="0.25" />
+                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="シングルプレイ" Tag="SinglePlay" Click="Button_Click"/>
+                <Button Content="AIプレイ" Tag="AIPlay" Click="Button_Click"/>
+                <Button Content="リプレイ" Tag="RePlay" Click="Button_Click"/>
+                <Button Content="設定" IsEnabled="False" Tag="Setting" Click="Button_Click" />
+            </StackPanel>
+            <Frame NavigationUIVisibility="Hidden" x:Name="Frame" Navigating="Frame_Navigating" Navigated="Frame_Navigated" VerticalAlignment="Stretch" DockPanel.Dock="Left" Width="Auto" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewKeyDown="PreviewKeyDown"/>
+             </DockPanel>
+        <Button Content="" x:Name="SubmitButton" Grid.Row="1" HorizontalAlignment="Right" Background="#FF0159B2" Foreground="White" Margin="10,10,10,10" Padding="10,10,10,10" FontSize="16" FontWeight="Bold" Width="100" VerticalAlignment="Stretch" Click="Button_Click_1" KeyboardNavigation.DirectionalNavigation="none" PreviewKeyDown="PreviewKeyDown"/>
     </Grid>
 </Window>
