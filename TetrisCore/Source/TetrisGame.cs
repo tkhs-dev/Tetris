@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
+using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockUnit;
 
 namespace TetrisCore.Source
@@ -18,10 +19,10 @@ namespace TetrisCore.Source
 
         private Field field;
 
-        public static IReadOnlyList<BlockUnit> DefaultObjectPool;
+        public static WeightedPool<BlockUnit> DefaultObjectPool;
 
         //使用されるオブジェクトの一覧
-        public IReadOnlyList<BlockUnit> ObjectPool { get; private set; }
+        public WeightedPool<BlockUnit> ObjectPool { get; private set; }
 
         //キュー
         private Queue<BlockUnit> _objectQueue;
@@ -59,10 +60,10 @@ namespace TetrisCore.Source
 
         static TetrisGame()
         {
-            DefaultObjectPool = new List<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => x.GetObject()).ToList()).AsReadOnly();
+            DefaultObjectPool = new WeightedPool<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => new WeightedPool<BlockUnit>.WeightedItem(1,x.GetObject())).ToList());
         }
 
-        public TetrisGame(ILog logger, int row = 10, int column = 20, IReadOnlyList<BlockUnit> objectPool = null, Queue<BlockUnit> initialQueue = null)
+        public TetrisGame(ILog logger, int row = 10, int column = 20, WeightedPool<BlockUnit> objectPool = null, Queue<BlockUnit> initialQueue = null)
         {
             this.logger = logger;
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
@@ -178,10 +179,9 @@ namespace TetrisCore.Source
         {
             for (int i = 0; i < num; i++)
             {
-                Random random = new Random();
-                int index = random.Next(0, ObjectPool.Count);
+                int index = ObjectPool.TakeIndex();
                 if (RecordPlayDataEnabled) _playData.SerializableObjectQueue.Add(new GamePlayData.SerializableQueue() { ID = _playData.SerializableObjectQueue.Count, Value = index });
-                BlockUnit unit = ObjectPool[index];
+                BlockUnit unit = ObjectPool.Items[index];
                 _objectQueue.Enqueue(unit);
             }
         }
@@ -195,7 +195,11 @@ namespace TetrisCore.Source
         //操作
         public bool Move(BlockUnit.Directions direction)
         {
-            bool result = field.Move(direction);
+            bool result;
+            lock (field)
+            {
+                result = field.Move(direction);
+            }
             if (RecordPlayDataEnabled && result) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = direction } });
             return result;
         }

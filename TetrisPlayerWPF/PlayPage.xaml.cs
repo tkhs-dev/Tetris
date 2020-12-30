@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Controls;
 using TetrisAI.Source;
 using TetrisCore.Source;
+using TetrisCore.Source.Extension;
+using TetrisCore.Source.Util;
 using TetrisPlayerWPF.Source;
 using TetrisPlayerWPF.Source.SettingElement;
 using static TetrisAI.Source.Evaluator;

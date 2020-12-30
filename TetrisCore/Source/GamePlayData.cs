@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using TetrisCore.Source.Config;
 using TetrisCore.Source.Extension;
+using TetrisCore.Source.Util;
 using static TetrisCore.Source.TetrisGame;
 
 namespace TetrisCore.Source
@@ -24,16 +25,16 @@ namespace TetrisCore.Source
         /// <summary>
         /// オブジェクトプール
         /// </summary>
-        public List<SerializableBlockUnit> SerializableObjectPool { get; set; }
+        public List<WeightedPool<SerializableBlockUnit>.WeightedItem> SerializableObjectPool { get; set; }
         [XmlIgnore]
-        public IReadOnlyList<BlockUnit> ObjectPool { get => SerializableObjectPool.Select(x => x.GetBlockUnit()).ToList(); set => SerializableObjectPool = value.Select((x, Index) => { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x); u.ID = Index; return u; }).ToList(); }
+        public WeightedPool<BlockUnit> ObjectPool { get => new WeightedPool<BlockUnit>(SerializableObjectPool.Select(x => new WeightedPool<BlockUnit>.WeightedItem(x.Weight,x.Value.GetBlockUnit())).ToList()); set => SerializableObjectPool = value.WeightedItems.Select((x, Index) => { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x.Value); u.ID = Index; return new WeightedPool<SerializableBlockUnit>.WeightedItem(x.Weight,u); }).ToList(); }
 
         /// <summary>
         /// 出現したブロック
         /// </summary>
         public List<SerializableQueue> SerializableObjectQueue { get; set; }
         [XmlIgnore]
-        public Queue<BlockUnit> ObjectQueue { get => new Queue<BlockUnit>(SerializableObjectQueue.OrderBy(x=>x.ID).Select(x => ObjectPool[x.Value])); }
+        public Queue<BlockUnit> ObjectQueue { get => new Queue<BlockUnit>(SerializableObjectQueue.OrderBy(x=>x.ID).Select(x => ObjectPool.WeightedItems[x.Value].Value)); }
 
         /// <summary>
         /// イベント
@@ -45,7 +46,7 @@ namespace TetrisCore.Source
 
         public GamePlayData()
         {
-            SerializableObjectPool = new List<SerializableBlockUnit>();
+            SerializableObjectPool = new List<WeightedPool<SerializableBlockUnit>.WeightedItem>();
             SerializableObjectQueue = new List<SerializableQueue>();
             Events = new List<GamePlayEvent>();
         }
