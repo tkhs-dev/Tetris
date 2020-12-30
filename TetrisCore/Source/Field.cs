@@ -140,7 +140,7 @@ namespace TetrisCore.Source
             if (CanMoveTo(point))
             {
                 Object.Point = point;
-                return true;
+                return Object.Point==point;
             }
             return false;
         }

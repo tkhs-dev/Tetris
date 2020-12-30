@@ -52,7 +52,7 @@ namespace TetrisCore.Source
 
         public bool Save()
         {
-            return base.Save("playdata", Date.ToString("yyyy-MM-dd-HHmmss")+".xml");
+            return base.Save("playdata", Date.ToString("yyyy-MM-dd-HHmmss")+".rpldt");
         }
         public class SerializableBlockUnit
         {

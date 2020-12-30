@@ -182,7 +182,7 @@ namespace TetrisCore.Source
                 int index = random.Next(0, ObjectPool.Count);
                 if (RecordPlayDataEnabled) _playData.SerializableObjectQueue.Add(new GamePlayData.SerializableQueue() { ID = _playData.SerializableObjectQueue.Count, Value = index });
                 BlockUnit unit = ObjectPool[index];
-                _objectQueue.Enqueue(unit);              
+                _objectQueue.Enqueue(unit);
             }
         }
 
@@ -195,8 +195,9 @@ namespace TetrisCore.Source
         //操作
         public bool Move(BlockUnit.Directions direction)
         {
-            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = direction } });
-            return field.Move(direction);
+            bool result = field.Move(direction);
+            if (RecordPlayDataEnabled && result) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.MOVE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = direction } });
+            return result;
         }
 
         public void Place()
@@ -207,8 +208,9 @@ namespace TetrisCore.Source
 
         public bool Rotate(bool clockwise)
         {
-            if (RecordPlayDataEnabled) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.ROTATE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = clockwise } });
-            return field.Rotate(clockwise ? 1 : -1);
+            bool result = field.Rotate(clockwise ? 1 : -1);
+            if (RecordPlayDataEnabled && result) _playData.Events.Add(new GamePlayData.GamePlayEvent() { Round = this.State.Round, Time = _gameWatch.Elapsed, Event = GamePlayData.GamePlayEvent.EventType.ROTATE, Arg = new GamePlayData.GamePlayEvent.Argument() { Object = clockwise } });
+            return result;
         }
 
         private void Draw()

@@ -38,7 +38,7 @@ namespace TetrisCore.Source
                     TimeSpan span = ev.Time - lastTime;
                     lastTime = ev.Time;
                     double interval = span.TotalMilliseconds;
-                    Task.Delay((int)interval).Wait();
+                    Task.Delay(span).Wait();
                     DoEvent(ev);
                 }
             });
