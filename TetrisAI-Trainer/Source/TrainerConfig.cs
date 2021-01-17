@@ -27,6 +27,8 @@ namespace TetrisAI_Trainer.Source
         public float CrossoverProbability { get; set; }
 
         public float MutationProbability { get; set; }
+
+        public bool UseVarianceOfFitness { get; set; }
         public TrainerConfig() : base("TrainerConfig")
         {
 
@@ -40,7 +42,8 @@ namespace TetrisAI_Trainer.Source
                 NumSample = 2,
                 MaxRound = 50,
                 CrossoverProbability = 0.5f,
-                MutationProbability = 1f / 13f
+                MutationProbability = 1f / 13f,
+                UseVarianceOfFitness = false,
             };
         }
     }
