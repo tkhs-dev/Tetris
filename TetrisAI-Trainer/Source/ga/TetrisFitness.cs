@@ -9,6 +9,10 @@ using MathNet.Numerics.Statistics;
 using TetrisAI.Source;
 using TetrisCore.Source;
 using static TetrisAI.Source.Evaluator;
+using TetrisCore.Source.Util;
+using Item = TetrisCore.Source.Util.WeightedPool<TetrisCore.Source.BlockUnit>.WeightedItem;
+using static TetrisCore.Source.BlockUnit;
+using TetrisCore.Source.Extension;
 
 namespace TetrisAI_Trainer.Source.ga
 {
@@ -16,14 +20,15 @@ namespace TetrisAI_Trainer.Source.ga
     {
         public int Sample { get; set; }
         public int MaxRound { get; set; }
+        public bool UseVariance { get; set; }
 
-        public TetrisFitness(int sample,int maxRound)
+        public TetrisFitness(int sample,int maxRound,bool useVariance)
         {
             Sample = sample;
             MaxRound = maxRound;
         }
 
-        public TetrisFitness() : this(2,200)
+        public TetrisFitness() : this(2,200,true)
         {
         }
 
@@ -31,7 +36,17 @@ namespace TetrisAI_Trainer.Source.ga
         {
             EvaluationNNParameter parameter = (chromosome as TetrisChromosome).GetParameter();
             Evaluator evaluator = new Evaluator(parameter);
-            List<TetrisGame> games = Enumerable.Range(0, Sample).Select(x => new TetrisGame(TetrisAITrainer.Logger)).ToList();
+            //S,Zオブジェクトの排出率を二倍にする
+            WeightedPool<BlockUnit> pool = new WeightedPool<BlockUnit>(new List<Item>() { 
+                new Item(1,Kind.I.GetObject()),
+                new Item(1,Kind.J.GetObject()),
+                new Item(1,Kind.L.GetObject()),
+                new Item(2,Kind.S.GetObject()),
+                new Item(2,Kind.Z.GetObject()),
+                new Item(1,Kind.T.GetObject()),
+                new Item(1,Kind.O.GetObject()),
+            });
+            List<TetrisGame> games = Enumerable.Range(0, Sample).Select(x => new TetrisGame(TetrisAITrainer.Logger,10,20,pool)).ToList();
             List<GameResult> results = new List<GameResult>();
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
@@ -73,12 +88,15 @@ namespace TetrisAI_Trainer.Source.ga
             });
              */
             double av = results.Average(x => x.Score);
-            double pv = results.Select(x => (double)x.Score).PopulationVariance()/100;
-            double sm = results.Select(x => x.Score).Sum();
-            TetrisAITrainer.Logger.Info("pv:"+pv);
-            pv /= (sm+1);
-            double bonus = 500/((1/(sm*0.05+50))*pv*pv+500);
-            av *= bonus;
+            if (UseVariance)
+            {
+                double pv = results.Select(x => (double)x.Score).PopulationVariance() / 100;
+                double sm = results.Select(x => x.Score).Sum();
+                TetrisAITrainer.Logger.Info("pv:" + pv);
+                pv /= (sm + 1);
+                double bonus = 500 / ((1 / (sm * 0.05 + 50)) * pv * pv + 500);
+                av *= bonus;
+            }
             TetrisAITrainer.Logger.Info(av);
             return av;
         }

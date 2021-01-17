@@ -26,6 +26,10 @@ namespace TetrisCore.Source.Util
         {
             _weightedItems.Add(item);
         }
+        public void Add(int weight, T value)
+        {
+            Add(new WeightedItem(weight,value));
+        }
         public T Take()
         {
             return _weightedItems[TakeIndex()].Value;
