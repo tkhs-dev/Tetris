@@ -26,6 +26,7 @@ namespace TetrisAI_Trainer.Source.ga
         {
             Sample = sample;
             MaxRound = maxRound;
+            UseVariance = useVariance;
         }
 
         public TetrisFitness() : this(2,200,true)
