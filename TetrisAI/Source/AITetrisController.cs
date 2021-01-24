@@ -153,7 +153,11 @@ namespace TetrisAI.Source
                 Task.Delay(interval).Wait() ;
                 if (field.Object.Direction != position.Direction)
                 {
-                    _game.Rotate(true);
+                    int current = (int)field.Object.Direction;
+                    int distination = (int)position.Direction;
+                    if (current == 0 && distination == 3) distination = -1;
+                    bool rotate = (distination - current) % 2 >= 0;
+                    _game.Rotate(rotate);
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
                 count++;
