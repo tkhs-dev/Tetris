@@ -76,7 +76,7 @@ namespace TetrisCore.Source
 
             field = new Field(row, column);
 
-            _state = new GameState() { Round = 0, Score = 0, RemovedLines = 0 };
+            _state = new GameState() { Round = 0, Score = 0, RemovedLines = new Dictionary<int, int>() };
 
             _gameWatch = new Stopwatch();
             _playData = new GamePlayData();
@@ -103,7 +103,11 @@ namespace TetrisCore.Source
             };
             field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
             {
-                _state.RemovedLines += lines.Length;
+                if (lines.Length!=0)
+                {
+                    if (!_state.RemovedLines.ContainsKey(lines.Length)) _state.RemovedLines.Add(lines.Length, 0);
+                    _state.RemovedLines[lines.Length]++;
+                }
             };
             field.OnRoundEnd += (object sender, RoundResult result) =>
              {
@@ -233,7 +237,8 @@ namespace TetrisCore.Source
         {
             public int Score { get; set; }
             public int Round { get; set; }
-            public int RemovedLines { get; set; }
+            public Dictionary<int,int> RemovedLines { get; set; }
+            public int RemovedLineCount { get => RemovedLines.Values.Sum(); }
         }
 
         public class GameSetting

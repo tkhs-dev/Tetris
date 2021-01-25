@@ -282,6 +282,13 @@ namespace TetrisDXControll
             TextFormat font = new TextFormat(_FactoryDWrite, "Meiryo", 15);
             _RenderTarget2D.DrawText($"Round:{game.State.Round}",font, new RawRectangleF(x, start_y, x + 100, start_y + 100),_ColorBrush);
             _RenderTarget2D.DrawText($"Score:{game.State.Score}",font, new RawRectangleF(x, start_y+20, x + 100, start_y + 100), _ColorBrush);
+            _RenderTarget2D.DrawText($"Lines:{game.State.RemovedLineCount}", font, new RawRectangleF(x, start_y + 40, x + 100, start_y + 100), _ColorBrush);
+            int counter = 0;
+            foreach(var v in game.State.RemovedLines)
+            {
+                counter++;
+              _RenderTarget2D.DrawText($"Line x{v.Key}:{v.Value}", font, new RawRectangleF(x, start_y + 40+20*counter, x + 100, start_y + 100), _ColorBrush);
+            }
         }
         public System.Drawing.SizeF MeasureString(string Message, TextFormat textFormat, float Width, ContentAlignment Align=ContentAlignment.MiddleLeft)
 {
