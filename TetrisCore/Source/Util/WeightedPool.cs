@@ -38,12 +38,12 @@ namespace TetrisCore.Source.Util
         {
             if (_weightedItems == null || _weightedItems.Count == 0) return 0;
             Random rnd = new Random();
-            int num = rnd.Next(1, _weightedItems.Select(x => x.Weight).Sum());
+            int num = rnd.Next(0, _weightedItems.Select(x => x.Weight).Sum());
             int weight = 0;
             foreach (var (w, index) in _weightedItems.Select((x, index) => (x.Weight, index)))
             {
                 weight += w;
-                if (num - weight <= 0) return index;
+                if (num - weight < 0) return index;
             }
             return 0;
         }
