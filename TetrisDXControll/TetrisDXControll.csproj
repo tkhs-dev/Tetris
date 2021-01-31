@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Reference Include="PresentationCore">
-      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.1.0\ref\netcoreapp3.1\PresentationCore.dll</HintPath>
+      <HintPath>Lib\PresentationCore.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -31,6 +31,12 @@
     <Compile Update="TetrisDXBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Lib\PresentationCore.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
