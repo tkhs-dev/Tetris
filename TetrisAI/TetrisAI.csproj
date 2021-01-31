@@ -5,6 +5,11 @@
     <Configurations>Debug;Release;Publish</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="lib\KelpNet.CL.Common.dll" />
     <None Remove="lib\KelpNet.CL.Function.dll" />
