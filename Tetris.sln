@@ -19,40 +19,55 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisTest", "TetrisTest\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisDXControll", "TetrisDXControll\TetrisDXControll.csproj", "{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetrisPlayerWPF", "TetrisPlayerWPF\TetrisPlayerWPF.csproj", "{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisPlayerWPF", "TetrisPlayerWPF\TetrisPlayerWPF.csproj", "{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Publish|Any CPU = Publish|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{683283D8-7E49-44D0-B197-786E7D088C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{683283D8-7E49-44D0-B197-786E7D088C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{683283D8-7E49-44D0-B197-786E7D088C58}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{683283D8-7E49-44D0-B197-786E7D088C58}.Publish|Any CPU.Build.0 = Publish|Any CPU
 		{683283D8-7E49-44D0-B197-786E7D088C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{683283D8-7E49-44D0-B197-786E7D088C58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ACDC87B-8A6D-4E28-96FA-0C76097E5B03}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E51B98-E83E-4B68-8177-C6CDBACDF921}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1E9DC36-9834-4D69-A68A-389A641C9F59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{841A0116-36AE-4AB5-9940-B6842012FEE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60EA506F-D446-4FE3-AC66-5693B9A5C9B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Publish|Any CPU.Build.0 = Release|Any CPU
 		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C1C134C-2D53-4CD0-8B78-767C0E3D8010}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
