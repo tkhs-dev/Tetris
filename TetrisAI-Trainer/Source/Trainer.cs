@@ -43,7 +43,7 @@ namespace TetrisAI_Trainer.Source
             sw1.Start();
             var termination = new FitnessStagnationTermination(50);
             TetrisChromosome adamChromosome = initialChromosome ?? new TetrisChromosome(); 
-            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize, config.PopulationSize * 2, adamChromosome) { GenerationStrategy=new PerformanceGenerationStrategy() }, new TetrisFitness(config.NumSample,config.MaxRound,config.UseVarianceOfFitness), new EliteSelection(), new TwoPointCrossover(10,20), new UniformMutation());
+            GeneticAlgorithm ga = new GeneticAlgorithm(new TplPopulation(config.PopulationSize, config.PopulationSize * 2, adamChromosome) { GenerationStrategy=new PerformanceGenerationStrategy() }, new TetrisFitness(config.NumSample,config.MaxRound,config.UseVarianceOfFitness), new EliteSelection(), new TwoPointCrossover(5,20), new UniformMutation());
             ga.TimeEvolving.Add(initialTime);
             ga.Termination = termination;
             var terminationName = ga.Termination.GetType().Name;
