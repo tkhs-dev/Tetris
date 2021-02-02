@@ -7,9 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using TetrisCore.Source.Api;
+using TetrisCore.Source.Config;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockUnit;
+using static TetrisCore.Source.GamePlayData;
 
 namespace TetrisCore.Source
 {
@@ -67,6 +69,20 @@ namespace TetrisCore.Source
         {
             this.logger = logger;
             logger.Debug($"TetrisInstance Creating : row{row},column{column}");
+
+            TetrisConfig config = new TetrisConfig();
+            config.Load();
+            if (!config.Load()) config.Save();
+            if (objectPool == null && config.UseCustomObjectList)
+            {
+                var serializable = (SerializableObjectPool.Load(typeof(SerializableObjectPool), ConfigBase.Directory, config.ObjectListFile)as SerializableObjectPool);
+                if (serializable == null)
+                {
+                    serializable = new SerializableObjectPool() { ObjectPool = DefaultObjectPool };
+                    serializable.Save(ConfigBase.Directory, config.ObjectListFile);
+                }
+                objectPool = serializable.ObjectPool;
+            }
 
             timer = new Timer();
             timer.Interval = TimerSpan;
