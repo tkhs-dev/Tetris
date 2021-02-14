@@ -1,29 +1,26 @@
 ﻿using GeneticSharp.Domain.Chromosomes;
 using GeneticSharp.Domain.Crossovers;
 using GeneticSharp.Domain.Randomizations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TetrisAI_Trainer.Source.ga
 {
-    public class TetrisCrossover:CrossoverBase
+    public class TetrisCrossover : CrossoverBase
     {
         public int SeparatePointIndex { get; set; }
         public float HorizontalMixProbability { get; set; }
         public float VerticalMixProbability { get; set; }
-        public TetrisCrossover(int separatePointIndex,float horizontalMixProbability,float verticalMixProbability) : base(2, 2)
+        public TetrisCrossover(int separatePointIndex, float horizontalMixProbability, float verticalMixProbability) : base(2, 2)
         {
             SeparatePointIndex = separatePointIndex;
             HorizontalMixProbability = horizontalMixProbability;
             VerticalMixProbability = verticalMixProbability;
         }
-        public TetrisCrossover(int separatePointIndex) : this(separatePointIndex, 0.5f,0.1f)
+        public TetrisCrossover(int separatePointIndex) : this(separatePointIndex, 0.5f, 0.1f)
         {
         }
-        public TetrisCrossover() : this(0,0.5f,0.1f)
+        public TetrisCrossover() : this(0, 0.5f, 0.1f)
         {
         }
 
@@ -71,7 +68,7 @@ namespace TetrisAI_Trainer.Source.ga
                 }
             }
             //縦シャッフル
-            for(int i = cutGenesCount; i < left_first.Length; i++)
+            for (int i = cutGenesCount; i < left_first.Length; i++)
             {
                 if (RandomizationProvider.Current.GetDouble() >= HorizontalMixProbability)
                 {

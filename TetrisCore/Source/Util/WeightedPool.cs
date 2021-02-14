@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
-using TetrisCore.Source.Config;
-using static TetrisCore.Source.GamePlayData;
 
 namespace TetrisCore.Source.Util
 {
     public class WeightedPool<T>
     {
         public List<WeightedItem> WeightedItems { get => _weightedItems; }
-        private List<WeightedItem> _weightedItems; 
+        private List<WeightedItem> _weightedItems;
 
         public List<T> Items { get => _weightedItems.Select(x => x.Value).ToList(); }
 
@@ -31,7 +26,7 @@ namespace TetrisCore.Source.Util
         }
         public void Add(int weight, T value)
         {
-            Add(new WeightedItem(weight,value));
+            Add(new WeightedItem(weight, value));
         }
         public T Take()
         {
@@ -60,7 +55,7 @@ namespace TetrisCore.Source.Util
                 Weight = 1;
                 Value = default;
             }
-            public WeightedItem(int weight,T value)
+            public WeightedItem(int weight, T value)
             {
                 Weight = weight;
                 Value = value;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using TetrisCore.Source.Extension;
 using static TetrisCore.Source.BlockUnit;
 
@@ -16,10 +15,10 @@ namespace TetrisCore.Source
 
         public Directions Direction { get => _direction; set => _direction = value; }
         public Point Point { get => _point; set => _point = value; }
-        public BlockUnit Unit { get => _unit;}
+        public BlockUnit Unit { get => _unit; }
         public BlockPosition Position { get => new BlockPosition(Point, Direction); }
 
-        public BlockObject(BlockUnit unit,Directions direction = Directions.NORTH)
+        public BlockObject(BlockUnit unit, Directions direction = Directions.NORTH)
         {
             this._unit = unit;
         }
@@ -56,12 +55,12 @@ namespace TetrisCore.Source
 
         public object Clone()
         {
-            return new BlockObject(_unit) { _point = this._point,_direction=this._direction };
+            return new BlockObject(_unit) { _point = this._point, _direction = this._direction };
         }
         public override string ToString()
         {
             int[,] _data = _unit.TransformedData[_direction];
-            return String.Join("\n", _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => String.Join("",x)).ToArray());
+            return String.Join("\n", _data.Flatten(SquareDirection.Column).ToArray().Chunk(_data.GetLength(0)).Select(x => String.Join("", x)).ToArray());
         }
     }
 }

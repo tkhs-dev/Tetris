@@ -1,18 +1,14 @@
 ﻿using GeneticSharp.Domain.Chromosomes;
 using GeneticSharp.Domain.Fitnesses;
+using MathNet.Numerics.Statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MathNet.Numerics.Statistics;
 using TetrisAI.Source;
 using TetrisCore.Source;
 using static TetrisAI.Source.Evaluator;
-using TetrisCore.Source.Util;
-using Item = TetrisCore.Source.Util.WeightedPool<TetrisCore.Source.BlockUnit>.WeightedItem;
-using static TetrisCore.Source.BlockUnit;
-using TetrisCore.Source.Extension;
 
 namespace TetrisAI_Trainer.Source.ga
 {
@@ -22,14 +18,14 @@ namespace TetrisAI_Trainer.Source.ga
         public int MaxRound { get; set; }
         public bool UseVariance { get; set; }
 
-        public TetrisFitness(int sample,int maxRound,bool useVariance)
+        public TetrisFitness(int sample, int maxRound, bool useVariance)
         {
             Sample = sample;
             MaxRound = maxRound;
             UseVariance = useVariance;
         }
 
-        public TetrisFitness() : this(2,200,true)
+        public TetrisFitness() : this(2, 200, true)
         {
         }
 

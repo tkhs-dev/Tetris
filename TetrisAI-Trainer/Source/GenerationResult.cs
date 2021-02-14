@@ -1,10 +1,6 @@
 ﻿using GeneticSharp.Domain;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using TetrisAI_Trainer.Source.ga;
 using TetrisCore.Source.Config;
-using static TetrisAI.Source.Evaluator;
 
 namespace TetrisAI_Trainer.Source
 {
@@ -25,7 +21,7 @@ namespace TetrisAI_Trainer.Source
         {
             return $"{Generation}.xml";
         }
-        public static GenerationResult Create(GeneticAlgorithm ga,TimeSpan time)
+        public static GenerationResult Create(GeneticAlgorithm ga, TimeSpan time)
         {
             return new GenerationResult()
             {

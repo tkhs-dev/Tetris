@@ -1,9 +1,4 @@
-﻿using GeneticSharp.Domain.Selections;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
-using TetrisCore.Source.Config;
+﻿using TetrisCore.Source.Config;
 
 namespace TetrisAI_Trainer.Source
 {

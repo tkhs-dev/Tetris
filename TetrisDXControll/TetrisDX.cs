@@ -5,13 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TetrisAI.Source;
-using TetrisCore;
 using TetrisCore.Source;
-using TetrisCore.Source.Api;
-using TetrisCore.Source.Util;
-using static TetrisAI.Source.Evaluator;
-using static TetrisCore.Source.BlockObject;
 
 namespace TetrisDXControll
 {
@@ -43,11 +37,11 @@ namespace TetrisDXControll
                 RenderBlocks(10, 10);
                 if (field.Object != null) RenderObject(field.Object, 10, 10);
                 RenderNextObject(size * Row + 50, 10);
-                RenderGameState(size*Row+50,10);
+                RenderGameState(size * Row + 50, 10);
                 RenderObjectAxis(10, 10);
                 RenderPlaceablePosition(10, 10);
                 RenderHoles(10, 10);
-                RenderDeadSpace(10,10);
+                RenderDeadSpace(10, 10);
                 RenderWells(10, 10);
             }
 
@@ -59,10 +53,10 @@ namespace TetrisDXControll
         {
             foreach (System.Drawing.Point p in field.GetHoles())
             {
-                RenderDiagonalWires(SharpDX.Color.Red, p, x, y,false);
+                RenderDiagonalWires(SharpDX.Color.Red, p, x, y, false);
             }
         }
-        private void RenderDeadSpace(int x,int y)
+        private void RenderDeadSpace(int x, int y)
         {
             foreach (System.Drawing.Point p in field.GetDeadSpace())
             {
@@ -86,7 +80,7 @@ namespace TetrisDXControll
         private void RenderPlaceablePosition(int x, int y)
         {
             List<BlockPosition> point = field.GetPlaceablePositions(field.Object.Unit);
-            foreach (var p in point.Where(x=>x.Direction.Equals(field.Object.Direction)).Select(x=>x.Point))
+            foreach (var p in point.Where(x => x.Direction.Equals(field.Object.Direction)).Select(x => x.Point))
             {
                 RenderDiagonalWires(SharpDX.Color.Orange, p, x, y);
             }

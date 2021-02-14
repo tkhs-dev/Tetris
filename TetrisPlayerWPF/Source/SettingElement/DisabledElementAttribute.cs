@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TetrisPlayerWPF.Source.SettingElement
 {
-    public class DisabledElementAttribute:Attribute
+    public class DisabledElementAttribute : Attribute
     {
     }
 }

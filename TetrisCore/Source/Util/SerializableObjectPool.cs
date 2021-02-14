@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using TetrisCore.Source.Config;
 using static TetrisCore.Source.GamePlayData;
 
 namespace TetrisCore.Source.Util
 {
-    public class SerializableObjectPool:SerializableBase
+    public class SerializableObjectPool : SerializableBase
     {
         public List<WeightedPool<SerializableBlockUnit>.WeightedItem> SerializablePool { get; set; }
         [XmlIgnore]

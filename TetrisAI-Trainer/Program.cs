@@ -14,7 +14,7 @@ namespace TetrisAI_Trainer
 
             Trainer trainer = new Trainer();
             TrainerConfig config = new TrainerConfig();
-            if(!config.Load())config.Save();
+            if (!config.Load()) config.Save();
             trainer.Start(config);
         }
     }

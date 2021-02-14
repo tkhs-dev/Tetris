@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows.Controls;
 using TetrisAI.Source;
 using TetrisCore.Source;
-using TetrisCore.Source.Extension;
-using TetrisCore.Source.Util;
 using TetrisPlayerWPF.Source;
-using TetrisPlayerWPF.Source.SettingElement;
 using static TetrisAI.Source.Evaluator;
 
 namespace TetrisPlayerWPF
@@ -43,7 +38,7 @@ namespace TetrisPlayerWPF
                 new float[] {
                     0.25f, 0.25f, 0.25f, 0.25f, 0.25f
                 });
-            if(Setting is SinglePlaySetting)
+            if (Setting is SinglePlaySetting)
             {
                 SinglePlaySetting setting = Setting as SinglePlaySetting;
                 Game = new TetrisGame(App.GetLogger());
@@ -52,7 +47,8 @@ namespace TetrisPlayerWPF
                 Game.TimerSpan = setting.FallInterval.Value;
                 Game.RecordPlayDataEnabled = setting.RecordPlayDataEnabled.Value;
                 Game.Start();
-            }else if(Setting is AIPlaySetting)
+            }
+            else if (Setting is AIPlaySetting)
             {
                 AIPlaySetting setting = Setting as AIPlaySetting;
                 var p = EvaluationNNParameter.Load(typeof(EvaluationNNParameter), setting.AiTrainingFile.Value.DirectoryName, setting.AiTrainingFile.Value.Name) as EvaluationNNParameter;
@@ -60,11 +56,12 @@ namespace TetrisPlayerWPF
                 Evaluator evaluator = new Evaluator(parameter);
                 Game = new TetrisGame(App.GetLogger());
                 Game.SetRenderer(DXPanel);
-                Game.SetController(new AITetrisController(evaluator,setting.AiControllInterval.Value));
+                Game.SetController(new AITetrisController(evaluator, setting.AiControllInterval.Value));
                 Game.TimerSpan = setting.FallInterval.Value;
                 Game.RecordPlayDataEnabled = setting.RecordPlayDataEnabled.Value;
                 Game.Start();
-            }else if(Setting is RePlaySetting)
+            }
+            else if (Setting is RePlaySetting)
             {
                 RePlaySetting setting = Setting as RePlaySetting;
                 GamePlayData playdata = (GamePlayData)GamePlayData.Load(typeof(GamePlayData), setting.PlayDataFile.Value.DirectoryName, setting.PlayDataFile.Value.Name);
@@ -72,10 +69,10 @@ namespace TetrisPlayerWPF
                 Game.SetRenderer(DXPanel);
                 Game.SetController(new ReplayController(playdata.Events));
                 Game.Start();
-                
+
             }
             //Game = new TetrisGame(TetrisPlayer.GetLogger(),10,20,playdata.ObjectPool,playdata.ObjectQueue);
-            
+
         }
     }
 }

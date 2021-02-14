@@ -11,7 +11,6 @@ using TetrisCore.Source.Config;
 using TetrisCore.Source.Extension;
 using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockUnit;
-using static TetrisCore.Source.GamePlayData;
 
 namespace TetrisCore.Source
 {
@@ -62,7 +61,7 @@ namespace TetrisCore.Source
 
         static TetrisGame()
         {
-            DefaultObjectPool = new WeightedPool<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => new WeightedPool<BlockUnit>.WeightedItem(1,x.GetObject())).ToList());
+            DefaultObjectPool = new WeightedPool<BlockUnit>(Enum.GetValues(typeof(Kind)).Cast<Kind>().Select(x => new WeightedPool<BlockUnit>.WeightedItem(1, x.GetObject())).ToList());
         }
 
         public TetrisGame(ILog logger, int row = 10, int column = 20, WeightedPool<BlockUnit> objectPool = null, Queue<BlockUnit> initialQueue = null)
@@ -75,7 +74,7 @@ namespace TetrisCore.Source
             if (!config.Load()) config.Save();
             if (objectPool == null && config.UseCustomObjectList)
             {
-                var serializable = (SerializableObjectPool.Load(typeof(SerializableObjectPool), ConfigBase.Directory, config.ObjectListFile)as SerializableObjectPool);
+                var serializable = (SerializableObjectPool.Load(typeof(SerializableObjectPool), ConfigBase.Directory, config.ObjectListFile) as SerializableObjectPool);
                 if (serializable == null)
                 {
                     serializable = new SerializableObjectPool() { ObjectPool = DefaultObjectPool };
@@ -119,7 +118,7 @@ namespace TetrisCore.Source
             };
             field.OnLinesRemoved += (object sender, int[] lines, int eroded) =>
             {
-                if (lines.Length!=0)
+                if (lines.Length != 0)
                 {
                     if (!_state.RemovedLines.ContainsKey(lines.Length)) _state.RemovedLines.Add(lines.Length, 0);
                     _state.RemovedLines[lines.Length]++;
@@ -253,7 +252,7 @@ namespace TetrisCore.Source
         {
             public int Score { get; set; }
             public int Round { get; set; }
-            public Dictionary<int,int> RemovedLines { get; set; }
+            public Dictionary<int, int> RemovedLines { get; set; }
             public int RemovedLineCount { get => RemovedLines.Values.Sum(); }
         }
 

@@ -1,20 +1,14 @@
-﻿using Alba.CsConsoleFormat;
-using log4net;
-using log4net.Repository.Hierarchy;
+﻿using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using TetrisCore;
 using TetrisCore.Source;
 using TetrisCore.Source.Api;
 using TetrisCore.Source.Extension;
-using TetrisCore.Source.Util;
-using static System.ConsoleColor;
 using static TetrisAI.Source.Evaluator;
 using static TetrisCore.Source.BlockUnit;
-using Cell = Alba.CsConsoleFormat.Cell;
 
 namespace TetrisAI.Source
 {
@@ -26,7 +20,7 @@ namespace TetrisAI.Source
         //操作間隔:msec
         private int interval;
 
-        public AITetrisController(Evaluator evaluator,int interval=1)
+        public AITetrisController(Evaluator evaluator, int interval = 1)
         {
             _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             this._evaluator = evaluator;
@@ -53,7 +47,7 @@ namespace TetrisAI.Source
                 this._logger.Debug("Round Start");
 
                 RoundResult[] round_result = Task.WhenAll(field_tasks.Where(x => x.Status != TaskStatus.Canceled)).Result;
-                field_tasks.ForEach(x=>x.Dispose());
+                field_tasks.ForEach(x => x.Dispose());
                 /*
                 var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
                 var doc = new Document(
@@ -133,24 +127,24 @@ namespace TetrisAI.Source
 
             return tcs.Task;
         }
-        private Task<bool> TryPlaceAsync(Field field,BlockPosition position)
+        private Task<bool> TryPlaceAsync(Field field, BlockPosition position)
         {
             var tcs = new TaskCompletionSource<bool>();
             bool placed = false;
-            field.OnBlockPlaced += (object sender,BlockObject obj) =>
+            field.OnBlockPlaced += (object sender, BlockObject obj) =>
             {
                 placed = true;
                 tcs.TrySetResult(true);
             };
             int count = 0;
-            while (!placed&&count<=50)
+            while (!placed && count <= 50)
             {
                 Task.Delay(interval).Wait();
-                if (field.Object.Point.X!=position.Point.X)
+                if (field.Object.Point.X != position.Point.X)
                 {
-                    _game.Move((position.Point.X- field.Object.Point.X)>0?Directions.EAST:Directions.WEST);
+                    _game.Move((position.Point.X - field.Object.Point.X) > 0 ? Directions.EAST : Directions.WEST);
                 }
-                Task.Delay(interval).Wait() ;
+                Task.Delay(interval).Wait();
                 if (field.Object.Direction != position.Direction)
                 {
                     int current = (int)field.Object.Direction;
@@ -162,7 +156,7 @@ namespace TetrisAI.Source
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
                 count++;
             }
-            Task.Delay(interval*2).Wait();
+            Task.Delay(interval * 2).Wait();
             _game.Place();
             return tcs.Task;
         }

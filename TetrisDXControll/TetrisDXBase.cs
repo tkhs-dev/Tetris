@@ -31,7 +31,7 @@ namespace TetrisDXControll
             SetStyle(ControlStyles.AllPaintingInWmPaint |// ちらつき抑える
                 ControlStyles.Opaque, true);            // 背景は描画しない
 
-            System.Windows.Media.CompositionTarget.Rendering += RenderingEvent ;
+            System.Windows.Media.CompositionTarget.Rendering += RenderingEvent;
         }
 
         //--------------------------------------------------------------//
@@ -265,7 +265,7 @@ namespace TetrisDXControll
         protected void RenderNextObject(int x, int y)
         {
             const int flame_size = 4;
-            for (int i = 0; i < (game.ObjectQueue.Count>=2?2: game.ObjectQueue.Count); i++)
+            for (int i = 0; i < (game.ObjectQueue.Count >= 2 ? 2 : game.ObjectQueue.Count); i++)
             {
                 if (game.ObjectQueue.Count >= i)
                 {
@@ -274,29 +274,29 @@ namespace TetrisDXControll
                 }
             }
         }
-        protected void RenderGameState(int x,int y)
+        protected void RenderGameState(int x, int y)
         {
             const int flame_size = 4;
-            int start_y = y*2 +(flame_size*size)* (game.ObjectQueue.Count >= 2 ? 2 : game.ObjectQueue.Count);
+            int start_y = y * 2 + (flame_size * size) * (game.ObjectQueue.Count >= 2 ? 2 : game.ObjectQueue.Count);
             _ColorBrush.Color = SharpDX.Color.Gray;
             TextFormat font = new TextFormat(_FactoryDWrite, "Meiryo", 15);
-            _RenderTarget2D.DrawText($"Round:{game.State.Round}",font, new RawRectangleF(x, start_y, x + 100, start_y + 100),_ColorBrush);
-            _RenderTarget2D.DrawText($"Score:{game.State.Score}",font, new RawRectangleF(x, start_y+20, x + 100, start_y + 100), _ColorBrush);
+            _RenderTarget2D.DrawText($"Round:{game.State.Round}", font, new RawRectangleF(x, start_y, x + 100, start_y + 100), _ColorBrush);
+            _RenderTarget2D.DrawText($"Score:{game.State.Score}", font, new RawRectangleF(x, start_y + 20, x + 100, start_y + 100), _ColorBrush);
             _RenderTarget2D.DrawText($"Lines:{game.State.RemovedLineCount}", font, new RawRectangleF(x, start_y + 40, x + 100, start_y + 100), _ColorBrush);
             int counter = 0;
-            foreach(var v in game.State.RemovedLines)
+            foreach (var v in game.State.RemovedLines)
             {
                 counter++;
-              _RenderTarget2D.DrawText($"Line x{v.Key}:{v.Value}", font, new RawRectangleF(x, start_y + 40+20*counter, x + 100, start_y + 100), _ColorBrush);
+                _RenderTarget2D.DrawText($"Line x{v.Key}:{v.Value}", font, new RawRectangleF(x, start_y + 40 + 20 * counter, x + 100, start_y + 100), _ColorBrush);
             }
         }
-        public System.Drawing.SizeF MeasureString(string Message, TextFormat textFormat, float Width, ContentAlignment Align=ContentAlignment.MiddleLeft)
-{
-    SharpDX.DirectWrite.TextLayout layout = 
-        new SharpDX.DirectWrite.TextLayout(_FactoryDWrite, Message, textFormat, Width, textFormat.FontSize);
+        public System.Drawing.SizeF MeasureString(string Message, TextFormat textFormat, float Width, ContentAlignment Align = ContentAlignment.MiddleLeft)
+        {
+            SharpDX.DirectWrite.TextLayout layout =
+                new SharpDX.DirectWrite.TextLayout(_FactoryDWrite, Message, textFormat, Width, textFormat.FontSize);
 
-    return new System.Drawing.SizeF(layout.Metrics.Width, layout.Metrics.Height);
-}
+            return new System.Drawing.SizeF(layout.Metrics.Width, layout.Metrics.Height);
+        }
 
         public void initialize(TetrisGame game)
         {

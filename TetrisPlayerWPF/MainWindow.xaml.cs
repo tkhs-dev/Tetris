@@ -1,23 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Linq;
-using TetrisAI.Source;
-using TetrisCore.Source;
-using TetrisCore.Source.Api;
-using static TetrisAI.Source.Evaluator;
 using static TetrisPlayerWPF.PlaySettingPage;
 
 namespace TetrisPlayerWPF
@@ -33,7 +18,7 @@ namespace TetrisPlayerWPF
             Loaded += loaded;
             Frame.Navigate(new PlaySettingPage(PlayType.SINGLE));
         }
-        private void loaded(object sender,EventArgs e)
+        private void loaded(object sender, EventArgs e)
         {
         }
 
@@ -61,7 +46,7 @@ namespace TetrisPlayerWPF
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if(Frame.Content is ITabablePage)
+            if (Frame.Content is ITabablePage)
             {
                 (Frame.Content as ITabablePage).Submit();
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TetrisCore.Source.Config
+﻿namespace TetrisCore.Source.Config
 {
     public class TetrisConfig : ConfigBase
     {

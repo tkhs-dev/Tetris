@@ -31,7 +31,7 @@ namespace TetrisCore.Source
         /// 回転済みデータのキャッシュ
         /// </summary>
         public ReadOnlyDictionary<Directions, int[,]> TransformedData { get; }
-        public IDictionary<Directions,IList<Block>> TransformedBlock { get; }
+        public IDictionary<Directions, IList<Block>> TransformedBlock { get; }
 
         public BlockUnit(Color color, int[,] data) : this(color, data, new ReadOnlyDictionary<Directions, int[,]>(Enum.GetValues(typeof(Directions)).Cast<Directions>().ToList()
                 .ToDictionary(x => x, x => data.RotateClockwise((int)x))))
@@ -112,7 +112,7 @@ namespace TetrisCore.Source
         public IReadOnlyList<Block> GetBlocks(BlockPosition position)
         {
             List<Block> result = TransformedBlock[position.Direction].ToList();
-            return result.Select(x=>new Block(x.Color,new Point(x.Point.X+position.Point.X,x.Point.Y+position.Point.Y))).ToList().AsReadOnly() as IReadOnlyList<Block>;
+            return result.Select(x => new Block(x.Color, new Point(x.Point.X + position.Point.X, x.Point.Y + position.Point.Y))).ToList().AsReadOnly() as IReadOnlyList<Block>;
         }
         public override string ToString()
         {

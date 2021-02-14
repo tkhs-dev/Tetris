@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace TetrisCore.Source.Config
 {
@@ -19,13 +15,13 @@ namespace TetrisCore.Source.Config
         }
         public bool Save()
         {
-            return base.Save(Directory,Name+".xml");
+            return base.Save(Directory, Name + ".xml");
         }
         public bool Load()
         {
             var value = SerializableBase.Load(GetType(), Directory, Name + ".xml") as ConfigBase;
             SetValue(value ?? GetDefault());
-            return value!=null;
+            return value != null;
         }
         public abstract ConfigBase GetDefault();
     }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using static TetrisCore.Source.BlockUnit;
 
 namespace TetrisCore.Source
@@ -11,7 +8,7 @@ namespace TetrisCore.Source
         public readonly Point Point;
         public readonly Directions Direction;
 
-        public BlockPosition(Point point,Directions direction)
+        public BlockPosition(Point point, Directions direction)
         {
             Point = point;
             Direction = direction;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TetrisPlayerWPF.Source.SettingElement
+﻿namespace TetrisPlayerWPF.Source.SettingElement
 {
     public abstract class SettingElementBase<T>
     {

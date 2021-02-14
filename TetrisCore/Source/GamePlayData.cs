@@ -27,14 +27,14 @@ namespace TetrisCore.Source
         /// </summary>
         public List<WeightedPool<SerializableBlockUnit>.WeightedItem> SerializableObjectPool { get; set; }
         [XmlIgnore]
-        public WeightedPool<BlockUnit> ObjectPool { get => new WeightedPool<BlockUnit>(SerializableObjectPool.Select(x => new WeightedPool<BlockUnit>.WeightedItem(x.Weight,x.Value.GetBlockUnit())).ToList()); set => SerializableObjectPool = value.WeightedItems.Select((x, Index) => { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x.Value); u.ID = Index; return new WeightedPool<SerializableBlockUnit>.WeightedItem(x.Weight,u); }).ToList(); }
+        public WeightedPool<BlockUnit> ObjectPool { get => new WeightedPool<BlockUnit>(SerializableObjectPool.Select(x => new WeightedPool<BlockUnit>.WeightedItem(x.Weight, x.Value.GetBlockUnit())).ToList()); set => SerializableObjectPool = value.WeightedItems.Select((x, Index) => { var u = GamePlayData.SerializableBlockUnit.FromBlockUnit(x.Value); u.ID = Index; return new WeightedPool<SerializableBlockUnit>.WeightedItem(x.Weight, u); }).ToList(); }
 
         /// <summary>
         /// 出現したブロック
         /// </summary>
         public List<SerializableQueue> SerializableObjectQueue { get; set; }
         [XmlIgnore]
-        public Queue<BlockUnit> ObjectQueue { get => new Queue<BlockUnit>(SerializableObjectQueue.OrderBy(x=>x.ID).Select(x => ObjectPool.WeightedItems[x.Value].Value)); }
+        public Queue<BlockUnit> ObjectQueue { get => new Queue<BlockUnit>(SerializableObjectQueue.OrderBy(x => x.ID).Select(x => ObjectPool.WeightedItems[x.Value].Value)); }
 
         /// <summary>
         /// イベント
@@ -53,7 +53,7 @@ namespace TetrisCore.Source
 
         public bool Save()
         {
-            return base.Save("playdata", Date.ToString("yyyy-MM-dd-HHmmss")+".rpldt");
+            return base.Save("playdata", Date.ToString("yyyy-MM-dd-HHmmss") + ".rpldt");
         }
         public class SerializableBlockUnit
         {
@@ -65,11 +65,11 @@ namespace TetrisCore.Source
 
             public static SerializableBlockUnit FromBlockUnit(BlockUnit unit)
             {
-                return new SerializableBlockUnit() { Data = unit.Data.ToJaggedArray(),Color = unit.Color};
+                return new SerializableBlockUnit() { Data = unit.Data.ToJaggedArray(), Color = unit.Color };
             }
             public BlockUnit GetBlockUnit()
             {
-                return new BlockUnit(Color,Data.ToDimensionalArray());
+                return new BlockUnit(Color, Data.ToDimensionalArray());
             }
         }
         public class SerializableQueue

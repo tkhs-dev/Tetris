@@ -52,7 +52,7 @@ namespace TetrisAI.Source
             {
             }
 
-            public EvaluationNNParameter( float[] mw, float[] ow)
+            public EvaluationNNParameter(float[] mw, float[] ow)
             {
                 if ((mw != null && ow != null) && (mw.Length >= NumInput * NumMiddle && ow.Length >= NumMiddle * NumOutput))
                 {

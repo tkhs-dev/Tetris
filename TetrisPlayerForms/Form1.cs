@@ -22,19 +22,19 @@ namespace TetrisPlayer
         private void initialized(object sender, EventArgs a)
         {
             EvaluationNNParameter parameter = new EvaluationNNParameter(
-                new float[] { 
-                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f 
+                new float[] {
+                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f, 0.25f
                 },
-                new float[] { 
-                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f 
+                new float[] {
+                    0.25f, 0.25f, 0.25f, 0.25f, 0.25f
                 });
             string path = "parameters";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             var p = EvaluationNNParameter.Load(typeof(EvaluationNNParameter), path, "params.xml") as EvaluationNNParameter;
-            if (p!=null) parameter = p;
+            if (p != null) parameter = p;
             Evaluator evaluator = new Evaluator(parameter);
 
-            GamePlayData playdata = (GamePlayData)GamePlayData.Load(typeof(GamePlayData), "playdata","data.xml");
+            GamePlayData playdata = (GamePlayData)GamePlayData.Load(typeof(GamePlayData), "playdata", "data.xml");
 
             //Game = new TetrisGame(TetrisPlayer.GetLogger(),10,20,playdata.ObjectPool,playdata.ObjectQueue);
             Game = new TetrisGame(TetrisPlayer.GetLogger());
@@ -44,7 +44,7 @@ namespace TetrisPlayer
                 {
                     TetrisPlayer.GetLogger().Info("Find a Renderer:" + c.GetType().Name);
                     Game.SetRenderer((IRenderer)c);
-                    Game.SetController((IController)new AITetrisController(evaluator,100));
+                    Game.SetController((IController)new AITetrisController(evaluator, 100));
                     //Game.SetController((IController)new ReplayController(playdata.Events));
                 }
             }

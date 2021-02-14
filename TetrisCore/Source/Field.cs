@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
 using TetrisCore.Source.Extension;
-using TetrisCore.Source.Util;
 using static TetrisCore.Source.BlockUnit;
 
 namespace TetrisCore.Source
@@ -91,18 +88,18 @@ namespace TetrisCore.Source
         }
 
         //フィールド操作系関数
-        public void SetObject(BlockUnit o,Directions direction=Directions.NORTH)
+        public void SetObject(BlockUnit o, Directions direction = Directions.NORTH)
         {
             Point point = new Point(((int)(_row / 2)) - (int)(o.GetWidth(direction) / 2), 0);
-            if(!CanMoveTo(new BlockObject(o), point))
+            if (!CanMoveTo(new BlockObject(o), point))
             {
                 OnGameOver?.Invoke(this);
             }
-            _object = new BlockObject(o,direction) { Point=point  };
+            _object = new BlockObject(o, direction) { Point = point };
         }
         public void StartRound()
         {
-            if(!_isGameOvered)OnRoundStart?.Invoke(this);
+            if (!_isGameOvered) OnRoundStart?.Invoke(this);
         }
 
         public bool Move(Directions direction)
@@ -140,14 +137,14 @@ namespace TetrisCore.Source
             if (CanMoveTo(point))
             {
                 Object.Point = point;
-                return Object.Point==point;
+                return Object.Point == point;
             }
             return false;
         }
 
         public void PlaceImmediately()
         {
-            PlaceAt(new BlockPosition(GetImmediatePlacementPoint(),_object.Direction));
+            PlaceAt(new BlockPosition(GetImmediatePlacementPoint(), _object.Direction));
         }
 
         public bool Rotate(int rotation)
@@ -211,7 +208,7 @@ namespace TetrisCore.Source
         public bool CanMoveTo(BlockObject obj, Point point)
         {
             if (obj == null) return false;
-            foreach (Block block in obj.Unit.GetBlocks(new BlockPosition(point,obj.Direction)))
+            foreach (Block block in obj.Unit.GetBlocks(new BlockPosition(point, obj.Direction)))
             {
                 Cell cell = GetCell(block.Point);
                 if (cell == null || cell.HasBlock()) return false;
@@ -278,10 +275,10 @@ namespace TetrisCore.Source
             List<Point> result = new List<Point>();
             for (int i = 0; i < cols.Count; i++)
             {
-                int sp = GetSurfacePoint(cols[i])+1;
-                for(int j = sp; j < cols[i].Length; j++)
+                int sp = GetSurfacePoint(cols[i]) + 1;
+                for (int j = sp; j < cols[i].Length; j++)
                 {
-                    if (data[i, j] == 0) result.Add(new Point(i,j));
+                    if (data[i, j] == 0) result.Add(new Point(i, j));
                 }
             }
             return result;
@@ -347,10 +344,10 @@ namespace TetrisCore.Source
                 for (int y = start_y; start_y < Column; start_y++)
                 {
                     Point start_point = new Point(i, start_y);
-                    BlockObject obj = new BlockObject(block) { Direction = direction};
+                    BlockObject obj = new BlockObject(block) { Direction = direction };
                     if (!CanMoveTo(obj, start_point)) break;
                 }
-                result.Add(new BlockPosition(new Point(i, start_y - 1),direction));
+                result.Add(new BlockPosition(new Point(i, start_y - 1), direction));
             }
             return result;
         }
@@ -392,25 +389,25 @@ namespace TetrisCore.Source
 
         public object Clone()
         {
-            Cell[,] cells_new = new Cell[Row,Column];
-            for(int d1 = 0; d1 < Row; d1++)
+            Cell[,] cells_new = new Cell[Row, Column];
+            for (int d1 = 0; d1 < Row; d1++)
             {
-                for(int d2 = 0; d2 < Column; d2++)
+                for (int d2 = 0; d2 < Column; d2++)
                 {
                     cells_new[d1, d2] = (Cell)_cells[d1, d2].Clone();
                 }
             }
-            return new Field(_row, _column) { _cells = cells_new, _object = (BlockObject)this.Object.Clone()};
+            return new Field(_row, _column) { _cells = cells_new, _object = (BlockObject)this.Object.Clone() };
         }
         public override string ToString()
         {
             string result = "";
-            foreach(var i in ToArrays().Flatten(SquareDirection.Column).ToArray().Chunk(Row).Select(x => x.ToArray()).ToList())
+            foreach (var i in ToArrays().Flatten(SquareDirection.Column).ToArray().Chunk(Row).Select(x => x.ToArray()).ToList())
             {
                 foreach (var ii in i) result = result + ii;
                 result = result + "\n";
             }
-            
+
             return result;
         }
     }

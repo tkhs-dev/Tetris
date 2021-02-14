@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 using TetrisCore.Source.Api;
 using static TetrisCore.Source.BlockUnit;
 using static TetrisCore.Source.GamePlayData.GamePlayEvent.EventType;
@@ -33,7 +32,7 @@ namespace TetrisCore.Source
             await Task.Run(() =>
             {
                 TimeSpan lastTime = TimeSpan.Zero;
-                foreach (GamePlayData.GamePlayEvent ev in _events.Where(x => x.Round == _game.State.Round).OrderBy(x=>x.Time))
+                foreach (GamePlayData.GamePlayEvent ev in _events.Where(x => x.Round == _game.State.Round).OrderBy(x => x.Time))
                 {
                     TimeSpan span = ev.Time - lastTime;
                     lastTime = ev.Time;
