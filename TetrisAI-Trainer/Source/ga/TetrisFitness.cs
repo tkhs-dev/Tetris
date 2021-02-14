@@ -37,17 +37,7 @@ namespace TetrisAI_Trainer.Source.ga
         {
             EvaluationNNParameter parameter = (chromosome as TetrisChromosome).GetParameter();
             Evaluator evaluator = new Evaluator(parameter);
-            //S,Zオブジェクトの排出率を二倍にする
-            WeightedPool<BlockUnit> pool = new WeightedPool<BlockUnit>(new List<Item>() { 
-                new Item(1,Kind.I.GetObject()),
-                new Item(1,Kind.J.GetObject()),
-                new Item(1,Kind.L.GetObject()),
-                new Item(2,Kind.S.GetObject()),
-                new Item(2,Kind.Z.GetObject()),
-                new Item(1,Kind.T.GetObject()),
-                new Item(1,Kind.O.GetObject()),
-            });
-            List<TetrisGame> games = Enumerable.Range(0, Sample).Select(x => new TetrisGame(TetrisAITrainer.Logger,10,20,pool)).ToList();
+            List<TetrisGame> games = Enumerable.Range(0, Sample).Select(x => new TetrisGame(TetrisAITrainer.Logger)).ToList();
             List<GameResult> results = new List<GameResult>();
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
