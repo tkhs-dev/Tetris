@@ -157,7 +157,7 @@ namespace TetrisAI.Source
                     int distination = (int)position.Direction;
                     if (current == 0 && distination == 3) distination = -1;
                     bool rotate = (distination - current) % 2 >= 0;
-                    _game.Rotate(true);
+                    _game.Rotate(rotate);
                 }
                 if (field.Object.Point.X == position.Point.X && field.Object.Direction == position.Direction) break;
                 count++;
