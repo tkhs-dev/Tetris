@@ -48,59 +48,12 @@ namespace TetrisAI.Source
 
                 RoundResult[] round_result = Task.WhenAll(field_tasks.Where(x => x.Status != TaskStatus.Canceled)).Result;
                 field_tasks.ForEach(x => x.Dispose());
-                /*
-                var headerThickness = new LineThickness(LineWidth.Single, LineWidth.Single);
-                var doc = new Document(
-                    new Grid
-                    {
-                        Color = Gray,
-                        Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto },
-                        Children = {
-                        new Cell("Direction") { Stroke = headerThickness },
-                        new Cell("Object") { Stroke = headerThickness },
-                        new Cell("Point") { Stroke = headerThickness },
-                        round_result.Select(item => new[] {
-                            new Cell(item.Position.Direction){ Align = Align.Center},
-                            new Cell(item.FieldAtEnd.ToString()),
-                            new Cell(item.Position.Point),
-                        })
-                        }
-                    }
-                );
-                try
-                {
-                    string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                    _logger.Debug("\n" + text);
-                }
-                catch (Exception e) { };*/
+
                 List<Tuple<BlockPosition, EvaluationResult>> results = round_result
                     .Select(x => new Tuple<BlockPosition, EvaluationResult>(x.Position, _evaluator.Evaluate(EvaluationItem.GetEvaluationItem(x))))
                     .OrderByDescending(x => x.Item2.EvaluationValue)
                     .ToList();
-                /*
-                doc = new Document(
-                    new Grid
-                    {
-                        Color = Gray,
-                        Columns = { GridLength.Auto, GridLength.Auto, GridLength.Auto },
-                        Children = {
-                        new Cell("Point") { Stroke = headerThickness },
-                        new Cell("Direction") { Stroke = headerThickness },
-                        new Cell("Result") { Stroke = headerThickness },
-                        results.Select(item => new[] {
-                            new Cell(item.Item1.Point),
-                            new Cell(item.Item1.Direction),
-                            new Cell(item.Item2.EvaluationValue),
-                        })
-                        }
-                    }
-                );
-                try
-                {
-                    string text = ConsoleRenderer.RenderDocumentToText(doc, new TextRenderTarget());
-                    _logger.Debug("\n" + text);
-                }
-                catch (Exception e) { };*/
+
                 if (results.Count == 0) return;
                 var dest = results
                     .GroupBy(x => x.Item2.EvaluationValue)

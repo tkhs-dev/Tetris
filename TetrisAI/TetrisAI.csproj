@@ -49,7 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Alba.CsConsoleFormat" Version="1.0.0" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
