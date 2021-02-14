@@ -10,14 +10,21 @@
 ニューラルネットワークの各バイアスを遺伝的アルゴリズムで調整し、学習させる。
 
 ## 設計
-* **TetrisCore**        
+* **TetrisCore**          
 テトリスのコア部分
-* **TetrisPlayer**      
-Windows .Formsを使用したシングルプレイ用のプレイヤー
+* ~~**TetrisPlayer**~~  
+~~Windows .Formsを使用したシングルプレイ用のプレイヤー~~  
+TetrisPlayerWPFに移行
+* **TetrisPlayerWPF**  
+WPFを使用したプレイヤー シングルプレイ AIプレイ リプレイ(バグあり)を実装済み
+* **TetrisDXControl**  
+Windows.FormsのDXを使ったテトリスコントロール TetrisPlayerWPFでも使用
 * **TetrisAI**          
 テトリスAIの基本部分 ニューラルネット
 * **TetrisAI-Trainer**  
 テトリスAIの学習部分 遺伝的アルゴリズム
+* **TetrisTest**  
+単体テストプロジェクト
 
 機械学習の実装は時間がかかるのでライブラリを利用する。
 
@@ -45,5 +52,7 @@ Windows .Formsを使用したシングルプレイ用のプレイヤー
   #### 実装
   * GeneticSharpを使用
   * 数試合の平均スコアを適応度とする
-  * 交叉 均一交配
-  * 突然変異 0.1%
+  * 遺伝子 [TetrisChromosomes](/TetrisAI-Trainer/Source/ga/TetrisChromosomes.cs)
+  * 適応度 [TetrisFitness](/TetrisAI-Trainer/Source/ga/TetrisFitness.cs)
+  * 交叉 [TetrisCrossover](/TetrisAI-Trainer/Source/ga/TetrisCrossover.cs)
+  * 突然変異 均一
