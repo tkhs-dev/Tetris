@@ -324,6 +324,7 @@ namespace TetrisDXControll
         ///
         public new void Dispose()
         {
+            System.Windows.Media.CompositionTarget.Rendering -= RenderingEvent;
             game.Dispose();
             base.Dispose();
         }

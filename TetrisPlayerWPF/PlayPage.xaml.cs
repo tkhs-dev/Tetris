@@ -30,6 +30,7 @@ namespace TetrisPlayerWPF
 
         public void Dispose()
         {
+            DXPanel.Dispose();
             Game.Dispose();
         }
 
